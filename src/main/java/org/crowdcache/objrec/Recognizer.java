@@ -10,6 +10,7 @@ import georegression.struct.point.Point2D_F64;
 import org.crowdcache.objrec.surf.SURFExtractor;
 import org.crowdcache.objrec.surf.SurfBFAssociator;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -28,15 +29,15 @@ public class Recognizer<II extends ImageSingleBand, K extends Point2D_F64, D ext
      * Loads the DB in memory so that it can be queried repeatedly using the recognize function
      * @param extractor Which {@link FeatureExtractor to use}
      * @param associator Which {@link FeatureAssociator to use}
-     * @param dirpath Where is the DB located
+     * @param dblistpath Where is the DB located
      * @param imageType Type of {@link ImageSingleBand}
      */
-    public Recognizer(FeatureExtractor<II, K, D> extractor, FeatureAssociator<K, D> associator, String dirpath, Class<II> imageType)
+    public Recognizer(FeatureExtractor<II, K, D> extractor, FeatureAssociator<K, D> associator, String dblistpath, Class<II> imageType) throws IOException
     {
         this.extractor = extractor;
         this.associator = associator;
         DBLoader<II, K, D> dbLoader = new DBLoader<II, K, D>(imageType, extractor);
-        this.DB = dbLoader.processDB(dirpath);
+        this.DB = dbLoader.processDB(dblistpath);
         this.executorService = Executors.newFixedThreadPool(24);
     }
 
@@ -92,21 +93,22 @@ public class Recognizer<II extends ImageSingleBand, K extends Point2D_F64, D ext
         return ret;
     }
 
-    public static void main(String args[])
+    public static void main(String args[]) throws IOException
     {
         if (args.length == 2)
         {
-            String inputFile = args[0];
-            String dirpath = args[1];
+            String queryList = args[0];
+            String DBdirpath = args[1];
             SURFExtractor<ImageUInt8> surfExtractor = new SURFExtractor<ImageUInt8>(ImageUInt8.class);
             SurfBFAssociator surfBFAssociator = new SurfBFAssociator();
-            Recognizer<ImageUInt8, ScalePoint, BrightFeature> recognizer = new Recognizer<ImageUInt8, ScalePoint, BrightFeature>(surfExtractor, surfBFAssociator, dirpath, ImageUInt8.class);
+            Recognizer<ImageUInt8, ScalePoint, BrightFeature> recognizer = new Recognizer<ImageUInt8, ScalePoint, BrightFeature>(surfExtractor, surfBFAssociator, DBdirpath, ImageUInt8.class);
+
 
             Long start = System.currentTimeMillis();
-            String result = recognizer.recognize(UtilImageIO.loadImage(inputFile, ImageUInt8.class));
+            String result = recognizer.recognize(UtilImageIO.loadImage(queryList, ImageUInt8.class));
             if(result == null)
                 result = "None";
-            System.out.println("Input:" + inputFile + " Matched:" + result);
+            System.out.println("Input:" + queryList + " Matched:" + result);
             System.out.println("Time:" + (System.currentTimeMillis() - start));
         }
     }

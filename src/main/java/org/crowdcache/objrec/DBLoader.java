@@ -9,7 +9,8 @@ import boofcv.struct.image.ImageSingleBand;
 import georegression.struct.point.Point2D_F64;
 import org.crowdcache.objrec.surf.SURFExtractor;
 
-import java.io.File;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -92,28 +93,69 @@ public class DBLoader<T extends ImageSingleBand, K extends Point2D_F64, D extend
         return catMap;
     }
 
-
-    public HashMap<String, KeypointDescList<K, D>> processDB(String dirpath)
+    /**
+     * Format of input file list
+     *      imgName,imgPath
+     * @param dblistpath
+     * @return
+     */
+    public HashMap<String, KeypointDescList<K, D>> processDB(String dblistpath) throws IOException
     {
         executorService = Executors.newFixedThreadPool(24);
-        SURFExtractor<T> extractor = new SURFExtractor<T>(imageType);
         HashMap<String, KeypointDescList<K, D>> dbMap = new HashMap<String, KeypointDescList<K, D>>();
-        File dir = new File(dirpath);
-        if(dir.isDirectory())
+        HashMap<String, Future<KeypointDescList<K, D>>> futMap = new HashMap<String, Future<KeypointDescList<K, D>>>();
+        BufferedReader dir = new BufferedReader(new FileReader(dblistpath));
+        HashMap<String, String> paths = new HashMap<String, String>();
+
+        String line = dir.readLine();
+        do
         {
-            String[] catdirs = dir.list();
-            for (String cat : catdirs)
+            String[] chunks = line.split(",");
+            paths.put(chunks[0], chunks[1]);
+            line = dir.readLine();
+        }while (line != null);
+
+        for (Map.Entry<String, String> image : paths.entrySet())
+        {
+            final String imagepath = image.getValue();
+            File imagefile = new File(imagepath);
+            final String imgname = image.getKey();
+            if (imagefile.exists())
             {
-                cat = dirpath + File.separator + cat;
-                System.out.println("Processing " + cat);
-                dbMap.putAll(processCat(cat));
+                futMap.put(imgname, executorService.submit(new Callable<KeypointDescList<K, D>>()
+                {
+                    public KeypointDescList<K, D> call() throws Exception
+                    {
+                        return processOneImage(imagepath);
+                    }
+                }));
+                System.out.println("Loading " + imagepath);
+            }
+            else
+                System.out.println("Could not find image");
+        }
+
+        for(Map.Entry<String, Future<KeypointDescList<K, D>>> future:futMap.entrySet())
+        {
+            try
+            {
+                dbMap.put(future.getKey(), future.getValue().get());
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+            catch (ExecutionException e)
+            {
+                e.printStackTrace();
             }
         }
+
         executorService.shutdown();
         return dbMap;
     }
 
-    public static void main(String args[])
+    public static void main(String args[]) throws IOException
     {
         if (args.length > 0)
         {
@@ -124,6 +166,5 @@ public class DBLoader<T extends ImageSingleBand, K extends Point2D_F64, D extend
             HashMap<String, KeypointDescList<ScalePoint, BrightFeature>> map = dbLoader.processDB(inputFile);
             System.out.println("Time:" + (System.currentTimeMillis() - start) + "ms Num:" + map.size());
         }
-
     }
 }

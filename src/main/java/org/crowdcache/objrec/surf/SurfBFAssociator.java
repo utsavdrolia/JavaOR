@@ -24,7 +24,7 @@ import java.util.concurrent.*;
  */
 public class SurfBFAssociator implements FeatureAssociator<ScalePoint, BrightFeature>
 {
-    private final static Double RATIO_THRESHOLD = 0.8;
+    private final static Double RATIO_THRESHOLD = 0.6;
     private final static Integer MATCH_THRESHOLD = 20;
     private final ScoreAssociation<BrightFeature> scorer;
     ExecutorService executorService;
