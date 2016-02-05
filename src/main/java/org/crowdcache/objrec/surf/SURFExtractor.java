@@ -1,11 +1,10 @@
-package org.crowdcache.objrec;
+package org.crowdcache.objrec.surf;
 
 import boofcv.abst.feature.detdesc.DetectDescribePoint;
 import boofcv.abst.feature.detect.extract.ConfigExtract;
 import boofcv.abst.feature.detect.extract.NonMaxSuppression;
 import boofcv.abst.feature.detect.interest.ConfigFastHessian;
 import boofcv.abst.feature.orientation.OrientationIntegral;
-import boofcv.alg.descriptor.UtilFeature;
 import boofcv.alg.feature.describe.DescribePointSurf;
 import boofcv.alg.feature.detect.interest.FastHessianFeatureDetector;
 import boofcv.alg.transform.ii.GIntegralImageOps;
@@ -20,16 +19,16 @@ import boofcv.struct.feature.BrightFeature;
 import boofcv.struct.feature.ScalePoint;
 import boofcv.struct.image.ImageFloat32;
 import boofcv.struct.image.ImageSingleBand;
+import org.crowdcache.objrec.FeatureExtractor;
+import org.crowdcache.objrec.KeypointDescList;
 import org.ddogleg.struct.FastQueue;
-import org.ddogleg.struct.FastQueueList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by utsav on 2/3/16.
  */
-public class SURFExtractor<II extends ImageSingleBand>
+public class SURFExtractor<II extends ImageSingleBand> implements FeatureExtractor<II, ScalePoint, BrightFeature>
 {
 
     /**
@@ -52,15 +51,28 @@ public class SURFExtractor<II extends ImageSingleBand>
     }
 
     final Class<II> integralType;
-    final NonMaxSuppression extractor;
-    final FastHessianFeatureDetector<II> detector;
-    final OrientationIntegral<II> orientation;
-    final DescribePointSurf<II> descriptor;
 
     public SURFExtractor(Class<II> clazz)
     {
         // SURF works off of integral images
         integralType = GIntegralImageOps.getIntegralType(clazz);
+    }
+
+    /**
+     * Configured but require a lot more code than the "easy" way and a more in depth
+     * understanding of how SURF works and is configured.  Instead of TupleDesc_F64, SurfFeature are computed in
+     * this case.  They are almost the same as TupleDesc_F64, but contain the Laplacian's sign which can be used
+     * to speed up association. That is an example of how using less generalized interfaces can improve performance.
+     *
+     * @param image Input image type. DOES NOT NEED TO BE ImageFloat32, ImageUInt8 works too
+     */
+    public KeypointDescList<ScalePoint, BrightFeature> extract(II image)
+    {
+        final NonMaxSuppression extractor;
+        final FastHessianFeatureDetector<II> detector;
+        final OrientationIntegral<II> orientation;
+        final DescribePointSurf<II> descriptor;
+
 
         // define the feature detection algorithm
         extractor = FactoryFeatureExtractor.nonmax(new ConfigExtract(2, 0, 5, true));
@@ -70,18 +82,7 @@ public class SURFExtractor<II extends ImageSingleBand>
         orientation = FactoryOrientationAlgs.sliding_ii(null, integralType);
 
         descriptor = FactoryDescribePointAlgs.<II>surfStability(null, integralType);
-    }
 
-    /**
-     * Configured exactly the same as the easy example above, but require a lot more code and a more in depth
-     * understanding of how SURF works and is configured.  Instead of TupleDesc_F64, SurfFeature are computed in
-     * this case.  They are almost the same as TupleDesc_F64, but contain the Laplacian's sign which can be used
-     * to speed up association. That is an example of how using less generalized interfaces can improve performance.
-     *
-     * @param image Input image type. DOES NOT NEED TO BE ImageFloat32, ImageUInt8 works too
-     */
-    public KeypointDescList<ScalePoint, BrightFeature> harder(II image)
-    {
         // compute the integral image of 'image'
         II integral = GeneralizedImageOps.createSingleBand(integralType, image.width, image.height);
         GIntegralImageOps.transform(image, integral);
@@ -123,10 +124,6 @@ public class SURFExtractor<II extends ImageSingleBand>
             Long start = System.currentTimeMillis();
             SURFExtractor.easy(image);
             System.out.println("Finished Easy in " + (System.currentTimeMillis() - start));
-//            start = System.currentTimeMillis();
-//            FeatureExtractor.harder(image);
-//            System.out.println("Finished Harder in " + (System.currentTimeMillis() - start));
-//            System.out.println("Done!");
         }
 
     }
