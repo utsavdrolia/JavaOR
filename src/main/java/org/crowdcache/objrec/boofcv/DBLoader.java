@@ -1,16 +1,15 @@
-package org.crowdcache.objrec;
+package org.crowdcache.objrec.boofcv;
 
 import boofcv.io.image.UtilImageIO;
 import boofcv.struct.feature.BrightFeature;
 import boofcv.struct.feature.ScalePoint;
 import boofcv.struct.feature.TupleDesc;
-import boofcv.struct.image.ImageFloat32;
 import boofcv.struct.image.ImageSingleBand;
+import boofcv.struct.image.ImageUInt8;
 import georegression.struct.point.Point2D_F64;
-import org.crowdcache.objrec.surf.SURFExtractor;
+import org.crowdcache.objrec.boofcv.surf.SURFExtractor;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -161,8 +160,8 @@ public class DBLoader<T extends ImageSingleBand, K extends Point2D_F64, D extend
         {
             String inputFile = args[0];
             Long start = System.currentTimeMillis();
-            SURFExtractor<ImageFloat32> surfextractor = new SURFExtractor<ImageFloat32>(ImageFloat32.class);
-            DBLoader<ImageFloat32, ScalePoint, BrightFeature> dbLoader = new DBLoader<ImageFloat32, ScalePoint, BrightFeature>(ImageFloat32.class, surfextractor);
+            SURFExtractor surfextractor = new SURFExtractor();
+            DBLoader<ImageUInt8, ScalePoint, BrightFeature> dbLoader = new DBLoader<ImageUInt8, ScalePoint, BrightFeature>(ImageUInt8.class, surfextractor);
             HashMap<String, KeypointDescList<ScalePoint, BrightFeature>> map = dbLoader.processDB(inputFile);
             System.out.println("Time:" + (System.currentTimeMillis() - start) + "ms Num:" + map.size());
         }

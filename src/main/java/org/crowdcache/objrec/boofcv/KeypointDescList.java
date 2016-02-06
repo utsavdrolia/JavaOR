@@ -1,4 +1,4 @@
-package org.crowdcache.objrec;
+package org.crowdcache.objrec.boofcv;
 
 /**
  * Created by utsav on 2/3/16.

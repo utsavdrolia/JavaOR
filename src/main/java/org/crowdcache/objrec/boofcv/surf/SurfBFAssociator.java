@@ -1,4 +1,4 @@
-package org.crowdcache.objrec.surf;
+package org.crowdcache.objrec.boofcv.surf;
 
 import boofcv.abst.feature.associate.AssociateDescription;
 import boofcv.abst.feature.associate.ScoreAssociation;
@@ -10,8 +10,8 @@ import boofcv.struct.feature.BrightFeature;
 import boofcv.struct.feature.ScalePoint;
 import boofcv.struct.geo.AssociatedPair;
 import georegression.struct.homography.Homography2D_F64;
-import org.crowdcache.objrec.FeatureAssociator;
-import org.crowdcache.objrec.KeypointDescList;
+import org.crowdcache.objrec.boofcv.FeatureAssociator;
+import org.crowdcache.objrec.boofcv.KeypointDescList;
 import org.ddogleg.fitting.modelset.ModelMatcher;
 import org.ddogleg.struct.FastQueue;
 
@@ -72,12 +72,9 @@ public class SurfBFAssociator implements FeatureAssociator<ScalePoint, BrightFea
         for( int i = 0; i < matches.size(); i++ )
         {
             AssociatedIndex match = matches.get(i);
-//            if(match.fitScore < 0.2)
-//            {
-                ScalePoint a = pointsA.get(match.src);
-                ScalePoint b = pointsB.get(match.dst);
-                pairs.add(new AssociatedPair(a,b,false));
-//            }
+            ScalePoint a = pointsA.get(match.src);
+            ScalePoint b = pointsB.get(match.dst);
+            pairs.add(new AssociatedPair(a,b,false));
         }
         // fit the images using a homography.  This works well for rotations and distant objects.
         ModelMatcher<Homography2D_F64,AssociatedPair> modelMatcher =

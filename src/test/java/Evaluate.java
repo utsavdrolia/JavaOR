@@ -2,12 +2,11 @@ import boofcv.io.image.UtilImageIO;
 import boofcv.struct.feature.BrightFeature;
 import boofcv.struct.feature.ScalePoint;
 import boofcv.struct.image.ImageUInt8;
-import org.crowdcache.objrec.Recognizer;
-import org.crowdcache.objrec.surf.SURFExtractor;
-import org.crowdcache.objrec.surf.SurfBFAssociator;
+import org.crowdcache.objrec.boofcv.Recognizer;
+import org.crowdcache.objrec.boofcv.surf.SURFExtractor;
+import org.crowdcache.objrec.boofcv.surf.SurfBFAssociator;
 
 import java.io.*;
-import java.util.HashMap;
 
 /**
  * Created by utsav on 2/5/16.
@@ -22,7 +21,7 @@ public class Evaluate
             String DBdirpath = args[1];
             String resultspath = args[2];
 
-            SURFExtractor<ImageUInt8> surfExtractor = new SURFExtractor<ImageUInt8>(ImageUInt8.class);
+            SURFExtractor surfExtractor = new SURFExtractor();
             SurfBFAssociator surfBFAssociator = new SurfBFAssociator();
             Recognizer<ImageUInt8, ScalePoint, BrightFeature> recognizer = new Recognizer<ImageUInt8, ScalePoint, BrightFeature>(surfExtractor, surfBFAssociator, DBdirpath, ImageUInt8.class);
 
@@ -47,7 +46,7 @@ public class Evaluate
                 System.out.println("Time:" + (System.currentTimeMillis() - start));
                 line = dir.readLine();
                 count++;
-            }while ((line != null) && (count <= 500));
+            }while ((line != null) && (count <= 5));
             resultsfile.flush();
             resultsfile.close();
         }

@@ -1,4 +1,4 @@
-package org.crowdcache.objrec.surf;
+package org.crowdcache.objrec.boofcv.surf;
 
 import boofcv.abst.feature.detdesc.DetectDescribePoint;
 import boofcv.abst.feature.detect.extract.ConfigExtract;
@@ -17,10 +17,10 @@ import boofcv.io.image.UtilImageIO;
 import boofcv.struct.BoofDefaults;
 import boofcv.struct.feature.BrightFeature;
 import boofcv.struct.feature.ScalePoint;
-import boofcv.struct.image.ImageFloat32;
 import boofcv.struct.image.ImageSingleBand;
-import org.crowdcache.objrec.FeatureExtractor;
-import org.crowdcache.objrec.KeypointDescList;
+import boofcv.struct.image.ImageUInt8;
+import org.crowdcache.objrec.boofcv.FeatureExtractor;
+import org.crowdcache.objrec.boofcv.KeypointDescList;
 import org.ddogleg.struct.FastQueue;
 
 import java.util.List;
@@ -28,34 +28,25 @@ import java.util.List;
 /**
  * Created by utsav on 2/3/16.
  */
-public class SURFExtractor<II extends ImageSingleBand> implements FeatureExtractor<II, ScalePoint, BrightFeature>
+public class SURFExtractor implements FeatureExtractor<ImageUInt8, ScalePoint, BrightFeature>
 {
-
     /**
      * Use generalized interfaces for working with SURF.  This removes much of the drudgery, but also reduces flexibility
      * and slightly increases memory and computational requirements.
      *
      * @param image Input image type. DOES NOT NEED TO BE ImageFloat32, ImageUInt8 works too
      */
-    public static void easy(ImageFloat32 image)
+    public static void easy(ImageUInt8 image)
     {
         // create the detector and descriptors
-        DetectDescribePoint<ImageFloat32, BrightFeature> surf = FactoryDetectDescribe.
-                surfStable(new ConfigFastHessian(0, 2, 200, 2, 9, 4, 4), null, null, ImageFloat32.class);
+        DetectDescribePoint<ImageUInt8, BrightFeature> surf = FactoryDetectDescribe.
+                surfStable(new ConfigFastHessian(0, 2, 200, 2, 9, 4, 4), null, null, ImageUInt8.class);
 
         // specify the image to process
         surf.detect(image);
 
         System.out.println("Found Features: " + surf.getNumberOfFeatures());
         System.out.println("First descriptor's first value: " + surf.getDescription(0).value[0]);
-    }
-
-    final Class<II> integralType;
-
-    public SURFExtractor(Class<II> clazz)
-    {
-        // SURF works off of integral images
-        integralType = GIntegralImageOps.getIntegralType(clazz);
     }
 
     /**
@@ -66,13 +57,13 @@ public class SURFExtractor<II extends ImageSingleBand> implements FeatureExtract
      *
      * @param image Input image type. DOES NOT NEED TO BE ImageFloat32, ImageUInt8 works too
      */
-    public KeypointDescList<ScalePoint, BrightFeature> extract(II image)
+    public <II extends ImageSingleBand> KeypointDescList<ScalePoint, BrightFeature> extract(ImageUInt8 image)
     {
         final NonMaxSuppression extractor;
         final FastHessianFeatureDetector<II> detector;
         final OrientationIntegral<II> orientation;
         final DescribePointSurf<II> descriptor;
-
+        final Class<II> integralType = GIntegralImageOps.getIntegralType(ImageUInt8.class);
 
         // define the feature detection algorithm
         extractor = FactoryFeatureExtractor.nonmax(new ConfigExtract(2, 0, 5, true));
@@ -119,7 +110,7 @@ public class SURFExtractor<II extends ImageSingleBand> implements FeatureExtract
         if (args.length > 0)
         {
             String inputFile = args[0];
-            ImageFloat32 image = UtilImageIO.loadImage(inputFile, ImageFloat32.class);
+            ImageUInt8 image = UtilImageIO.loadImage(inputFile, ImageUInt8.class);
             // run each example
             Long start = System.currentTimeMillis();
             SURFExtractor.easy(image);

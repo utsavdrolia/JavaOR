@@ -1,4 +1,4 @@
-package org.crowdcache.objrec;
+package org.crowdcache.objrec.boofcv;
 
 import boofcv.struct.feature.TupleDesc;
 import georegression.struct.point.Point2D_F64;

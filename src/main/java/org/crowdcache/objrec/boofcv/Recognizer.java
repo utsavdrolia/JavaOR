@@ -1,4 +1,4 @@
-package org.crowdcache.objrec;
+package org.crowdcache.objrec.boofcv;
 
 import boofcv.io.image.UtilImageIO;
 import boofcv.struct.feature.BrightFeature;
@@ -7,8 +7,8 @@ import boofcv.struct.feature.TupleDesc;
 import boofcv.struct.image.ImageSingleBand;
 import boofcv.struct.image.ImageUInt8;
 import georegression.struct.point.Point2D_F64;
-import org.crowdcache.objrec.surf.SURFExtractor;
-import org.crowdcache.objrec.surf.SurfBFAssociator;
+import org.crowdcache.objrec.boofcv.surf.SURFExtractor;
+import org.crowdcache.objrec.boofcv.surf.SurfBFAssociator;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -99,7 +99,7 @@ public class Recognizer<II extends ImageSingleBand, K extends Point2D_F64, D ext
         {
             String queryList = args[0];
             String DBdirpath = args[1];
-            SURFExtractor<ImageUInt8> surfExtractor = new SURFExtractor<ImageUInt8>(ImageUInt8.class);
+            SURFExtractor surfExtractor = new SURFExtractor();
             SurfBFAssociator surfBFAssociator = new SurfBFAssociator();
             Recognizer<ImageUInt8, ScalePoint, BrightFeature> recognizer = new Recognizer<ImageUInt8, ScalePoint, BrightFeature>(surfExtractor, surfBFAssociator, DBdirpath, ImageUInt8.class);
 
