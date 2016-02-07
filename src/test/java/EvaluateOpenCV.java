@@ -1,5 +1,4 @@
-package org.crowdcache.objrec.opencv;
-
+import org.crowdcache.objrec.opencv.Recognizer;
 import org.crowdcache.objrec.opencv.extractors.SURFFeatureExtractor;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2;
 import org.opencv.core.Core;
