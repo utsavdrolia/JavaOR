@@ -105,6 +105,7 @@ public class DBLoader<T extends ImageSingleBand, K extends Point2D_F64, D extend
         HashMap<String, Future<KeypointDescList<K, D>>> futMap = new HashMap<String, Future<KeypointDescList<K, D>>>();
         BufferedReader dir = new BufferedReader(new FileReader(dblistpath));
         HashMap<String, String> paths = new HashMap<String, String>();
+        Long total_KPs = 0l;
 
         String line = dir.readLine();
         do
@@ -139,6 +140,7 @@ public class DBLoader<T extends ImageSingleBand, K extends Point2D_F64, D extend
             try
             {
                 dbMap.put(future.getKey(), future.getValue().get());
+                total_KPs += future.getValue().get().points.size();
             }
             catch (InterruptedException e)
             {
@@ -151,6 +153,7 @@ public class DBLoader<T extends ImageSingleBand, K extends Point2D_F64, D extend
         }
 
         executorService.shutdown();
+        System.out.println("Total KPs:" + total_KPs);
         return dbMap;
     }
 

@@ -11,7 +11,7 @@ import java.io.*;
 /**
  * Created by utsav on 2/5/16.
  */
-public class Evaluate
+public class EvaluateBoofCV
 {
     public static void main(String args[]) throws IOException
     {

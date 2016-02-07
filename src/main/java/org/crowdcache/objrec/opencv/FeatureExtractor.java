@@ -9,9 +9,16 @@ import org.opencv.core.Mat;
 public interface FeatureExtractor
 {
     /**
-     *
-     * @param image
-     * @return The list of keypoints and respective descriptors
+     * Extract features from an image
+     * @param image A {@link Mat} representing the image
+     * @return {@link KeypointDescList} containing the keypoints and descriptors
      */
     KeypointDescList extract(Mat image);
+
+    /**
+     * Extract feature from the image
+     * @param inputFile path to the image
+     * @return
+     */
+    KeypointDescList extract(String inputFile);
 }

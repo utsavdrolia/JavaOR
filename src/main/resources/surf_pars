@@ -1,6 +1,6 @@
 %YAML:1.0
 name: "Feature2D.SURF"
-extended: 1
+extended: 0
 hessianThreshold: 1200.
 nOctaveLayers: 3
 nOctaves: 4
