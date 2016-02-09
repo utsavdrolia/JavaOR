@@ -7,31 +7,30 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfKeyPoint;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.FeatureDetector;
-import org.opencv.features2d.KeyPoint;
 import org.opencv.highgui.Highgui;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 /**
- * Created by utsav on 2/6/16.
+ * Created by utsav on 2/8/16.
  */
-public class SURFFeatureExtractor extends FeatureExtractor
+public class ORB extends FeatureExtractor
 {
+    private FeatureDetector detector;
+    private DescriptorExtractor extractor;
+
+    public ORB()
+    {
+        //Init detector
+        detector = FeatureDetector.create(FeatureDetector.ORB);
+        // Read the settings file for detector
+        detector.write(this.getClass().getClassLoader().getResource("orb_pars").getPath());
+        extractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
+    }
 
     public KeypointDescList extract(Mat image)
     {
         //Keypoints
         MatOfKeyPoint keypoints = new MatOfKeyPoint();
         Mat descriptors = new Mat();
-        //Init detector
-        FeatureDetector detector = FeatureDetector.create(FeatureDetector.SURF);
-        // Read the settings file for detector
-        detector.read(this.getClass().getClassLoader().getResource("surf_pars").getPath());
-        DescriptorExtractor extractor = DescriptorExtractor.create(DescriptorExtractor.SURF);
-        detector.read(this.getClass().getClassLoader().getResource("surf_pars").getPath());
         detector.detect(image, keypoints);
 
         extractor.compute(image, keypoints, descriptors);
@@ -48,9 +47,8 @@ public class SURFFeatureExtractor extends FeatureExtractor
             Mat image = Highgui.imread(inputFile, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
             // run each example
             Long start = System.currentTimeMillis();
-            KeypointDescList points = new SURFFeatureExtractor().extract(image);
+            KeypointDescList points = new ORB().extract(image);
             System.out.println("Time:" + (System.currentTimeMillis() - start) + " Found:" + points.points.size());
         }
-
     }
 }

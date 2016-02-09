@@ -46,7 +46,7 @@ public class EvaluateBoofCV
                 System.out.println("Time:" + (System.currentTimeMillis() - start));
                 line = dir.readLine();
                 count++;
-            }while ((line != null) && (count <= 5));
+            }while ((line != null) && (count < 10));
             resultsfile.flush();
             resultsfile.close();
         }

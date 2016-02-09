@@ -1,5 +1,9 @@
+import org.crowdcache.objrec.opencv.FeatureExtractor;
+import org.crowdcache.objrec.opencv.Matcher;
 import org.crowdcache.objrec.opencv.Recognizer;
+import org.crowdcache.objrec.opencv.extractors.ORB;
 import org.crowdcache.objrec.opencv.extractors.SURFFeatureExtractor;
+import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2;
 import org.opencv.core.Core;
 import org.opencv.highgui.Highgui;
@@ -20,9 +24,9 @@ public class EvaluateOpenCV
             String DBdirpath = args[1];
             String resultspath = args[2];
 
-            SURFFeatureExtractor surfExtractor = new SURFFeatureExtractor();
-            BFMatcher_L2 surfBFAssociator = new BFMatcher_L2();
-            Recognizer recognizer = new Recognizer(surfExtractor, surfBFAssociator, DBdirpath);
+            FeatureExtractor extractor = new ORB();
+            Matcher matcher = new BFMatcher_HAM();
+            Recognizer recognizer = new Recognizer(extractor, matcher, DBdirpath);
 
             BufferedReader dir = new BufferedReader(new FileReader(queryList));
             BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
@@ -45,7 +49,7 @@ public class EvaluateOpenCV
                 System.out.println("Time:" + (System.currentTimeMillis() - start));
                 line = dir.readLine();
                 count++;
-            }while ((line != null) && (count < 5));
+            }while ((line != null) && (count < 1000));
             resultsfile.flush();
             resultsfile.close();
         }

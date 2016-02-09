@@ -1,6 +1,8 @@
 package org.crowdcache.objrec.opencv;
 
+import org.crowdcache.objrec.opencv.extractors.ORB;
 import org.crowdcache.objrec.opencv.extractors.SURFFeatureExtractor;
+import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -17,7 +19,7 @@ import java.util.concurrent.*;
 public class Recognizer
 {
 
-    private static final Double SCORE_THRESH = 0.4;
+    private static final Double SCORE_THRESH = 0.5;
     private final HashMap<String, KeypointDescList> DB;
     private final FeatureExtractor extractor;
     private final ExecutorService executorService;
@@ -75,7 +77,7 @@ public class Recognizer
                     {
                         score = matchscore;
                         ret = future.getKey();
-                        System.out.println("DB Image:" + future.getKey() + " Score:" + matchscore);
+//                        System.out.println("DB Image:" + future.getKey() + " Score:" + matchscore);
                     }
             }
             catch (InterruptedException e)
@@ -99,17 +101,17 @@ public class Recognizer
         {
             String query = args[0];
             String DBdirpath = args[1];
-            SURFFeatureExtractor surfExtractor = new SURFFeatureExtractor();
-            BFMatcher_L2 surfBFAssociator = new BFMatcher_L2();
-            Recognizer recognizer = new Recognizer(surfExtractor, surfBFAssociator, DBdirpath);
+            FeatureExtractor extractor = new ORB();
+            Matcher matcher = new BFMatcher_HAM();
+            Recognizer recognizer = new Recognizer(extractor, matcher, DBdirpath);
 
-
+            Mat img = Highgui.imread(query, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
             Long start = System.currentTimeMillis();
-            String result = recognizer.recognize(Highgui.imread(query, Highgui.CV_LOAD_IMAGE_GRAYSCALE));
+            String result = recognizer.recognize(img);
+            System.out.println("Time:" + (System.currentTimeMillis() - start));
             if(result == null)
                 result = "None";
             System.out.println("Input:" + query + " Matched:" + result);
-            System.out.println("Time:" + (System.currentTimeMillis() - start));
         }
         System.exit(1);
     }

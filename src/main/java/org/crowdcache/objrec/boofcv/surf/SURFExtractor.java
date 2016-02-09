@@ -67,7 +67,7 @@ public class SURFExtractor implements FeatureExtractor<ImageUInt8, ScalePoint, B
 
         // define the feature detection algorithm
         extractor = FactoryFeatureExtractor.nonmax(new ConfigExtract(2, 0, 5, true));
-        detector = new FastHessianFeatureDetector<II>(extractor, 200, 2, 9, 4, 4, 6);
+        detector = new FastHessianFeatureDetector<II>(extractor, 400, 2, 9, 4, 4, 6);
 
         // estimate orientation
         orientation = FactoryOrientationAlgs.sliding_ii(null, integralType);

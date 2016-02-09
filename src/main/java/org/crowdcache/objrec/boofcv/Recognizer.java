@@ -111,5 +111,6 @@ public class Recognizer<II extends ImageSingleBand, K extends Point2D_F64, D ext
             System.out.println("Input:" + queryList + " Matched:" + result);
             System.out.println("Time:" + (System.currentTimeMillis() - start));
         }
+        System.exit(1);
     }
 }

@@ -2,19 +2,24 @@ package org.crowdcache.objrec.boofcv.surf;
 
 import boofcv.abst.feature.associate.AssociateDescription;
 import boofcv.abst.feature.associate.ScoreAssociation;
+import boofcv.alg.descriptor.UtilFeature;
 import boofcv.factory.feature.associate.FactoryAssociation;
 import boofcv.factory.geo.ConfigRansac;
 import boofcv.factory.geo.FactoryMultiViewRobust;
+import boofcv.io.image.UtilImageIO;
 import boofcv.struct.feature.AssociatedIndex;
 import boofcv.struct.feature.BrightFeature;
 import boofcv.struct.feature.ScalePoint;
 import boofcv.struct.geo.AssociatedPair;
+import boofcv.struct.image.ImageUInt8;
 import georegression.struct.homography.Homography2D_F64;
 import org.crowdcache.objrec.boofcv.FeatureAssociator;
 import org.crowdcache.objrec.boofcv.KeypointDescList;
 import org.ddogleg.fitting.modelset.ModelMatcher;
 import org.ddogleg.struct.FastQueue;
+import org.ddogleg.struct.FastQueueList;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -24,15 +29,13 @@ import java.util.concurrent.*;
  */
 public class SurfBFAssociator implements FeatureAssociator<ScalePoint, BrightFeature>
 {
-    private final static Double RATIO_THRESHOLD = 0.6;
-    private final static Integer MATCH_THRESHOLD = 20;
+    private final static Double RATIO_THRESHOLD = 0.5;
+    private final static Integer MATCH_THRESHOLD = 40;
     private final ScoreAssociation<BrightFeature> scorer;
-    ExecutorService executorService;
 
     public SurfBFAssociator()
     {
         this.scorer = FactoryAssociation.scoreEuclidean(BrightFeature.class, true);
-        this.executorService = Executors.newFixedThreadPool(24);
     }
 
     /**
@@ -78,7 +81,7 @@ public class SurfBFAssociator implements FeatureAssociator<ScalePoint, BrightFea
         }
         // fit the images using a homography.  This works well for rotations and distant objects.
         ModelMatcher<Homography2D_F64,AssociatedPair> modelMatcher =
-                FactoryMultiViewRobust.homographyRansac(null, new ConfigRansac(100, pairs.size()));
+                FactoryMultiViewRobust.homographyRansac(null, new ConfigRansac(100, RATIO_THRESHOLD * pairs.size()));
 
         if(modelMatcher.process(pairs))
         {
@@ -91,6 +94,24 @@ public class SurfBFAssociator implements FeatureAssociator<ScalePoint, BrightFea
                 return Double.MIN_VALUE;
         }
         else return Double.MIN_VALUE;
+    }
+
+    public static void main(String args[]) throws IOException
+    {
+        if (args.length == 2)
+        {
+            String queryList = args[0];
+            String DBdirpath = args[1];
+            ImageUInt8 qimage = UtilImageIO.loadImage(queryList, ImageUInt8.class);
+            ImageUInt8 timage = UtilImageIO.loadImage(DBdirpath, ImageUInt8.class);
+            KeypointDescList<ScalePoint, BrightFeature> qpoints = new SURFExtractor().extract(qimage);
+
+            Long start = System.currentTimeMillis();
+            KeypointDescList<ScalePoint, BrightFeature> tpoints = new SURFExtractor().extract(timage);
+            Double result = new SurfBFAssociator().associate(qpoints, tpoints);
+            System.out.println("Time:" + (System.currentTimeMillis() - start) + " Score:" + result);
+        }
+        System.exit(1);
     }
 
 }

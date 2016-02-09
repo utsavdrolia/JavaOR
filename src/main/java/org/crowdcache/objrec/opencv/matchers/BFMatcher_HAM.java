@@ -2,10 +2,10 @@ package org.crowdcache.objrec.opencv.matchers;
 
 import org.crowdcache.objrec.opencv.KeypointDescList;
 import org.crowdcache.objrec.opencv.Matcher;
-import org.crowdcache.objrec.opencv.extractors.SURFFeatureExtractor;
+import org.crowdcache.objrec.opencv.extractors.ORB;
+import org.opencv.calib3d.Calib3d;
 import org.opencv.core.*;
 import org.opencv.features2d.DMatch;
-import org.opencv.calib3d.Calib3d;
 import org.opencv.features2d.DescriptorMatcher;
 import org.opencv.highgui.Highgui;
 
@@ -17,20 +17,30 @@ import java.util.List;
 /**
  * Created by utsav on 2/6/16.
  */
-public class BFMatcher_L2 implements Matcher
+public class BFMatcher_HAM implements Matcher
 {
-    private static final int NUM_MATCHES_THRESH = 50;
+    private static final int NUM_MATCHES_THRESH = 30;
 
     public Double match(KeypointDescList dbImage, KeypointDescList sceneImage)
     {
         MatOfDMatch matches = new MatOfDMatch();
+//        List<MatOfDMatch> matches = new ArrayList<MatOfDMatch>();
         List<DMatch> good_matches;
+//        List<DMatch> good_matches = new ArrayList<DMatch>();
         List<Point> good_dbkp = new ArrayList<Point>();
         List<Point> good_scenekp = new ArrayList<Point>();
-        DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_SL2);
+        DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
         matcher.match(dbImage.descriptions, sceneImage.descriptions, matches);
+//        matcher.knnMatch(dbImage.descriptions, sceneImage.descriptions, matches, 2);
         Mat inliers = new Mat();
         good_matches = matches.toList();
+        Collections.sort(good_matches, new Comparator<DMatch>()
+        {
+            public int compare(DMatch o1, DMatch o2)
+            {
+                return (int) (o1.distance - o2.distance);
+            }
+        });
 //        for(MatOfDMatch dmatch: matches)
 //        {
 //            DMatch[] arr = dmatch.toArray();
@@ -39,13 +49,7 @@ public class BFMatcher_L2 implements Matcher
 //            if(m.distance < 0.6*n.distance)
 //                good_matches.add(m);
 //        }
-        Collections.sort(good_matches, new Comparator<DMatch>()
-        {
-            public int compare(DMatch o1, DMatch o2)
-            {
-                return (int) (o1.distance - o2.distance);
-            }
-        });
+
         if(good_matches.size() > NUM_MATCHES_THRESH)
         {
             List<DMatch> best_matches = good_matches.subList(0, NUM_MATCHES_THRESH);
@@ -61,14 +65,14 @@ public class BFMatcher_L2 implements Matcher
             MatOfPoint2f good_scenepoints = new MatOfPoint2f();
             good_scenepoints.fromList(good_scenekp);
 
-            Calib3d.findHomography(good_dbpoints, good_scenepoints, Calib3d.RANSAC, 30.0, inliers);
+            Calib3d.findHomography(good_dbpoints, good_scenepoints, Calib3d.RANSAC, 5.0, inliers);
 //            System.out.println("Good Matches:" + good_matches.size() + " Inliers:" + Core.sumElems(inliers).val[0]);
             return Core.sumElems(inliers).val[0]/best_matches.size();
         }
-
         return 0.0;
-
     }
+
+
 
     public static void main(String args[])
     {
@@ -79,13 +83,13 @@ public class BFMatcher_L2 implements Matcher
             String trainFile = args[1];
             Mat qimage = Highgui.imread(queryFile, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
             Mat timage = Highgui.imread(trainFile, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-            // run each example
-            KeypointDescList qpoints = new SURFFeatureExtractor().extract(qimage);
-            KeypointDescList tpoints = new SURFFeatureExtractor().extract(timage);
+            KeypointDescList qpoints = new ORB().extract(qimage);
+
             Long start = System.currentTimeMillis();
-            Double matches = new BFMatcher_L2().match(qpoints, tpoints);
+            KeypointDescList tpoints = new ORB().extract(timage);
+            Double matches = new BFMatcher_HAM().match(qpoints, tpoints);
             System.out.println("Time:" + (System.currentTimeMillis() - start) + " Score:" + matches);
         }
-
+        System.exit(1);
     }
 }
