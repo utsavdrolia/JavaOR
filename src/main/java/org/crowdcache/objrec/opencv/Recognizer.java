@@ -6,6 +6,7 @@ import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
 import org.opencv.highgui.Highgui;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class Recognizer
 {
 
     private static final Double SCORE_THRESH = 0.5;
-    private final HashMap<String, KeypointDescList> DB;
+    private final Map<String, KeypointDescList> DB;
     private final FeatureExtractor extractor;
     private final ExecutorService executorService;
     private final Matcher matcher;
@@ -39,6 +40,14 @@ public class Recognizer
         this.executorService = Executors.newFixedThreadPool(24);
     }
 
+    public Recognizer(FeatureExtractor extractor, Matcher matcher, Map<String, KeypointDescList> db)
+    {
+        this.extractor = extractor;
+        this.matcher = matcher;
+        this.DB = db;
+        this.executorService = Executors.newFixedThreadPool(24);
+    }
+
     /**
      * Extract features from image, match against all of the images in the DB.
      * @param image Input image
@@ -46,14 +55,63 @@ public class Recognizer
      */
     public String recognize(Mat image)
     {
-        String ret = null;
-        Double score = Double.MIN_VALUE;
-        HashMap<String, Future<Double>> matches = new HashMap<String, Future<Double>>();
-
         //-- Extract input image KP and Desc --
         final KeypointDescList inputKDlist = this.extractor.extract(image);
         //--
 
+        return recognize(inputKDlist);
+    }
+
+    /**
+     * Convert byte[] to image. Extract features from image, match against all of the images in the DB.
+     * @param data
+     */
+    public String recognize(byte[] data)
+    {
+        Mat image = Highgui.imdecode(new MatOfByte(data), Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+        return recognize(image);
+    }
+
+
+    /**
+     * match features against all of the images in the DB.
+     * @param inputKDlist
+     * @return
+     */
+    public String recognize(KeypointDescList inputKDlist)
+    {
+        String ret = "None";
+        Double score = Double.MIN_VALUE;
+        Map<String, Double> matchResults = parallelMatch(inputKDlist);
+
+        for(Map.Entry<String, Double> future:matchResults.entrySet())
+        {
+            Double matchscore = future.getValue();
+//          System.out.println("DB Image:" + future.getKey() + " Score:" + matchscore);
+            if(matchscore > SCORE_THRESH)
+            {
+                if (matchscore > score)
+                {
+                    score = matchscore;
+                    ret = future.getKey();
+//                  System.out.println("DB Image:" + future.getKey() + " Score:" + matchscore);
+                }
+            }
+        }
+        //--
+
+        return ret;
+    }
+
+    /**
+     * Match input list to all known lists
+     * @param inputKDlist
+     * @return
+     */
+    public Map<String, Double> parallelMatch(final KeypointDescList inputKDlist)
+    {
+        HashMap<String, Future<Double>> matches = new HashMap<String, Future<Double>>(DB.size(), 1.0f);
+        HashMap<String, Double> result = new HashMap<String, Double>(DB.size(), 1.0f);
         //-- Match against all DB --
         for(final Map.Entry<String, KeypointDescList> entry : DB.entrySet())
         {
@@ -71,14 +129,7 @@ public class Recognizer
             try
             {
                 Double matchscore = future.getValue().get();
-//                System.out.println("DB Image:" + future.getKey() + " Score:" + matchscore);
-                if(matchscore > SCORE_THRESH)
-                    if (matchscore > score)
-                    {
-                        score = matchscore;
-                        ret = future.getKey();
-//                        System.out.println("DB Image:" + future.getKey() + " Score:" + matchscore);
-                    }
+                result.put(future.getKey(), matchscore);
             }
             catch (InterruptedException e)
             {
@@ -89,9 +140,8 @@ public class Recognizer
                 e.printStackTrace();
             }
         }
-        //--
 
-        return ret;
+        return result;
     }
 
     public static void main(String args[]) throws IOException
@@ -115,4 +165,5 @@ public class Recognizer
         }
         System.exit(1);
     }
+
 }

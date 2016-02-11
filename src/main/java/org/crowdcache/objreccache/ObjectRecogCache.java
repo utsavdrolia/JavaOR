@@ -1,5 +1,6 @@
-package org.crowdcache.approxcache.objreccache;
+package org.crowdcache.objreccache;
 
+import org.crowdcache.approxcache.LRUCache;
 import org.crowdcache.objrec.opencv.KeypointDescList;
 import org.crowdcache.objrec.opencv.Matcher;
 import org.crowdcache.objrec.opencv.Recognizer;

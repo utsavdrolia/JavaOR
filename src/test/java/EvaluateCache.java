@@ -1,20 +1,19 @@
+import org.crowdcache.approxcache.Cache;
+import org.crowdcache.objreccache.ObjectRecogCache;
 import org.crowdcache.objrec.opencv.FeatureExtractor;
+import org.crowdcache.objrec.opencv.KeypointDescList;
 import org.crowdcache.objrec.opencv.Matcher;
 import org.crowdcache.objrec.opencv.Recognizer;
-import org.crowdcache.objrec.opencv.extractors.BRISK;
 import org.crowdcache.objrec.opencv.extractors.ORB;
-import org.crowdcache.objrec.opencv.extractors.SURFFeatureExtractor;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
-import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2;
 import org.opencv.core.Core;
-import org.opencv.highgui.Highgui;
 
 import java.io.*;
 
 /**
  * Created by utsav on 2/5/16.
  */
-public class EvaluateOpenCV
+public class EvaluateCache
 {
     public static void main(String args[]) throws IOException
     {
@@ -25,9 +24,10 @@ public class EvaluateOpenCV
             String DBdirpath = args[1];
             String resultspath = args[2];
 
-            FeatureExtractor extractor = new BRISK();
+            FeatureExtractor extractor = new ORB();
             Matcher matcher = new BFMatcher_HAM();
             Recognizer recognizer = new Recognizer(extractor, matcher, DBdirpath);
+            ObjectRecogCache cache = new ObjectRecogCache(10, matcher);
 
             BufferedReader dir = new BufferedReader(new FileReader(queryList));
             BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
@@ -39,15 +39,27 @@ public class EvaluateOpenCV
                 String[] chunks = line.split(",");
                 String img = chunks[0];
                 String imgpath = chunks[1];
-
                 Long start = System.currentTimeMillis();
-                String result = recognizer.recognize(Highgui.imread(imgpath, Highgui.CV_LOAD_IMAGE_GRAYSCALE));
+                String result;
+
+                KeypointDescList input = extractor.extract(imgpath);
+
+                Cache.Result<String> res = cache.get(input);
+                if(res.confidence < 0.7)
+                {
+                    result = recognizer.recognize(input);
+                    if (result == null)
+                        result = "None";
+                    else
+                        cache.put(input, result);
+                }
+                else
+                    result = res.value;
                 Long end = System.currentTimeMillis();
-                if(result == null)
-                    result = "None";
+
                 resultsfile.write(img + "," + result + "," + Long.toString(end - start) + "\n");
                 System.out.println("Input:" + imgpath + " Matched:" + result);
-                System.out.println("Time:" + (end - start));
+                System.out.println("Time:" + (System.currentTimeMillis() - start));
                 line = dir.readLine();
                 count++;
             }while ((line != null));

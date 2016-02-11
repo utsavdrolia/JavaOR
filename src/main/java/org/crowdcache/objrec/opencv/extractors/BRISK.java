@@ -12,18 +12,19 @@ import org.opencv.highgui.Highgui;
 /**
  * Created by utsav on 2/8/16.
  */
-public class ORB extends FeatureExtractor
+public class BRISK extends FeatureExtractor
 {
     private FeatureDetector detector;
     private DescriptorExtractor extractor;
 
-    public ORB()
+    public BRISK()
     {
         //Init detector
         detector = FeatureDetector.create(FeatureDetector.ORB);
         // Read the settings file for detector
-        detector.read(this.getClass().getClassLoader().getResource("orb_pars").getPath());
-        extractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
+
+        extractor = DescriptorExtractor.create(DescriptorExtractor.BRISK);
+//        detector.read("freak_pars");
     }
 
     public KeypointDescList extract(Mat image)
@@ -47,7 +48,7 @@ public class ORB extends FeatureExtractor
             Mat image = Highgui.imread(inputFile, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
             // run each example
             Long start = System.currentTimeMillis();
-            KeypointDescList points = new ORB().extract(image);
+            KeypointDescList points = new BRISK().extract(image);
             System.out.println("Time:" + (System.currentTimeMillis() - start) + " Found:" + points.points.size());
         }
     }

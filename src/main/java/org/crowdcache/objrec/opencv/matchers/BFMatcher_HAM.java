@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class BFMatcher_HAM implements Matcher
 {
-    private static final int NUM_MATCHES_THRESH = 30;
+    private static final int NUM_MATCHES_THRESH = 20;
 
     public Double match(KeypointDescList dbImage, KeypointDescList sceneImage)
     {
