@@ -26,6 +26,15 @@ public class ORB extends FeatureExtractor
         extractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
     }
 
+    public ORB(String pars)
+    {
+        //Init detector
+        detector = FeatureDetector.create(FeatureDetector.ORB);
+        // Read the settings file for detector
+        detector.read(this.getClass().getClassLoader().getResource(pars).getPath());
+        extractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
+    }
+
     public KeypointDescList extract(Mat image)
     {
         //Keypoints
