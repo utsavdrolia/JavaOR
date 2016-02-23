@@ -1,4 +1,4 @@
-import org.crowdcache.approxcache.Cache;
+import org.crowdcache.Cache;
 import org.crowdcache.objreccache.ObjectRecogCache;
 import org.crowdcache.objrec.opencv.FeatureExtractor;
 import org.crowdcache.objrec.opencv.KeypointDescList;
@@ -6,6 +6,7 @@ import org.crowdcache.objrec.opencv.Matcher;
 import org.crowdcache.objrec.opencv.Recognizer;
 import org.crowdcache.objrec.opencv.extractors.ORB;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
+import org.crowdcache.objreccache.ObjectRecogCacheNB;
 import org.opencv.core.Core;
 
 import java.io.*;
@@ -27,37 +28,39 @@ public class EvaluateCache
             FeatureExtractor extractor = new ORB();
             Matcher matcher = new BFMatcher_HAM();
             Recognizer recognizer = new Recognizer(extractor, matcher, DBdirpath);
-            ObjectRecogCache cache = new ObjectRecogCache(10, matcher);
+            ObjectRecogCache cache = new ObjectRecogCache(16);
 
             BufferedReader dir = new BufferedReader(new FileReader(queryList));
             BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
-
+            Byte cachehit = 0;
             Integer count = 0;
             String line = dir.readLine();
             do
             {
+                cachehit = 0;
                 String[] chunks = line.split(",");
                 String img = chunks[0];
                 String imgpath = chunks[1];
                 Long start = System.currentTimeMillis();
                 String result;
 
-                KeypointDescList input = extractor.extract(imgpath);
-
-                Cache.Result<String> res = cache.get(input);
-                if(res.confidence < 0.7)
+                Cache.Result<String> res = cache.get(imgpath);
+                System.out.println("Confidence:" + res.confidence);
+                if(res.confidence > 67 )
                 {
+                    KeypointDescList input = extractor.extract(imgpath);
                     result = recognizer.recognize(input);
-                    if (result == null)
-                        result = "None";
-                    else
-                        cache.put(input, result);
+                    if (!result.equals("None"))
+                        cache.put(imgpath, result);
                 }
                 else
+                {
                     result = res.value;
+                    cachehit = 1;
+                }
                 Long end = System.currentTimeMillis();
 
-                resultsfile.write(img + "," + result + "," + Long.toString(end - start) + "\n");
+                resultsfile.write(img + "," + result + "," + Long.toString(end - start) + "," + cachehit + "\n");
                 System.out.println("Input:" + imgpath + " Matched:" + result);
                 System.out.println("Time:" + (System.currentTimeMillis() - start));
                 line = dir.readLine();
