@@ -19,7 +19,17 @@ import java.util.List;
  */
 public class BFMatcher_HAM implements Matcher
 {
-    private static final int NUM_MATCHES_THRESH = 20;
+    DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
+    private int NUM_MATCHES_THRESH = 20;
+
+    public BFMatcher_HAM()
+    {
+    }
+
+    public BFMatcher_HAM(int thresh)
+    {
+        NUM_MATCHES_THRESH = thresh;
+    }
 
     public Double match(KeypointDescList dbImage, KeypointDescList sceneImage)
     {
@@ -29,7 +39,7 @@ public class BFMatcher_HAM implements Matcher
 //        List<DMatch> good_matches = new ArrayList<DMatch>();
         List<Point> good_dbkp = new ArrayList<Point>();
         List<Point> good_scenekp = new ArrayList<Point>();
-        DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
+
         matcher.match(dbImage.descriptions, sceneImage.descriptions, matches);
 //        matcher.knnMatch(dbImage.descriptions, sceneImage.descriptions, matches, 2);
         Mat inliers = new Mat();
