@@ -22,7 +22,7 @@ public class BRISK extends FeatureExtractor
         //Init detector
         detector = FeatureDetector.create(FeatureDetector.ORB);
         // Read the settings file for detector
-
+        detector.read(this.getClass().getClassLoader().getResource("orbcache_pars").getPath());
         extractor = DescriptorExtractor.create(DescriptorExtractor.BRISK);
 //        detector.read("freak_pars");
     }
