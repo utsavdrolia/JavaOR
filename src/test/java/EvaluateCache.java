@@ -28,7 +28,7 @@ public class EvaluateCache
             FeatureExtractor extractor = new ORB();
             Matcher matcher = new BFMatcher_HAM();
             Recognizer recognizer = new Recognizer(extractor, matcher, DBdirpath);
-            ObjectRecogCache cache = new ObjectRecogCache(16);
+            ObjectRecogCache cache = new ObjectRecogCache(50);
 
             BufferedReader dir = new BufferedReader(new FileReader(queryList));
             BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
@@ -46,7 +46,7 @@ public class EvaluateCache
 
                 Cache.Result<String> res = cache.get(imgpath);
                 System.out.println("Confidence:" + res.confidence);
-                if(res.confidence > 67 )
+                if(res.confidence > 70 )
                 {
                     KeypointDescList input = extractor.extract(imgpath);
                     result = recognizer.recognize(input);

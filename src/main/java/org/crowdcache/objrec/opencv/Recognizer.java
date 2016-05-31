@@ -25,7 +25,7 @@ public class Recognizer
     private final FeatureExtractor extractor;
     private final ExecutorService executorService;
     private final Matcher matcher;
-
+    private final int THREADS=12;
     /**
      * Loads the DB in memory so that it can be queried repeatedly using the recognize function
      * @param extractor Which {@link FeatureExtractor to use}
@@ -37,7 +37,7 @@ public class Recognizer
         this.extractor = extractor;
         this.matcher = matcher;
         this.DB = DBLoader.processDB(dblistpath, extractor);
-        this.executorService = Executors.newFixedThreadPool(24);
+        this.executorService = Executors.newFixedThreadPool(THREADS);
     }
 
     public Recognizer(FeatureExtractor extractor, Matcher matcher, Map<String, KeypointDescList> db)
@@ -45,7 +45,7 @@ public class Recognizer
         this.extractor = extractor;
         this.matcher = matcher;
         this.DB = db;
-        this.executorService = Executors.newFixedThreadPool(24);
+        this.executorService = Executors.newFixedThreadPool(THREADS);
     }
 
     /**

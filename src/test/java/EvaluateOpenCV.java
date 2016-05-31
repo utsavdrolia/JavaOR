@@ -25,7 +25,7 @@ public class EvaluateOpenCV
             String DBdirpath = args[1];
             String resultspath = args[2];
 
-            FeatureExtractor extractor = new BRISK();
+            FeatureExtractor extractor = new ORB();
             Matcher matcher = new BFMatcher_HAM();
             Recognizer recognizer = new Recognizer(extractor, matcher, DBdirpath);
 
@@ -34,6 +34,7 @@ public class EvaluateOpenCV
 
             Integer count = 0;
             String line = dir.readLine();
+            Long procstart = System.currentTimeMillis();
             do
             {
                 String[] chunks = line.split(",");
@@ -45,12 +46,14 @@ public class EvaluateOpenCV
                 Long end = System.currentTimeMillis();
                 if(result == null)
                     result = "None";
-                resultsfile.write(img + "," + result + "," + Long.toString(end - start) + "\n");
+//                resultsfile.write(img + "," + result + "," + Long.toString(end - start) + "\n");
                 System.out.println("Input:" + imgpath + " Matched:" + result);
                 System.out.println("Time:" + (end - start));
                 line = dir.readLine();
                 count++;
             }while ((line != null));
+            Long procend = System.currentTimeMillis() - procstart;
+            System.out.println("Time:" + procend + " Count:" + count);
             resultsfile.flush();
             resultsfile.close();
         }

@@ -67,7 +67,6 @@ public class ObjectRecogCache implements Cache<KeypointDescList, String>
 
     /**
      * Match input list to all known lists
-     *
      * @param inputKDlist
      * @return
      */
