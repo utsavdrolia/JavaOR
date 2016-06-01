@@ -1,9 +1,7 @@
 package org.crowdcache.objrec.opencv;
 
 import org.crowdcache.objrec.opencv.extractors.ORB;
-import org.crowdcache.objrec.opencv.extractors.SURFFeatureExtractor;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
-import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -20,12 +18,12 @@ import java.util.concurrent.*;
 public class Recognizer
 {
 
-    private static final Double SCORE_THRESH = 0.5;
+    private static final Double SCORE_THRESH = 0.6;
     private final Map<String, KeypointDescList> DB;
     private final FeatureExtractor extractor;
     private final ExecutorService executorService;
     private final Matcher matcher;
-    private final int THREADS=12;
+    private final int THREADS=8;
     /**
      * Loads the DB in memory so that it can be queried repeatedly using the recognize function
      * @param extractor Which {@link FeatureExtractor to use}
@@ -81,19 +79,23 @@ public class Recognizer
     public String recognize(KeypointDescList inputKDlist)
     {
         String ret = "None";
+        // Check if enough features present
+        if(inputKDlist.descriptions.rows() < 5)
+            return ret;
+
         Double score = Double.MIN_VALUE;
         Map<String, Double> matchResults = parallelMatch(inputKDlist);
 
-        for(Map.Entry<String, Double> future:matchResults.entrySet())
+        for(Map.Entry<String, Double> result:matchResults.entrySet())
         {
-            Double matchscore = future.getValue();
-//          System.out.println("DB Image:" + future.getKey() + " Score:" + matchscore);
+            Double matchscore = result.getValue();
+          //System.out.println("DB Image:" + result.getKey() + " Score:" + matchscore);
             if(matchscore > SCORE_THRESH)
             {
                 if (matchscore > score)
                 {
                     score = matchscore;
-                    ret = future.getKey();
+                    ret = result.getKey();
 //                  System.out.println("DB Image:" + future.getKey() + " Score:" + matchscore);
                 }
             }
@@ -131,13 +133,10 @@ public class Recognizer
                 Double matchscore = future.getValue().get();
                 result.put(future.getKey(), matchscore);
             }
-            catch (InterruptedException e)
+            catch (InterruptedException | ExecutionException e)
             {
                 e.printStackTrace();
-            }
-            catch (ExecutionException e)
-            {
-                e.printStackTrace();
+                System.out.println("Error in " + future.getKey());
             }
         }
 

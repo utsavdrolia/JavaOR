@@ -5,6 +5,7 @@ import org.crowdcache.objrec.opencv.extractors.BRISK;
 import org.crowdcache.objrec.opencv.extractors.ORB;
 import org.crowdcache.objrec.opencv.extractors.SURFFeatureExtractor;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
+import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM2;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2;
 import org.opencv.core.Core;
 import org.opencv.highgui.Highgui;
@@ -46,7 +47,7 @@ public class EvaluateOpenCV
                 Long end = System.currentTimeMillis();
                 if(result == null)
                     result = "None";
-//                resultsfile.write(img + "," + result + "," + Long.toString(end - start) + "\n");
+                resultsfile.write(img + "," + result + "," + Long.toString(end - start) + "\n");
                 System.out.println("Input:" + imgpath + " Matched:" + result);
                 System.out.println("Time:" + (end - start));
                 line = dir.readLine();

@@ -16,11 +16,12 @@ import java.util.List;
 
 /**
  * Created by utsav on 2/6/16.
+ * Uses Hamming distance, Brute Force Matcher, Lowe's Distance ratio test, and Homography verification
  */
 public class BFMatcher_HAM implements Matcher
 {
     DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
-    private int NUM_MATCHES_THRESH = 20;
+    private int NUM_MATCHES_THRESH = 10;
 
     public BFMatcher_HAM()
     {
@@ -33,36 +34,42 @@ public class BFMatcher_HAM implements Matcher
 
     public Double match(KeypointDescList dbImage, KeypointDescList sceneImage)
     {
-        MatOfDMatch matches = new MatOfDMatch();
-//        List<MatOfDMatch> matches = new ArrayList<MatOfDMatch>();
-        List<DMatch> good_matches;
-//        List<DMatch> good_matches = new ArrayList<DMatch>();
+//        MatOfDMatch matches = new MatOfDMatch();
+//        List<DMatch> good_matches;
+        List<MatOfDMatch> matches = new ArrayList<MatOfDMatch>();
+        List<DMatch> good_matches = new ArrayList<DMatch>();
         List<Point> good_dbkp = new ArrayList<Point>();
         List<Point> good_scenekp = new ArrayList<Point>();
-
-        matcher.match(dbImage.descriptions, sceneImage.descriptions, matches);
-//        matcher.knnMatch(dbImage.descriptions, sceneImage.descriptions, matches, 2);
         Mat inliers = new Mat();
-        good_matches = matches.toList();
-        Collections.sort(good_matches, new Comparator<DMatch>()
-        {
-            public int compare(DMatch o1, DMatch o2)
-            {
-                return (int) (o1.distance - o2.distance);
-            }
-        });
-//        for(MatOfDMatch dmatch: matches)
-//        {
-//            DMatch[] arr = dmatch.toArray();
-//            DMatch m = arr[0];
-//            DMatch n = arr[1];
-//            if(m.distance < 0.6*n.distance)
-//                good_matches.add(m);
-//        }
 
+//        matcher.match(dbImage.descriptions, sceneImage.descriptions, matches);
+//        good_matches = matches.toList();
+
+        matcher.knnMatch(dbImage.descriptions, sceneImage.descriptions, matches, 2);
+
+        // Ratio test
+        for(MatOfDMatch dmatch: matches)
+        {
+            DMatch[] arr = dmatch.toArray();
+            DMatch m = arr[0];
+            DMatch n = arr[1];
+            if(m.distance < 0.7*n.distance)
+                good_matches.add(m);
+        }
+
+//        Collections.sort(good_matches, new Comparator<DMatch>()
+//        {
+//            public int compare(DMatch o1, DMatch o2)
+//            {
+//                return (int) (o1.distance - o2.distance);
+//            }
+//        });
+
+        // Minimum number of good matches and homography verification
         if(good_matches.size() > NUM_MATCHES_THRESH)
         {
-            List<DMatch> best_matches = good_matches.subList(0, NUM_MATCHES_THRESH);
+//            List<DMatch> best_matches = good_matches.subList(0, NUM_MATCHES_THRESH);
+            List<DMatch> best_matches = good_matches;
             for(DMatch match:best_matches)
             {
                 good_dbkp.add(dbImage.points.get(match.queryIdx).pt);
