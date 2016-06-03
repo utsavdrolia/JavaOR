@@ -87,6 +87,10 @@ public class BFMatcher_HAM2 implements Matcher
         return total/good_matches.size();
     }
 
+    @Override
+    public Matcher newMatcher() {
+        return new BFMatcher_HAM2();
+    }
 
 
     public static void main(String args[])

@@ -77,6 +77,8 @@ public class DBLoader
         }
 
         executorService.shutdown();
+        futMap = null;
+        paths = null;
         System.out.println("Total KPs:" + total_KPs);
         return dbMap;
     }

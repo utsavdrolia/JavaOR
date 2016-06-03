@@ -45,6 +45,11 @@ public class HistMatcher implements Matcher
         return Imgproc.compareHist(db, scene, Imgproc.CV_COMP_BHATTACHARYYA);
     }
 
+    @Override
+    public Matcher newMatcher() {
+        return new HistMatcher();
+    }
+
     public static void main(String args[])
     {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);

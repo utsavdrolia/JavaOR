@@ -24,7 +24,10 @@ public abstract class FeatureExtractor
      */
     public KeypointDescList extract(String inputFile)
     {
-        return extract(Highgui.imread(inputFile, Highgui.CV_LOAD_IMAGE_GRAYSCALE));
+        Mat m = Highgui.imread(inputFile, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+        KeypointDescList kd = extract(m);
+        m.release();
+        return kd;
     }
 
     /**
@@ -34,6 +37,9 @@ public abstract class FeatureExtractor
      */
     public KeypointDescList extract(byte[] data)
     {
-        return extract(Highgui.imdecode(new MatOfByte(data), Highgui.CV_LOAD_IMAGE_GRAYSCALE));
+        Mat m = Highgui.imdecode(new MatOfByte(data), Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+        KeypointDescList kd = extract(m);
+        m.release();
+        return kd;
     }
 }

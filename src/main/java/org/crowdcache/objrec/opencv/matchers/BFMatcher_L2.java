@@ -70,6 +70,11 @@ public class BFMatcher_L2 implements Matcher
 
     }
 
+    @Override
+    public Matcher newMatcher() {
+        return new BFMatcher_L2();
+    }
+
     public static void main(String args[])
     {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);

@@ -34,13 +34,15 @@ public class BFMatcher_HAM implements Matcher
 
     public Double match(KeypointDescList dbImage, KeypointDescList sceneImage)
     {
+
+        List<MatOfDMatch> matches = new ArrayList<>();
+        List<DMatch> good_matches = new ArrayList<>();
+        List<Point> good_dbkp = new ArrayList<>();
+        List<Point> good_scenekp = new ArrayList<>();
+        Mat inliers = new Mat();
+        Double ret = 0.0;
 //        MatOfDMatch matches = new MatOfDMatch();
 //        List<DMatch> good_matches;
-        List<MatOfDMatch> matches = new ArrayList<MatOfDMatch>();
-        List<DMatch> good_matches = new ArrayList<DMatch>();
-        List<Point> good_dbkp = new ArrayList<Point>();
-        List<Point> good_scenekp = new ArrayList<Point>();
-        Mat inliers = new Mat();
 
 //        matcher.match(dbImage.descriptions, sceneImage.descriptions, matches);
 //        good_matches = matches.toList();
@@ -53,6 +55,8 @@ public class BFMatcher_HAM implements Matcher
             DMatch[] arr = dmatch.toArray();
             DMatch m = arr[0];
             DMatch n = arr[1];
+            // Release of the MatOfDMatch
+            dmatch.release();
             if(m.distance < 0.7*n.distance)
                 good_matches.add(m);
         }
@@ -69,8 +73,7 @@ public class BFMatcher_HAM implements Matcher
         if(good_matches.size() > NUM_MATCHES_THRESH)
         {
 //            List<DMatch> best_matches = good_matches.subList(0, NUM_MATCHES_THRESH);
-            List<DMatch> best_matches = good_matches;
-            for(DMatch match:best_matches)
+            for(DMatch match: good_matches)
             {
                 good_dbkp.add(dbImage.points.get(match.queryIdx).pt);
                 good_scenekp.add(sceneImage.points.get(match.trainIdx).pt);
@@ -84,11 +87,25 @@ public class BFMatcher_HAM implements Matcher
 
             Calib3d.findHomography(good_dbpoints, good_scenepoints, Calib3d.RANSAC, 5.0, inliers);
 //            System.out.println("Good Matches:" + good_matches.size() + " Inliers:" + Core.sumElems(inliers).val[0]);
-            return Core.sumElems(inliers).val[0]/best_matches.size();
+            ret = Core.sumElems(inliers).val[0]/ good_matches.size();
+
+            good_dbpoints.release();
+            good_scenepoints.release();
         }
-        return 0.0;
+
+        matches.clear(); matches = null;
+        good_matches.clear(); good_matches = null;
+        good_dbkp.clear(); good_dbkp = null;
+        good_scenekp.clear(); good_scenekp = null;
+        inliers.release(); inliers = null;
+        return ret;
     }
 
+    @Override
+    public Matcher newMatcher()
+    {
+        return new BFMatcher_HAM();
+    }
 
 
     public static void main(String args[])

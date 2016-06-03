@@ -25,6 +25,7 @@ public class KeypointDescList
     public KeypointDescList(MatOfKeyPoint points, Mat descriptions)
     {
         this.points = points.toList();
+        points.release();
         this.descriptions = descriptions;
     }
 }

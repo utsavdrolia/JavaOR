@@ -12,4 +12,5 @@ public interface Matcher
      * @return
      */
     Double match(KeypointDescList dbImage, KeypointDescList sceneImage);
+    Matcher newMatcher();
 }

@@ -85,6 +85,11 @@ public class LSHMatcher_HAM implements Matcher
         return 0.0;
     }
 
+    @Override
+    public Matcher newMatcher() {
+        return new LSHMatcher_HAM();
+    }
+
 
     public static void main(String args[])
     {

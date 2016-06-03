@@ -21,29 +21,33 @@ public class Recognizer
     private static final Double SCORE_THRESH = 0.6;
     private final Map<String, KeypointDescList> DB;
     private final FeatureExtractor extractor;
-    private final ExecutorService executorService;
     private final Matcher matcher;
-    private final int THREADS=8;
+
+    private final int THREADS=2;
+
+    // Data structures used multiple times
+    private HashMap<String, Future<Double>> matches;
+    private HashMap<String, Double> result;
     /**
      * Loads the DB in memory so that it can be queried repeatedly using the recognize function
      * @param extractor Which {@link FeatureExtractor to use}
      * @param matcher Which {@link Matcher to use}
      * @param dblistpath Where is the DB located
      */
-    public Recognizer(FeatureExtractor extractor, Matcher matcher, String dblistpath) throws IOException
+    public Recognizer(FeatureExtractor dbextractor, FeatureExtractor extractor, Matcher matcher, String dblistpath) throws IOException
     {
         this.extractor = extractor;
         this.matcher = matcher;
-        this.DB = DBLoader.processDB(dblistpath, extractor);
-        this.executorService = Executors.newFixedThreadPool(THREADS);
+        this.DB = DBLoader.processDB(dblistpath, dbextractor);
+        matches = new HashMap<>(DB.size(), 1.0f);
+        result = new HashMap<>(DB.size(), 1.0f);
     }
 
-    public Recognizer(FeatureExtractor extractor, Matcher matcher, Map<String, KeypointDescList> db)
+    public Recognizer(FeatureExtractor dbextractor, FeatureExtractor extractor, Matcher matcher, Map<String, KeypointDescList> db)
     {
         this.extractor = extractor;
         this.matcher = matcher;
         this.DB = db;
-        this.executorService = Executors.newFixedThreadPool(THREADS);
     }
 
     /**
@@ -54,10 +58,11 @@ public class Recognizer
     public String recognize(Mat image)
     {
         //-- Extract input image KP and Desc --
-        final KeypointDescList inputKDlist = this.extractor.extract(image);
+        KeypointDescList inputKDlist = this.extractor.extract(image);
         //--
-
-        return recognize(inputKDlist);
+        String ret = recognize(inputKDlist);
+        inputKDlist.descriptions.release();
+        return ret;
     }
 
     /**
@@ -100,8 +105,11 @@ public class Recognizer
                 }
             }
         }
+        System.out.println("Result size:" + result.size());
         //--
-
+//        matches.clear();
+//        result.clear();
+        inputKDlist = null;
         return ret;
     }
 
@@ -110,20 +118,14 @@ public class Recognizer
      * @param inputKDlist
      * @return
      */
-    public Map<String, Double> parallelMatch(final KeypointDescList inputKDlist)
+    private Map<String, Double> parallelMatch(KeypointDescList inputKDlist)
     {
-        HashMap<String, Future<Double>> matches = new HashMap<String, Future<Double>>(DB.size(), 1.0f);
-        HashMap<String, Double> result = new HashMap<String, Double>(DB.size(), 1.0f);
+        ExecutorService executorService = Executors.newFixedThreadPool(THREADS);
         //-- Match against all DB --
-        for(final Map.Entry<String, KeypointDescList> entry : DB.entrySet())
+        for(Map.Entry<String, KeypointDescList> entry : DB.entrySet())
         {
-            matches.put(entry.getKey(), executorService.submit(new Callable<Double>()
-            {
-                public Double call() throws Exception
-                {
-                    return matcher.match(entry.getValue(), inputKDlist);
-                }
-            }));
+            matches.put(entry.getKey(), executorService.submit(new CallableMatcher(entry.getValue(), inputKDlist, matcher.newMatcher())));
+//            result.put(entry.getKey(), matcher.match(entry.getValue(), inputKDlist));
         }
 
         for(Map.Entry<String, Future<Double>> future:matches.entrySet())
@@ -132,6 +134,7 @@ public class Recognizer
             {
                 Double matchscore = future.getValue().get();
                 result.put(future.getKey(), matchscore);
+
             }
             catch (InterruptedException | ExecutionException e)
             {
@@ -139,10 +142,31 @@ public class Recognizer
                 System.out.println("Error in " + future.getKey());
             }
         }
-
+        executorService.shutdown();
+        executorService = null;
         return result;
     }
 
+    private static class CallableMatcher implements Callable<Double>
+    {
+
+        private final KeypointDescList dbKDlist;
+        private final KeypointDescList inputKDlist;
+        private final Matcher newmatcher;
+
+        CallableMatcher(KeypointDescList dbKDlist, KeypointDescList inputKDlist, Matcher newmatcher)
+        {
+            this.dbKDlist = dbKDlist;
+            this.inputKDlist = inputKDlist;
+            this.newmatcher = newmatcher;
+        }
+        @Override
+        public Double call() throws Exception
+        {
+            Double ret = newmatcher.match(dbKDlist, inputKDlist);
+            return ret;
+        }
+    }
     public static void main(String args[]) throws IOException
     {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -152,7 +176,7 @@ public class Recognizer
             String DBdirpath = args[1];
             FeatureExtractor extractor = new ORB();
             Matcher matcher = new BFMatcher_HAM();
-            Recognizer recognizer = new Recognizer(extractor, matcher, DBdirpath);
+            Recognizer recognizer = new Recognizer(extractor, extractor, matcher, DBdirpath);
 
             Mat img = Highgui.imread(query, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
             Long start = System.currentTimeMillis();
