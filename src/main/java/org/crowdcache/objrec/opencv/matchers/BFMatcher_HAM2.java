@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by utsav on 2/6/16.
  */
-public class BFMatcher_HAM2 implements Matcher
+public class BFMatcher_HAM2 extends Matcher
 {
     DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
     private int NUM_MATCHES_THRESH = 20;

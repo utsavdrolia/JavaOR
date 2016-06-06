@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by utsav on 2/6/16.
  */
-public class LSHMatcher_HAM implements Matcher
+public class LSHMatcher_HAM extends Matcher
 {
     DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.FLANNBASED);
     private int NUM_MATCHES_THRESH = 20;

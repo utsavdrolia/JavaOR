@@ -13,7 +13,7 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Created by utsav on 2/22/16.
  */
-public class HistMatcher implements Matcher
+public class HistMatcher extends Matcher
 {
     /**
      * Match the 2 images and return a match score
