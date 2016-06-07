@@ -86,6 +86,11 @@ public class LSHMatcher_HAM extends Matcher
     }
 
     @Override
+    public String matchAll(KeypointDescList sceneImage) {
+        return null;
+    }
+
+    @Override
     public Matcher newMatcher() {
         return new LSHMatcher_HAM();
     }
