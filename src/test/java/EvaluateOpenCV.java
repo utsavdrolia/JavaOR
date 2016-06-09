@@ -1,16 +1,12 @@
 import org.crowdcache.objrec.opencv.FeatureExtractor;
 import org.crowdcache.objrec.opencv.Matcher;
 import org.crowdcache.objrec.opencv.Recognizer;
-import org.crowdcache.objrec.opencv.extractors.BRISK;
 import org.crowdcache.objrec.opencv.extractors.ORB;
-import org.crowdcache.objrec.opencv.extractors.SURFFeatureExtractor;
+import org.crowdcache.objrec.opencv.extractors.SIFTFeatureExtractor;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
-import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM2;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM_NB;
-import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2;
+import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2_NB;
 import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.highgui.Highgui;
 
 import java.io.*;
 
@@ -19,33 +15,57 @@ import java.io.*;
  */
 public class EvaluateOpenCV
 {
-    private static final int NN = 1;
-    private static final int NB = 2;
+    private static final int BIN_NN = 1;
+    private static final int BIN_NB = 2;
+    private static final int FLOAT_NB = 3;
+
+    private static final int ORB = 1;
+    private static final int SIFT = 2;
+
     public static void main(String args[]) throws IOException, InterruptedException {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        if (args.length == 6)
+        if (args.length == 7)
         {
             String queryList = args[0];
             String DBdirpath = args[1];
             String resultspath = args[2];
-            String orb_pars = args[3];
-            String orb_pars_db = args[4];
+            String pars = args[3];
+            String pars_db = args[4];
             Integer matchertype = Integer.valueOf(args[5]);
+            Integer featuretype = Integer.valueOf(args[6]);
 
-            FeatureExtractor extractor = new ORB(orb_pars);
-            FeatureExtractor dbextractor = new ORB(orb_pars_db);
+            FeatureExtractor extractor;
+            FeatureExtractor dbextractor;
             Matcher matcher;
 
-            switch (matchertype)
+            switch (featuretype)
             {
-                case NN:
-                    matcher = new BFMatcher_HAM();
+                case ORB:
+                    extractor = new ORB(pars);
+                    dbextractor = new ORB(pars_db);
                     break;
-                case NB:
-                    matcher = new BFMatcher_HAM_NB();
+                case SIFT:
+                    extractor = new SIFTFeatureExtractor(pars);
+                    dbextractor = new SIFTFeatureExtractor(pars_db);
                     break;
                 default:
+                    extractor = new ORB(pars);
+                    dbextractor = new ORB(pars_db);
+                    break;
+            }
+            switch (matchertype)
+            {
+                case BIN_NN:
                     matcher = new BFMatcher_HAM();
+                    break;
+                case BIN_NB:
+                    matcher = new BFMatcher_HAM_NB();
+                    break;
+                case FLOAT_NB:
+                    matcher = new BFMatcher_L2_NB();
+                    break;
+                default:
+                    matcher = new BFMatcher_HAM_NB();
                     break;
             }
 
@@ -69,14 +89,13 @@ public class EvaluateOpenCV
                 if(result == null)
                     result = "None";
                 resultsfile.write(img + "," + result + "," + Long.toString(end - start) + "\n");
-                System.out.println("Input:" + imgpath + " Matched:" + result);
-                System.out.println("Time:" + (end - start));
+                //System.out.println(img + "," + result + "," + Long.toString(end - start));
                 line = dir.readLine();
                 count++;
-                System.out.println(count);
+               //System.out.println(count);
             }while ((line != null));
             Long procend = System.currentTimeMillis() - procstart;
-            System.out.println("Time:" + procend + " Count:" + count);
+            //System.out.println("Time:" + procend + " Count:" + count);
             resultsfile.flush();
             resultsfile.close();
         }
