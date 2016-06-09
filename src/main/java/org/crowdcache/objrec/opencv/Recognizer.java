@@ -1,8 +1,7 @@
 package org.crowdcache.objrec.opencv;
 
-import org.crowdcache.objrec.opencv.extractors.ORB;
-import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
-import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM_NB;
+import org.crowdcache.objrec.opencv.extractors.SIFTFeatureExtractor;
+import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2_NB;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -51,6 +50,7 @@ public class Recognizer
     {
         //-- Extract input image KP and Desc --
         KeypointDescList inputKDlist = this.extractor.extract(image);
+        //System.out.println("KPs in Input:" + inputKDlist.points.size());
         //--
         String ret = recognize(inputKDlist);
         inputKDlist.descriptions.release();
@@ -97,8 +97,8 @@ public class Recognizer
         {
             String query = args[0];
             String DBdirpath = args[1];
-            FeatureExtractor extractor = new ORB();
-            Matcher matcher = new BFMatcher_HAM_NB();
+            FeatureExtractor extractor = new SIFTFeatureExtractor("/Users/utsav/Documents/DATA/Research/HYRAX/Code/JavaOR/sift_pars.txt");
+            Matcher matcher = new BFMatcher_L2_NB();
             Recognizer recognizer = new Recognizer(extractor, extractor, matcher, DBdirpath);
 
             Mat img = Highgui.imread(query, Highgui.CV_LOAD_IMAGE_GRAYSCALE);

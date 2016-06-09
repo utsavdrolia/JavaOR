@@ -53,7 +53,7 @@ public class DBLoader
                         return extractor.extract(imagepath);
                     }
                 }));
-                System.out.println("Loading " + imagepath);
+                //System.out.println("Loading " + imagepath);
             }
             else
                 System.out.println("Could not find image");

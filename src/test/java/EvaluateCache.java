@@ -6,7 +6,6 @@ import org.crowdcache.objrec.opencv.Matcher;
 import org.crowdcache.objrec.opencv.Recognizer;
 import org.crowdcache.objrec.opencv.extractors.ORB;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
-import org.crowdcache.objreccache.ObjectRecogCacheNB;
 import org.opencv.core.Core;
 
 import java.io.*;
@@ -27,7 +26,7 @@ public class EvaluateCache
 
             FeatureExtractor extractor = new ORB();
             Matcher matcher = new BFMatcher_HAM();
-            Recognizer recognizer = new Recognizer(extractor, matcher, DBdirpath);
+            Recognizer recognizer = new Recognizer(extractor ,extractor, matcher, DBdirpath);
             ObjectRecogCache cache = new ObjectRecogCache(50);
 
             BufferedReader dir = new BufferedReader(new FileReader(queryList));
