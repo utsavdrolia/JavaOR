@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadFactory;
 public class BFMatcher_HAM_NB extends Matcher
 {
     private DescriptorMatcher matcher;
-    private static int NUM_MATCHES_THRESH = 5;
+    private static int NUM_MATCHES_THRESH = 3;
     private List<String> objects;
     private static final Double SCORE_THRESH = 0.6;
 
@@ -71,26 +71,6 @@ public class BFMatcher_HAM_NB extends Matcher
     }
 
 
-    /**
-     * Convert the list of good matches to a Map of Images and the Descriptors that occur in the images
-     * @param good_matches
-     * @return
-     */
-    private Map<Integer, List<DMatch>> invertGoodMatches(List<DMatch> good_matches)
-    {
-        Map<Integer, List<DMatch>> image2match = new HashMap<>();
-
-        for(DMatch match:good_matches)
-        {
-            Integer imgID = match.imgIdx;
-            if(!image2match.containsKey(imgID))
-                image2match.put(imgID, new ArrayList<DMatch>());
-            image2match.get(imgID).add(match);
-        }
-        return image2match;
-    }
-
-
     @Override
     public Double match(KeypointDescList dbImage, KeypointDescList sceneImage) {
         return null;
@@ -113,7 +93,7 @@ public class BFMatcher_HAM_NB extends Matcher
         // Get an inverted map (image --> descriptor)
         Map<Integer, List<DMatch>> image2match = invertGoodMatches(good_matches);
 
-        printInvertedMatches(image2match);
+        //printInvertedMatches(image2match);
 
         // Minimum number of good matches and homography verification
         for (Integer img: image2match.keySet())
@@ -122,7 +102,7 @@ public class BFMatcher_HAM_NB extends Matcher
             if(dmatches.size() > NUM_MATCHES_THRESH)
             {
                 Double matchscore = Verify.homography(dmatches, DB.get(objects.get(img)), sceneImage);
-                System.out.println(objects.get(img) + ":" + matchscore);
+                //System.out.println(objects.get(img) + ":" + matchscore);
                 if(matchscore > SCORE_THRESH)
                 {
                     if (matchscore > score)

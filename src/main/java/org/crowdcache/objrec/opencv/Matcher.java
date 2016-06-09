@@ -4,6 +4,7 @@ import org.opencv.core.MatOfDMatch;
 import org.opencv.features2d.DMatch;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -46,7 +47,7 @@ public abstract class Matcher
      * @param matches
      * @return
      */
-    public List<DMatch> ratioTest(List<MatOfDMatch> matches)
+    protected List<DMatch> ratioTest(List<MatOfDMatch> matches)
     {
         List<DMatch> good_matches = new ArrayList<>();
 
@@ -63,5 +64,24 @@ public abstract class Matcher
         }
 
         return good_matches;
+    }
+
+    /**
+     * Convert the list of good matches to a Map of Images and the Descriptors that occur in the images
+     * @param good_matches
+     * @return
+     */
+    protected Map<Integer, List<DMatch>> invertGoodMatches(List<DMatch> good_matches)
+    {
+        Map<Integer, List<DMatch>> image2match = new HashMap<>();
+
+        for(DMatch match:good_matches)
+        {
+            Integer imgID = match.imgIdx;
+            if(!image2match.containsKey(imgID))
+                image2match.put(imgID, new ArrayList<DMatch>());
+            image2match.get(imgID).add(match);
+        }
+        return image2match;
     }
 }

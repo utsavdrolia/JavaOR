@@ -22,7 +22,7 @@ public class BFMatcher_HAM extends Matcher
 {
     private DescriptorMatcher matcher;
     private int NUM_MATCHES_THRESH = 10;
-    private final int THREADS=48;
+    private final int THREADS=16;
     private static final Double SCORE_THRESH = 0.6;
 
 
@@ -43,14 +43,14 @@ public class BFMatcher_HAM extends Matcher
         Mat inliers = new Mat();
         Double ret = 0.0;
 
-        matcher.knnMatch(sceneImage.descriptions, dbImage.descriptions, matches, 2);
+        matcher.knnMatch(dbImage.descriptions, sceneImage.descriptions, matches, 2);
         // Ratio test
         good_matches = ratioTest(matches);
 
         // Minimum number of good matches and homography verification
         if(good_matches.size() > NUM_MATCHES_THRESH)
         {
-            ret = Verify.homography(good_matches, dbImage, sceneImage);
+            ret = Verify.homography(good_matches, sceneImage, dbImage);
         }
         matches.clear(); matches = null;
         good_matches.clear(); good_matches = null;
@@ -74,7 +74,7 @@ public class BFMatcher_HAM extends Matcher
         for(Map.Entry<String, Double> result:matchResults.entrySet())
         {
             Double matchscore = result.getValue();
-            System.out.println(result.getKey() + ":" + matchscore);
+            //System.out.println(result.getKey() + ":" + matchscore);
 
             if(matchscore > SCORE_THRESH)
             {
