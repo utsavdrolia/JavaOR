@@ -14,9 +14,6 @@ import org.opencv.highgui.Highgui;
  */
 public class BRISK extends FeatureExtractor
 {
-    private FeatureDetector detector;
-    private DescriptorExtractor extractor;
-
     public BRISK()
     {
         //Init detector
@@ -25,18 +22,6 @@ public class BRISK extends FeatureExtractor
         detector.read(this.getClass().getClassLoader().getResource("orbcache_pars").getPath());
         extractor = DescriptorExtractor.create(DescriptorExtractor.BRISK);
 //        detector.read("freak_pars");
-    }
-
-    public KeypointDescList extract(Mat image)
-    {
-        //Keypoints
-        MatOfKeyPoint keypoints = new MatOfKeyPoint();
-        Mat descriptors = new Mat();
-        detector.detect(image, keypoints);
-
-        extractor.compute(image, keypoints, descriptors);
-
-        return new KeypointDescList(keypoints, descriptors);
     }
 
     public static void main(String args[])

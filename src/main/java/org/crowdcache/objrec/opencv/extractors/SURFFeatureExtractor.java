@@ -20,23 +20,24 @@ import java.util.List;
  */
 public class SURFFeatureExtractor extends FeatureExtractor
 {
-
-    public KeypointDescList extract(Mat image)
+    public SURFFeatureExtractor()
     {
-        //Keypoints
-        MatOfKeyPoint keypoints = new MatOfKeyPoint();
-        Mat descriptors = new Mat();
         //Init detector
-        FeatureDetector detector = FeatureDetector.create(FeatureDetector.SURF);
+        detector = FeatureDetector.create(FeatureDetector.SURF);
+        extractor = DescriptorExtractor.create(DescriptorExtractor.SURF);
+    }
+
+    /**
+     *
+     * @param pars Path to parameters for SURF
+     */
+    public SURFFeatureExtractor(String pars)
+    {
+        //Init detector
+        detector = FeatureDetector.create(FeatureDetector.SURF);
         // Read the settings file for detector
-        detector.read(this.getClass().getClassLoader().getResource("surf_pars").getPath());
-        DescriptorExtractor extractor = DescriptorExtractor.create(DescriptorExtractor.SURF);
-        detector.read(this.getClass().getClassLoader().getResource("surf_pars").getPath());
-        detector.detect(image, keypoints);
-
-        extractor.compute(image, keypoints, descriptors);
-
-        return new KeypointDescList(keypoints, descriptors);
+        detector.read(pars);
+        extractor = DescriptorExtractor.create(DescriptorExtractor.SURF);
     }
 
     public static void main(String args[])

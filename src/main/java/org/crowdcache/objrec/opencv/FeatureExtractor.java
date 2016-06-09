@@ -2,6 +2,9 @@ package org.crowdcache.objrec.opencv;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
+import org.opencv.core.MatOfKeyPoint;
+import org.opencv.features2d.DescriptorExtractor;
+import org.opencv.features2d.FeatureDetector;
 import org.opencv.highgui.Highgui;
 
 /**
@@ -10,12 +13,24 @@ import org.opencv.highgui.Highgui;
  */
 public abstract class FeatureExtractor
 {
+    protected FeatureDetector detector;
+    protected DescriptorExtractor extractor;
     /**
      * Extract features from an image
      * @param image A {@link Mat} representing the image
      * @return {@link KeypointDescList} containing the keypoints and descriptors
      */
-    public abstract KeypointDescList extract(Mat image);
+    public KeypointDescList extract(Mat image)
+    {
+        //Keypoints
+        MatOfKeyPoint keypoints = new MatOfKeyPoint();
+        Mat descriptors = new Mat();
+        detector.detect(image, keypoints);
+
+        extractor.compute(image, keypoints, descriptors);
+
+        return new KeypointDescList(keypoints, descriptors);
+    }
 
     /**
      * Extract feature from the image

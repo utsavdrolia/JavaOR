@@ -14,15 +14,10 @@ import org.opencv.highgui.Highgui;
  */
 public class ORB extends FeatureExtractor
 {
-    private FeatureDetector detector;
-    private DescriptorExtractor extractor;
-
     public ORB()
     {
         //Init detector
         detector = FeatureDetector.create(FeatureDetector.ORB);
-        // Read the settings file for detector
-        detector.read(this.getClass().getClassLoader().getResource("orb_pars").getPath());
         extractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
     }
 
@@ -37,18 +32,6 @@ public class ORB extends FeatureExtractor
         // Read the settings file for detector
         detector.read(pars);
         extractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
-    }
-
-    public KeypointDescList extract(Mat image)
-    {
-        //Keypoints
-        MatOfKeyPoint keypoints = new MatOfKeyPoint();
-        Mat descriptors = new Mat();
-        detector.detect(image, keypoints);
-
-        extractor.compute(image, keypoints, descriptors);
-
-        return new KeypointDescList(keypoints, descriptors);
     }
 
     public static void main(String args[])

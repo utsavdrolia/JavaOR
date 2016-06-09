@@ -14,8 +14,6 @@ import org.opencv.highgui.Highgui;
  */
 public class FREAK extends FeatureExtractor
 {
-    private FeatureDetector detector;
-    private DescriptorExtractor extractor;
 
     public FREAK()
     {
@@ -25,18 +23,6 @@ public class FREAK extends FeatureExtractor
         detector.read(this.getClass().getClassLoader().getResource("orb_pars").getPath());
         extractor = DescriptorExtractor.create(DescriptorExtractor.FREAK);
 //        detector.read("freak_pars");
-    }
-
-    public KeypointDescList extract(Mat image)
-    {
-        //Keypoints
-        MatOfKeyPoint keypoints = new MatOfKeyPoint();
-        Mat descriptors = new Mat();
-        detector.detect(image, keypoints);
-
-        extractor.compute(image, keypoints, descriptors);
-
-        return new KeypointDescList(keypoints, descriptors);
     }
 
     public static void main(String args[])

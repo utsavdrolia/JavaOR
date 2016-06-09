@@ -42,24 +42,4 @@ public class HSVHist extends FeatureExtractor
         System.out.println("Hist time:" + (System.currentTimeMillis() - start));
         return new KeypointDescList(new MatOfKeyPoint(), histbyte);
     }
-
-    /**
-     * Extract feature from the image
-     * @param inputFile path to the image
-     * @return
-     */
-    public KeypointDescList extract(String inputFile)
-    {
-        return extract(Highgui.imread(inputFile));
-    }
-
-    /**
-     * Extract feature from the image
-     * @param data the image
-     * @return
-     */
-    public KeypointDescList extract(byte[] data)
-    {
-        return extract(Highgui.imdecode(new MatOfByte(data), Highgui.CV_LOAD_IMAGE_UNCHANGED));
-    }
 }
