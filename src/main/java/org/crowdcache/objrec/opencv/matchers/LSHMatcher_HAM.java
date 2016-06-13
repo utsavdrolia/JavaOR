@@ -9,21 +9,33 @@ import org.opencv.features2d.DMatch;
 import org.opencv.features2d.DescriptorMatcher;
 import org.opencv.highgui.Highgui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by utsav on 2/6/16.
+ * Uses Hamming distance, FLANN (LSH based) Matcher, Lowe's Distance ratio test, and Homography verification
+ * This matcher stores all the descriptors from all the images in the DB in an LSH hashtable
+ * and runs the match against all of them at once
+ * thus giving the ~closest match in any DB image
  */
 public class LSHMatcher_HAM extends Matcher
 {
-    DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.FLANNBASED);
-    private int NUM_MATCHES_THRESH = 20;
+    private DescriptorMatcher matcher;
+    private static int NUM_MATCHES_THRESH = 3;
+    private List<String> objects;
+    private static final Double SCORE_THRESH = 0.6;
+
 
     public LSHMatcher_HAM()
     {
+        matcher = DescriptorMatcher.create(DescriptorMatcher.FLANNBASED);
+    }
+
+    public LSHMatcher_HAM(String path)
+    {
+        matcher = DescriptorMatcher.create(DescriptorMatcher.FLANNBASED);
+        matcher.read(path);
     }
 
     public LSHMatcher_HAM(int thresh)
@@ -31,68 +43,104 @@ public class LSHMatcher_HAM extends Matcher
         NUM_MATCHES_THRESH = thresh;
     }
 
-    public Double match(KeypointDescList dbImage, KeypointDescList sceneImage)
+    /**
+     * Store a single image's descriptors in the matcher
+     * @param descriptions
+     */
+    public void train(Mat descriptions)
     {
-        Mat inliers = new Mat();
-//        MatOfDMatch matches = new MatOfDMatch();
-        List<MatOfDMatch> matches = new ArrayList<MatOfDMatch>();
-//        List<DMatch> good_matches;
-        List<DMatch> good_matches = new ArrayList<DMatch>();
-        List<Point> good_dbkp = new ArrayList<Point>();
-        List<Point> good_scenekp = new ArrayList<Point>();
-
-//        matcher.match(dbImage.descriptions, sceneImage.descriptions, matches);
-        matcher.knnMatch(dbImage.descriptions, sceneImage.descriptions, matches, 2);
-//        good_matches = matches.toList();
-        for (MatOfDMatch dmatch : matches)
-        {
-            DMatch[] arr = dmatch.toArray();
-            if (arr.length == 2)
-            {
-                DMatch m = arr[0];
-                DMatch n = arr[1];
-                if (m.distance < 0.7 * n.distance)
-                    good_matches.add(m);
-            }
-        }
-
-        Collections.sort(good_matches, new Comparator<DMatch>()
-        {
-            public int compare(DMatch o1, DMatch o2)
-            {
-                return (int) (o1.distance - o2.distance);
-            }
-        });
-        if (good_matches.size() > NUM_MATCHES_THRESH)
-        {
-            List<DMatch> best_matches = good_matches.subList(0, NUM_MATCHES_THRESH);
-            for (DMatch match : best_matches)
-            {
-                good_dbkp.add(dbImage.points.get(match.queryIdx).pt);
-                good_scenekp.add(sceneImage.points.get(match.trainIdx).pt);
-            }
-
-            MatOfPoint2f good_dbpoints = new MatOfPoint2f();
-            good_dbpoints.fromList(good_dbkp);
-
-            MatOfPoint2f good_scenepoints = new MatOfPoint2f();
-            good_scenepoints.fromList(good_scenekp);
-
-            Calib3d.findHomography(good_dbpoints, good_scenepoints, Calib3d.RANSAC, 5.0, inliers);
-//            System.out.println("Good Matches:" + good_matches.size() + " Inliers:" + Core.sumElems(inliers).val[0]);
-            return Core.sumElems(inliers).val[0] / best_matches.size();
-        }
-        return 0.0;
+        List<Mat> m = new ArrayList<>();
+        m.add(descriptions);
+        matcher.add(m);
     }
 
+    /**
+     * Store a list of images' descriptors in the matcher
+     * @param descriptions
+     */
+    public void train(List<Mat> descriptions)
+    {
+        matcher.add(descriptions);
+    }
+
+    /**
+     * Store the dataset and train the BruteForce matcher
+     * @param dataset Image -> Features association
+     */
+    public synchronized void train(Map<String, KeypointDescList> dataset)
+    {
+        super.train(dataset);
+        objects = new ArrayList<>(this.DB.keySet());
+        for(String object: objects)
+        {
+            train(DB.get(object).descriptions);
+        }
+    }
+
+
     @Override
-    public String matchAll(KeypointDescList sceneImage) {
+    public Double match(KeypointDescList dbImage, KeypointDescList sceneImage) {
         return null;
     }
 
     @Override
-    public Matcher newMatcher() {
-        return new LSHMatcher_HAM();
+    public String matchAll(KeypointDescList sceneImage)
+    {
+        List<MatOfDMatch> matches = new ArrayList<>();
+        List<DMatch> good_matches;
+        Mat inliers = new Mat();
+        String ret = "None";
+        Double score = Double.MIN_VALUE;
+
+        matcher.knnMatch(sceneImage.descriptions, matches, 2);
+
+        // Ratio test
+        good_matches = ratioTest(matches);
+
+        // Get an inverted map (image --> descriptor)
+        Map<Integer, List<DMatch>> image2match = invertGoodMatches(good_matches);
+
+        //printInvertedMatches(image2match);
+
+        // Minimum number of good matches and homography verification
+        for (Integer img: image2match.keySet())
+        {
+            List<DMatch> dmatches = image2match.get(img);
+            if(dmatches.size() > NUM_MATCHES_THRESH)
+            {
+                Double matchscore = Verify.homography(dmatches, DB.get(objects.get(img)), sceneImage);
+                //System.out.println(objects.get(img) + ":" + matchscore);
+                if(matchscore > SCORE_THRESH)
+                {
+                    if (matchscore > score)
+                    {
+                        score = matchscore;
+                        ret = objects.get(img);
+                    }
+                }
+            }
+        }
+
+
+        matches.clear(); matches = null;
+        good_matches.clear(); good_matches = null;
+        inliers.release(); inliers = null;
+        return ret;
+    }
+
+    private void printInvertedMatches(Map<Integer, List<DMatch>> image2match)
+    {
+        for (Integer imgID: image2match.keySet())
+        {
+            System.out.println(objects.get(imgID) + ":" + image2match.get(imgID).size());
+        }
+    }
+
+
+    @Override
+    public Matcher newMatcher()
+    {
+        return new BFMatcher_HAM_NB();
     }
 
 
