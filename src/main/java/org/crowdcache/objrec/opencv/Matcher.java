@@ -3,10 +3,7 @@ package org.crowdcache.objrec.opencv;
 import org.opencv.core.MatOfDMatch;
 import org.opencv.features2d.DMatch;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -55,12 +52,15 @@ public abstract class Matcher
         for(MatOfDMatch dmatch: matches)
         {
             DMatch[] arr = dmatch.toArray();
-            DMatch m = arr[0];
-            DMatch n = arr[1];
-            // Release of the MatOfDMatch
-            dmatch.release();
-            if(m.distance < 0.7*n.distance)
-                good_matches.add(m);
+            if(arr.length == 2)
+            {
+                DMatch m = arr[0];
+                DMatch n = arr[1];
+                // Release of the MatOfDMatch
+                dmatch.release();
+                if(m.distance < 0.7*n.distance)
+                    good_matches.add(m);
+            }
         }
 
         return good_matches;

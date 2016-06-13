@@ -1,7 +1,9 @@
 package org.crowdcache.objrec.opencv;
 
+import org.crowdcache.objrec.opencv.extractors.ORB;
 import org.crowdcache.objrec.opencv.extractors.SIFTFeatureExtractor;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2_NB;
+import org.crowdcache.objrec.opencv.matchers.LSHMatcher_HAM;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -97,8 +99,8 @@ public class Recognizer
         {
             String query = args[0];
             String DBdirpath = args[1];
-            FeatureExtractor extractor = new SIFTFeatureExtractor("/Users/utsav/Documents/DATA/Research/HYRAX/Code/JavaOR/sift_pars.txt");
-            Matcher matcher = new BFMatcher_L2_NB();
+            FeatureExtractor extractor = new ORB("/Users/utsav/Documents/DATA/Research/HYRAX/Code/JavaOR/orb_pars.txt");
+            Matcher matcher = new LSHMatcher_HAM("/Users/utsav/Documents/DATA/Research/HYRAX/Code/JavaOR/lsh_pars.txt");
             Recognizer recognizer = new Recognizer(extractor, extractor, matcher, DBdirpath);
 
             Mat img = Highgui.imread(query, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
