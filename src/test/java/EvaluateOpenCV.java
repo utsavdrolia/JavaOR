@@ -6,6 +6,7 @@ import org.crowdcache.objrec.opencv.extractors.SIFTFeatureExtractor;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM_NB;
 import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2_NB;
+import org.crowdcache.objrec.opencv.matchers.LSHMatcher_HAM;
 import org.opencv.core.Core;
 
 import java.io.*;
@@ -18,13 +19,14 @@ public class EvaluateOpenCV
     private static final int BIN_NN = 1;
     private static final int BIN_NB = 2;
     private static final int FLOAT_NB = 3;
+    private static final int LSH = 4;
 
     private static final int ORB = 1;
     private static final int SIFT = 2;
 
     public static void main(String args[]) throws IOException, InterruptedException {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        if (args.length == 7)
+        if (args.length >= 7)
         {
             String queryList = args[0];
             String DBdirpath = args[1];
@@ -33,6 +35,9 @@ public class EvaluateOpenCV
             String pars_db = args[4];
             Integer matchertype = Integer.valueOf(args[5]);
             Integer featuretype = Integer.valueOf(args[6]);
+            String lshpars = "";
+            if(args.length == 8)
+                lshpars = args[7];
 
             FeatureExtractor extractor;
             FeatureExtractor dbextractor;
@@ -43,10 +48,12 @@ public class EvaluateOpenCV
                 case ORB:
                     extractor = new ORB(pars);
                     dbextractor = new ORB(pars_db);
+                    System.out.println("Using ORB");
                     break;
                 case SIFT:
                     extractor = new SIFTFeatureExtractor(pars);
                     dbextractor = new SIFTFeatureExtractor(pars_db);
+                    System.out.println("Using SIFT");
                     break;
                 default:
                     extractor = new ORB(pars);
@@ -57,12 +64,19 @@ public class EvaluateOpenCV
             {
                 case BIN_NN:
                     matcher = new BFMatcher_HAM();
+                    System.out.println("Using NN");
                     break;
                 case BIN_NB:
                     matcher = new BFMatcher_HAM_NB();
+                    System.out.println("Using NB");
                     break;
                 case FLOAT_NB:
                     matcher = new BFMatcher_L2_NB();
+                    System.out.println("Using NB");
+                    break;
+                case LSH:
+                    matcher = new LSHMatcher_HAM(lshpars);
+                    System.out.println("Using LSH");
                     break;
                 default:
                     matcher = new BFMatcher_HAM_NB();
@@ -89,7 +103,7 @@ public class EvaluateOpenCV
                 if(result == null)
                     result = "None";
                 resultsfile.write(img + "," + result + "," + Long.toString(end - start) + "\n");
-                //System.out.println(img + "," + result + "," + Long.toString(end - start));
+                System.out.println(img + "," + result + "," + Long.toString(end - start));
                 line = dir.readLine();
                 count++;
                //System.out.println(count);
