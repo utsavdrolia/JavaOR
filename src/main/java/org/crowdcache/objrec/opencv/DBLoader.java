@@ -2,6 +2,10 @@ package org.crowdcache.objrec.opencv;
 
 import org.crowdcache.objrec.opencv.extractors.SURFFeatureExtractor;
 import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,6 +14,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
+
+import static org.opencv.imgproc.Imgproc.resize;
 
 /**
  * Created by utsav on 2/3/16.
@@ -42,6 +48,9 @@ public class DBLoader
         for (Map.Entry<String, String> image : paths.entrySet())
         {
             final String imagepath = image.getValue();
+            Mat imagemat = Highgui.imread(imagepath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+            final Mat dst = new Mat();
+            CVUtil.resize(imagemat, dst);
             File imagefile = new File(imagepath);
             final String imgname = image.getKey();
             if (imagefile.exists())
@@ -50,7 +59,7 @@ public class DBLoader
                 {
                     public KeypointDescList call() throws Exception
                     {
-                        return extractor.extract(imagepath);
+                        return extractor.extract(dst);
                     }
                 }));
                 //System.out.println("Loading " + imagepath);

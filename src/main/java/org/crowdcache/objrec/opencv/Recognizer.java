@@ -7,10 +7,14 @@ import org.crowdcache.objrec.opencv.matchers.LSHMatcher_HAM;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
+import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
 import java.util.Map;
+
+import static org.opencv.imgproc.Imgproc.resize;
 
 /**
  * Created by utsav on 2/5/16.
@@ -76,8 +80,11 @@ public class Recognizer
     public String recognize(String imagePath)
     {
         Mat image = Highgui.imread(imagePath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-        String ret = recognize(image);
+        Mat dst = new Mat();
+        CVUtil.resize(image, dst);
+        String ret = recognize(dst);
         image.release();
+        dst.release();
         return ret;
     }
 
