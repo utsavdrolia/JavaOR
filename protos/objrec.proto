@@ -1,0 +1,18 @@
+syntax = "proto2";
+option java_outer_classname = "ObjRecServiceProto";
+option java_generic_services = true;
+
+service ObjRecService
+{
+    rpc Recognize(Image) returns (Annotation);
+}
+
+message Image
+{
+    required bytes image = 1;
+}
+
+message Annotation
+{
+    required string annotation = 1;
+}
