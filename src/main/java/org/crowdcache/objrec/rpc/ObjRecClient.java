@@ -30,19 +30,15 @@ public class ObjRecClient
         fc.read(buffer);
         buffer.flip();
         fc.close();
-        cb.setStarttime(System.currentTimeMillis());
         ObjRecServiceStub.recognize(rpc,
                 ObjRecServiceProto.Image.newBuilder().setImage(ByteString.copyFrom(buffer)).build(),
                 cb);
     }
 
-    public abstract class ObjRecCallback implements com.google.protobuf.RpcCallback<ObjRecServiceProto.Annotation>
+    public void recognize(byte[] image, ObjRecCallback cb) throws IOException
     {
-        private long starttime;
-
-        void setStarttime(long starttime)
-        {
-            this.starttime = starttime;
-        }
+        ObjRecServiceStub.recognize(rpc,
+                ObjRecServiceProto.Image.newBuilder().setImage(ByteString.copyFrom(image)).build(),
+                cb);
     }
 }
