@@ -1,17 +1,32 @@
 package org.crowdcache.objrec.opencv;
 
+import org.crowdcache.LRUCache;
 import org.opencv.core.MatOfDMatch;
 import org.opencv.features2d.DMatch;
 
 import java.util.*;
-import java.util.concurrent.*;
 
 /**
  * Created by utsav on 2/7/16.
  */
 public abstract class Matcher
 {
-    protected Map<String, KeypointDescList> DB;
+    protected LRUCache<String, KeypointDescList> DB;
+    private int max_size = Integer.MAX_VALUE;
+    private boolean isFixed = false;
+
+    /**
+     *
+     * @param max_size If not -1, limit the size of the Matcher
+     */
+    public Matcher(int max_size)
+    {
+        if(max_size != -1)
+        {
+            this.max_size = max_size;
+            isFixed = true;
+        }
+    }
 
     /**
      * Match the 2 images and return a match score
@@ -34,10 +49,59 @@ public abstract class Matcher
      * Store the Image -> Features association
      * @param dataset Image -> Features association
      */
-    public void train(Map<String, KeypointDescList> dataset)
+    public final void train(Map<String, KeypointDescList> dataset) throws IllegalArgumentException
     {
-        this.DB = dataset;
+        if(dataset.size() <= max_size)
+        {
+            this.DB = new LRUCache<>(dataset, max_size);
+            _train();
+        }
+        else
+            throw new IllegalArgumentException("Size of dataset bigger than set size");
     }
+
+    /**
+     * Insert one image into Matcher
+     * @param name
+     * @param kplist
+     */
+    public final void insert(String name, KeypointDescList kplist)
+    {
+        if(this.DB == null)
+        {
+            // Create new hashmap
+            this.DB = new LRUCache<>(max_size);
+        }
+        if(DB.size() == max_size)
+        {
+            DB.put(name, kplist);
+            _train();
+        }
+        else
+        {
+            DB.put(name, kplist);
+            _insert(name, kplist);
+        }
+    }
+
+    /**
+     * Remove a specific image from matcher
+     * @param name
+     */
+    public final void remove(String name)
+    {
+        if(DB.remove(name) != null)
+            _train();
+    }
+    /**
+     * Insert one image into matcher
+     */
+    protected abstract void _insert(String name, KeypointDescList kplist);
+
+    /**
+     * Internally train matcher
+     */
+    protected abstract void _train();
 
     /**
      * Ratio test for descriptor matches
