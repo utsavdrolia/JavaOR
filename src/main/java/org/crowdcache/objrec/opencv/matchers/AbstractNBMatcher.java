@@ -20,10 +20,10 @@ import java.util.Map;
  */
 public abstract class AbstractNBMatcher extends Matcher
 {
-    private DescriptorMatcher matcher;
-    private static int NUM_MATCHES_THRESH = 3;
-    private List<String> objects;
-    private static final Double SCORE_THRESH = 0.6;
+    protected DescriptorMatcher matcher;
+    protected int NUM_MATCHES_THRESH = 3;
+    protected List<String> objects;
+    protected Double SCORE_THRESH = 0.6;
     private final Boolean trainingLock = true;
 
 

@@ -17,18 +17,19 @@ import java.util.List;
 /**
  * Created by utsav on 2/6/16.
  */
-public class BFMatcher_HAM2 extends Matcher
+public abstract class BFMatcher_HAM2 extends Matcher
 {
     DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
     private int NUM_MATCHES_THRESH = 20;
 
     public BFMatcher_HAM2()
     {
+        this(-1);
     }
 
-    public BFMatcher_HAM2(int thresh)
+    public BFMatcher_HAM2(int size)
     {
-        NUM_MATCHES_THRESH = thresh;
+        super(size);
     }
 
     public Double match(KeypointDescList dbImage, KeypointDescList sceneImage)
@@ -90,30 +91,5 @@ public class BFMatcher_HAM2 extends Matcher
     @Override
     public String matchAll(KeypointDescList sceneImage) {
         return null;
-    }
-
-    @Override
-    public Matcher newMatcher() {
-        return new BFMatcher_HAM2();
-    }
-
-
-    public static void main(String args[])
-    {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        if (args.length > 0)
-        {
-            String queryFile = args[0];
-            String trainFile = args[1];
-            Mat qimage = Highgui.imread(queryFile, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-            Mat timage = Highgui.imread(trainFile, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-            KeypointDescList qpoints = new ORB().extract(qimage);
-
-            Long start = System.currentTimeMillis();
-            KeypointDescList tpoints = new ORB().extract(timage);
-            Double matches = new BFMatcher_HAM2().match(qpoints, tpoints);
-            System.out.println("Time:" + (System.currentTimeMillis() - start) + " Score:" + matches);
-        }
-        System.exit(1);
     }
 }

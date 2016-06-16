@@ -18,9 +18,9 @@ import static com.sun.tools.javac.jvm.ByteCodes.ret;
  * Created by utsav on 2/6/16.
  * Uses Hamming distance, Brute Force Matcher, Lowe's Distance ratio test, and Homography verification
  */
-public class BFMatcher_HAM extends Matcher
+public abstract class BFMatcher_HAM extends Matcher
 {
-    private DescriptorMatcher matcher;
+    private DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);;
     private int NUM_MATCHES_THRESH = 10;
     private final int THREADS=16;
     private static final Double SCORE_THRESH = 0.6;
@@ -28,12 +28,12 @@ public class BFMatcher_HAM extends Matcher
 
     public BFMatcher_HAM()
     {
-        matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
+        this(-1);
     }
 
-    public BFMatcher_HAM(int thresh)
+    public BFMatcher_HAM(int size)
     {
-        NUM_MATCHES_THRESH = thresh;
+        super(size);
     }
 
     public Double match(KeypointDescList dbImage, KeypointDescList sceneImage)
@@ -144,31 +144,5 @@ public class BFMatcher_HAM extends Matcher
         {
             return newmatcher.match(dbKDlist, inputKDlist);
         }
-    }
-
-    @Override
-    public Matcher newMatcher()
-    {
-        return new BFMatcher_HAM();
-    }
-
-
-    public static void main(String args[])
-    {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        if (args.length > 0)
-        {
-            String queryFile = args[0];
-            String trainFile = args[1];
-            Mat qimage = Highgui.imread(queryFile, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-            Mat timage = Highgui.imread(trainFile, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-            KeypointDescList qpoints = new ORB().extract(qimage);
-
-            Long start = System.currentTimeMillis();
-            KeypointDescList tpoints = new ORB().extract(timage);
-            Double matches = new BFMatcher_HAM().match(qpoints, tpoints);
-            System.out.println("Time:" + (System.currentTimeMillis() - start) + " Score:" + matches);
-        }
-        System.exit(1);
     }
 }

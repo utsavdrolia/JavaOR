@@ -11,7 +11,7 @@ import java.util.*;
  */
 public abstract class Matcher
 {
-    protected LRUCache<String, KeypointDescList> DB;
+    protected Map<String, KeypointDescList> DB;
     private int max_size = Integer.MAX_VALUE;
     private boolean isFixed = false;
 
@@ -24,8 +24,11 @@ public abstract class Matcher
         if(max_size != -1)
         {
             this.max_size = max_size;
+            this.DB = new LRUCache<>(max_size);
             isFixed = true;
         }
+        else
+            this.DB = new HashMap<>();
     }
 
     /**
@@ -53,7 +56,7 @@ public abstract class Matcher
     {
         if(dataset.size() <= max_size)
         {
-            this.DB = new LRUCache<>(dataset, max_size);
+            this.DB .putAll(dataset);
             _train();
         }
         else
@@ -67,11 +70,6 @@ public abstract class Matcher
      */
     public final void insert(String name, KeypointDescList kplist)
     {
-        if(this.DB == null)
-        {
-            // Create new hashmap
-            this.DB = new LRUCache<>(max_size);
-        }
         if(DB.size() == max_size)
         {
             DB.put(name, kplist);

@@ -15,6 +15,21 @@ import org.opencv.imgproc.Imgproc;
  */
 public class HistMatcher extends Matcher
 {
+    /**  
+     */
+    public HistMatcher()
+    {
+        this(-1);
+    }
+
+    /**
+     * @param max_size If not -1, limit the size of the Matcher
+     */
+    public HistMatcher(int max_size)
+    {
+        super(max_size);
+    }
+
     /**
      * Match the 2 images and return a match score
      *
@@ -46,13 +61,26 @@ public class HistMatcher extends Matcher
     }
 
     @Override
-    public String matchAll(KeypointDescList sceneImage) {
+    public String matchAll(KeypointDescList sceneImage)
+    {
         return null;
     }
 
     @Override
     public Matcher newMatcher() {
         return new HistMatcher();
+    }
+
+    @Override
+    protected void _insert(String name, KeypointDescList kplist)
+    {
+
+    }
+
+    @Override
+    protected void _train()
+    {
+
     }
 
     public static void main(String args[])
