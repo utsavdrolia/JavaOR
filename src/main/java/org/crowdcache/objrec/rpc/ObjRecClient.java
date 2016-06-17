@@ -13,9 +13,9 @@ import java.nio.channels.FileChannel;
  */
 public class ObjRecClient
 {
-    private ObjRecServiceProto.ObjRecService.Stub ObjRecServiceStub;
-    ByteBuffer buffer = ByteBuffer.allocate(80 * 1024);
-    RPCClient rpc;
+    protected ObjRecServiceProto.ObjRecService.Stub ObjRecServiceStub;
+    protected ByteBuffer buffer = ByteBuffer.allocate(80 * 1024);
+    protected RPCClient rpc;
     public ObjRecClient(String server)
     {
         rpc = new RPCClient(server);
@@ -30,12 +30,10 @@ public class ObjRecClient
         fc.read(buffer);
         buffer.flip();
         fc.close();
-        ObjRecServiceStub.recognize(rpc,
-                ObjRecServiceProto.Image.newBuilder().setImage(ByteString.copyFrom(buffer)).build(),
-                cb);
+        recognize(buffer, cb);
     }
 
-    public void recognize(byte[] image, ObjRecCallback cb) throws IOException
+    public final void recognize(ByteBuffer image, ObjRecCallback cb) throws IOException
     {
         ObjRecServiceStub.recognize(rpc,
                 ObjRecServiceProto.Image.newBuilder().setImage(ByteString.copyFrom(image)).build(),
