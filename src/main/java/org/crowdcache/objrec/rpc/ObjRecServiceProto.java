@@ -84,7 +84,7 @@ public final class ObjRecServiceProto {
       return ObjRecServiceProto.internal_static_Image_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
       return ObjRecServiceProto.internal_static_Image_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -217,7 +217,7 @@ public final class ObjRecServiceProto {
 
     @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -233,7 +233,7 @@ public final class ObjRecServiceProto {
         return ObjRecServiceProto.internal_static_Image_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
         return ObjRecServiceProto.internal_static_Image_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -246,7 +246,7 @@ public final class ObjRecServiceProto {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -493,7 +493,7 @@ public final class ObjRecServiceProto {
       return ObjRecServiceProto.internal_static_Annotation_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
       return ObjRecServiceProto.internal_static_Annotation_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -652,7 +652,7 @@ public final class ObjRecServiceProto {
 
     @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -668,7 +668,7 @@ public final class ObjRecServiceProto {
         return ObjRecServiceProto.internal_static_Annotation_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
         return ObjRecServiceProto.internal_static_Annotation_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -681,7 +681,7 @@ public final class ObjRecServiceProto {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -887,6 +887,2039 @@ public final class ObjRecServiceProto {
 
   }
 
+  public interface FeaturesOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Features)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required .DescMat descs = 1;</code>
+     */
+    boolean hasDescs();
+    /**
+     * <code>required .DescMat descs = 1;</code>
+     */
+    DescMat getDescs();
+    /**
+     * <code>required .DescMat descs = 1;</code>
+     */
+    DescMatOrBuilder getDescsOrBuilder();
+
+    /**
+     * <code>repeated .KeyPoint keypoints = 2;</code>
+     */
+    java.util.List<KeyPoint>
+        getKeypointsList();
+    /**
+     * <code>repeated .KeyPoint keypoints = 2;</code>
+     */
+    KeyPoint getKeypoints(int index);
+    /**
+     * <code>repeated .KeyPoint keypoints = 2;</code>
+     */
+    int getKeypointsCount();
+    /**
+     * <code>repeated .KeyPoint keypoints = 2;</code>
+     */
+    java.util.List<? extends KeyPointOrBuilder>
+        getKeypointsOrBuilderList();
+    /**
+     * <code>repeated .KeyPoint keypoints = 2;</code>
+     */
+    KeyPointOrBuilder getKeypointsOrBuilder(
+            int index);
+  }
+  /**
+   * Protobuf type {@code Features}
+   */
+  public  static final class Features extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:Features)
+      FeaturesOrBuilder {
+    // Use Features.newBuilder() to construct.
+    private Features(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private Features() {
+      keypoints_ = java.util.Collections.emptyList();
+    }
+
+    @Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Features(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              DescMat.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = descs_.toBuilder();
+              }
+              descs_ = input.readMessage(DescMat.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(descs_);
+                descs_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                keypoints_ = new java.util.ArrayList<KeyPoint>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              keypoints_.add(input.readMessage(KeyPoint.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          keypoints_ = java.util.Collections.unmodifiableList(keypoints_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return ObjRecServiceProto.internal_static_Features_descriptor;
+    }
+
+    protected FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return ObjRecServiceProto.internal_static_Features_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              Features.class, Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int DESCS_FIELD_NUMBER = 1;
+    private DescMat descs_;
+    /**
+     * <code>required .DescMat descs = 1;</code>
+     */
+    public boolean hasDescs() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required .DescMat descs = 1;</code>
+     */
+    public DescMat getDescs() {
+      return descs_ == null ? DescMat.getDefaultInstance() : descs_;
+    }
+    /**
+     * <code>required .DescMat descs = 1;</code>
+     */
+    public DescMatOrBuilder getDescsOrBuilder() {
+      return descs_ == null ? DescMat.getDefaultInstance() : descs_;
+    }
+
+    public static final int KEYPOINTS_FIELD_NUMBER = 2;
+    private java.util.List<KeyPoint> keypoints_;
+    /**
+     * <code>repeated .KeyPoint keypoints = 2;</code>
+     */
+    public java.util.List<KeyPoint> getKeypointsList() {
+      return keypoints_;
+    }
+    /**
+     * <code>repeated .KeyPoint keypoints = 2;</code>
+     */
+    public java.util.List<? extends KeyPointOrBuilder>
+        getKeypointsOrBuilderList() {
+      return keypoints_;
+    }
+    /**
+     * <code>repeated .KeyPoint keypoints = 2;</code>
+     */
+    public int getKeypointsCount() {
+      return keypoints_.size();
+    }
+    /**
+     * <code>repeated .KeyPoint keypoints = 2;</code>
+     */
+    public KeyPoint getKeypoints(int index) {
+      return keypoints_.get(index);
+    }
+    /**
+     * <code>repeated .KeyPoint keypoints = 2;</code>
+     */
+    public KeyPointOrBuilder getKeypointsOrBuilder(
+        int index) {
+      return keypoints_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasDescs()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getDescs().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      for (int i = 0; i < getKeypointsCount(); i++) {
+        if (!getKeypoints(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, getDescs());
+      }
+      for (int i = 0; i < keypoints_.size(); i++) {
+        output.writeMessage(2, keypoints_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getDescs());
+      }
+      for (int i = 0; i < keypoints_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, keypoints_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    public static Features parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static Features parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static Features parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static Features parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static Features parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static Features parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static Features parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static Features parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static Features parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static Features parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(Features prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @Override
+    protected Builder newBuilderForType(
+        BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Features}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Features)
+        FeaturesOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return ObjRecServiceProto.internal_static_Features_descriptor;
+      }
+
+      protected FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return ObjRecServiceProto.internal_static_Features_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                Features.class, Builder.class);
+      }
+
+      // Construct using ObjRecServiceProto.Features.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getDescsFieldBuilder();
+          getKeypointsFieldBuilder();
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (descsBuilder_ == null) {
+          descs_ = null;
+        } else {
+          descsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (keypointsBuilder_ == null) {
+          keypoints_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          keypointsBuilder_.clear();
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return ObjRecServiceProto.internal_static_Features_descriptor;
+      }
+
+      public Features getDefaultInstanceForType() {
+        return Features.getDefaultInstance();
+      }
+
+      public Features build() {
+        Features result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public Features buildPartial() {
+        Features result = new Features(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (descsBuilder_ == null) {
+          result.descs_ = descs_;
+        } else {
+          result.descs_ = descsBuilder_.build();
+        }
+        if (keypointsBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            keypoints_ = java.util.Collections.unmodifiableList(keypoints_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.keypoints_ = keypoints_;
+        } else {
+          result.keypoints_ = keypointsBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof Features) {
+          return mergeFrom((Features)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(Features other) {
+        if (other == Features.getDefaultInstance()) return this;
+        if (other.hasDescs()) {
+          mergeDescs(other.getDescs());
+        }
+        if (keypointsBuilder_ == null) {
+          if (!other.keypoints_.isEmpty()) {
+            if (keypoints_.isEmpty()) {
+              keypoints_ = other.keypoints_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureKeypointsIsMutable();
+              keypoints_.addAll(other.keypoints_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.keypoints_.isEmpty()) {
+            if (keypointsBuilder_.isEmpty()) {
+              keypointsBuilder_.dispose();
+              keypointsBuilder_ = null;
+              keypoints_ = other.keypoints_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              keypointsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getKeypointsFieldBuilder() : null;
+            } else {
+              keypointsBuilder_.addAllMessages(other.keypoints_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasDescs()) {
+          return false;
+        }
+        if (!getDescs().isInitialized()) {
+          return false;
+        }
+        for (int i = 0; i < getKeypointsCount(); i++) {
+          if (!getKeypoints(i).isInitialized()) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        Features parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (Features) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private DescMat descs_ = null;
+      private com.google.protobuf.SingleFieldBuilder<
+          DescMat, DescMat.Builder, DescMatOrBuilder> descsBuilder_;
+      /**
+       * <code>required .DescMat descs = 1;</code>
+       */
+      public boolean hasDescs() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required .DescMat descs = 1;</code>
+       */
+      public DescMat getDescs() {
+        if (descsBuilder_ == null) {
+          return descs_ == null ? DescMat.getDefaultInstance() : descs_;
+        } else {
+          return descsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .DescMat descs = 1;</code>
+       */
+      public Builder setDescs(DescMat value) {
+        if (descsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          descs_ = value;
+          onChanged();
+        } else {
+          descsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .DescMat descs = 1;</code>
+       */
+      public Builder setDescs(
+          DescMat.Builder builderForValue) {
+        if (descsBuilder_ == null) {
+          descs_ = builderForValue.build();
+          onChanged();
+        } else {
+          descsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .DescMat descs = 1;</code>
+       */
+      public Builder mergeDescs(DescMat value) {
+        if (descsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              descs_ != null &&
+              descs_ != DescMat.getDefaultInstance()) {
+            descs_ =
+              DescMat.newBuilder(descs_).mergeFrom(value).buildPartial();
+          } else {
+            descs_ = value;
+          }
+          onChanged();
+        } else {
+          descsBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .DescMat descs = 1;</code>
+       */
+      public Builder clearDescs() {
+        if (descsBuilder_ == null) {
+          descs_ = null;
+          onChanged();
+        } else {
+          descsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      /**
+       * <code>required .DescMat descs = 1;</code>
+       */
+      public DescMat.Builder getDescsBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getDescsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .DescMat descs = 1;</code>
+       */
+      public DescMatOrBuilder getDescsOrBuilder() {
+        if (descsBuilder_ != null) {
+          return descsBuilder_.getMessageOrBuilder();
+        } else {
+          return descs_ == null ?
+              DescMat.getDefaultInstance() : descs_;
+        }
+      }
+      /**
+       * <code>required .DescMat descs = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          DescMat, DescMat.Builder, DescMatOrBuilder>
+          getDescsFieldBuilder() {
+        if (descsBuilder_ == null) {
+          descsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              DescMat, DescMat.Builder, DescMatOrBuilder>(
+                  getDescs(),
+                  getParentForChildren(),
+                  isClean());
+          descs_ = null;
+        }
+        return descsBuilder_;
+      }
+
+      private java.util.List<KeyPoint> keypoints_ =
+        java.util.Collections.emptyList();
+      private void ensureKeypointsIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          keypoints_ = new java.util.ArrayList<KeyPoint>(keypoints_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          KeyPoint, KeyPoint.Builder, KeyPointOrBuilder> keypointsBuilder_;
+
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public java.util.List<KeyPoint> getKeypointsList() {
+        if (keypointsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(keypoints_);
+        } else {
+          return keypointsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public int getKeypointsCount() {
+        if (keypointsBuilder_ == null) {
+          return keypoints_.size();
+        } else {
+          return keypointsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public KeyPoint getKeypoints(int index) {
+        if (keypointsBuilder_ == null) {
+          return keypoints_.get(index);
+        } else {
+          return keypointsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public Builder setKeypoints(
+          int index, KeyPoint value) {
+        if (keypointsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKeypointsIsMutable();
+          keypoints_.set(index, value);
+          onChanged();
+        } else {
+          keypointsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public Builder setKeypoints(
+          int index, KeyPoint.Builder builderForValue) {
+        if (keypointsBuilder_ == null) {
+          ensureKeypointsIsMutable();
+          keypoints_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          keypointsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public Builder addKeypoints(KeyPoint value) {
+        if (keypointsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKeypointsIsMutable();
+          keypoints_.add(value);
+          onChanged();
+        } else {
+          keypointsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public Builder addKeypoints(
+          int index, KeyPoint value) {
+        if (keypointsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKeypointsIsMutable();
+          keypoints_.add(index, value);
+          onChanged();
+        } else {
+          keypointsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public Builder addKeypoints(
+          KeyPoint.Builder builderForValue) {
+        if (keypointsBuilder_ == null) {
+          ensureKeypointsIsMutable();
+          keypoints_.add(builderForValue.build());
+          onChanged();
+        } else {
+          keypointsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public Builder addKeypoints(
+          int index, KeyPoint.Builder builderForValue) {
+        if (keypointsBuilder_ == null) {
+          ensureKeypointsIsMutable();
+          keypoints_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          keypointsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public Builder addAllKeypoints(
+          Iterable<? extends KeyPoint> values) {
+        if (keypointsBuilder_ == null) {
+          ensureKeypointsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, keypoints_);
+          onChanged();
+        } else {
+          keypointsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public Builder clearKeypoints() {
+        if (keypointsBuilder_ == null) {
+          keypoints_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          keypointsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public Builder removeKeypoints(int index) {
+        if (keypointsBuilder_ == null) {
+          ensureKeypointsIsMutable();
+          keypoints_.remove(index);
+          onChanged();
+        } else {
+          keypointsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public KeyPoint.Builder getKeypointsBuilder(
+          int index) {
+        return getKeypointsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public KeyPointOrBuilder getKeypointsOrBuilder(
+          int index) {
+        if (keypointsBuilder_ == null) {
+          return keypoints_.get(index);  } else {
+          return keypointsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public java.util.List<? extends KeyPointOrBuilder>
+           getKeypointsOrBuilderList() {
+        if (keypointsBuilder_ != null) {
+          return keypointsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(keypoints_);
+        }
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public KeyPoint.Builder addKeypointsBuilder() {
+        return getKeypointsFieldBuilder().addBuilder(
+            KeyPoint.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public KeyPoint.Builder addKeypointsBuilder(
+          int index) {
+        return getKeypointsFieldBuilder().addBuilder(
+            index, KeyPoint.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .KeyPoint keypoints = 2;</code>
+       */
+      public java.util.List<KeyPoint.Builder>
+           getKeypointsBuilderList() {
+        return getKeypointsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          KeyPoint, KeyPoint.Builder, KeyPointOrBuilder>
+          getKeypointsFieldBuilder() {
+        if (keypointsBuilder_ == null) {
+          keypointsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              KeyPoint, KeyPoint.Builder, KeyPointOrBuilder>(
+                  keypoints_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          keypoints_ = null;
+        }
+        return keypointsBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:Features)
+    }
+
+    // @@protoc_insertion_point(class_scope:Features)
+    private static final Features DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new Features();
+    }
+
+    public static Features getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @Deprecated public static final com.google.protobuf.Parser<Features>
+        PARSER = new com.google.protobuf.AbstractParser<Features>() {
+      public Features parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Features(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Features> parser() {
+      return PARSER;
+    }
+
+    @Override
+    public com.google.protobuf.Parser<Features> getParserForType() {
+      return PARSER;
+    }
+
+    public Features getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface DescMatOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:DescMat)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required int32 rows = 1;</code>
+     */
+    boolean hasRows();
+    /**
+     * <code>required int32 rows = 1;</code>
+     */
+    int getRows();
+
+    /**
+     * <code>required int32 cols = 2;</code>
+     */
+    boolean hasCols();
+    /**
+     * <code>required int32 cols = 2;</code>
+     */
+    int getCols();
+
+    /**
+     * <code>required int32 type = 3;</code>
+     */
+    boolean hasType();
+    /**
+     * <code>required int32 type = 3;</code>
+     */
+    int getType();
+
+    /**
+     * <code>required bytes data = 4;</code>
+     */
+    boolean hasData();
+    /**
+     * <code>required bytes data = 4;</code>
+     */
+    com.google.protobuf.ByteString getData();
+  }
+  /**
+   * Protobuf type {@code DescMat}
+   */
+  public  static final class DescMat extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:DescMat)
+      DescMatOrBuilder {
+    // Use DescMat.newBuilder() to construct.
+    private DescMat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private DescMat() {
+      rows_ = 0;
+      cols_ = 0;
+      type_ = 0;
+      data_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    @Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private DescMat(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              rows_ = input.readInt32();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              cols_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              type_ = input.readInt32();
+              break;
+            }
+            case 34: {
+              bitField0_ |= 0x00000008;
+              data_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return ObjRecServiceProto.internal_static_DescMat_descriptor;
+    }
+
+    protected FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return ObjRecServiceProto.internal_static_DescMat_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              DescMat.class, Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int ROWS_FIELD_NUMBER = 1;
+    private int rows_;
+    /**
+     * <code>required int32 rows = 1;</code>
+     */
+    public boolean hasRows() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required int32 rows = 1;</code>
+     */
+    public int getRows() {
+      return rows_;
+    }
+
+    public static final int COLS_FIELD_NUMBER = 2;
+    private int cols_;
+    /**
+     * <code>required int32 cols = 2;</code>
+     */
+    public boolean hasCols() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required int32 cols = 2;</code>
+     */
+    public int getCols() {
+      return cols_;
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 3;
+    private int type_;
+    /**
+     * <code>required int32 type = 3;</code>
+     */
+    public boolean hasType() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required int32 type = 3;</code>
+     */
+    public int getType() {
+      return type_;
+    }
+
+    public static final int DATA_FIELD_NUMBER = 4;
+    private com.google.protobuf.ByteString data_;
+    /**
+     * <code>required bytes data = 4;</code>
+     */
+    public boolean hasData() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>required bytes data = 4;</code>
+     */
+    public com.google.protobuf.ByteString getData() {
+      return data_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasRows()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasCols()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasType()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasData()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(1, rows_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, cols_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, type_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, data_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, rows_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, cols_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, type_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, data_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    public static DescMat parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static DescMat parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static DescMat parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static DescMat parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static DescMat parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static DescMat parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static DescMat parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static DescMat parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static DescMat parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static DescMat parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(DescMat prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @Override
+    protected Builder newBuilderForType(
+        BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code DescMat}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:DescMat)
+        DescMatOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return ObjRecServiceProto.internal_static_DescMat_descriptor;
+      }
+
+      protected FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return ObjRecServiceProto.internal_static_DescMat_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                DescMat.class, Builder.class);
+      }
+
+      // Construct using ObjRecServiceProto.DescMat.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        rows_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        cols_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        type_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        data_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return ObjRecServiceProto.internal_static_DescMat_descriptor;
+      }
+
+      public DescMat getDefaultInstanceForType() {
+        return DescMat.getDefaultInstance();
+      }
+
+      public DescMat build() {
+        DescMat result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public DescMat buildPartial() {
+        DescMat result = new DescMat(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.rows_ = rows_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.cols_ = cols_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.type_ = type_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.data_ = data_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof DescMat) {
+          return mergeFrom((DescMat)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(DescMat other) {
+        if (other == DescMat.getDefaultInstance()) return this;
+        if (other.hasRows()) {
+          setRows(other.getRows());
+        }
+        if (other.hasCols()) {
+          setCols(other.getCols());
+        }
+        if (other.hasType()) {
+          setType(other.getType());
+        }
+        if (other.hasData()) {
+          setData(other.getData());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasRows()) {
+          return false;
+        }
+        if (!hasCols()) {
+          return false;
+        }
+        if (!hasType()) {
+          return false;
+        }
+        if (!hasData()) {
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        DescMat parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (DescMat) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int rows_ ;
+      /**
+       * <code>required int32 rows = 1;</code>
+       */
+      public boolean hasRows() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required int32 rows = 1;</code>
+       */
+      public int getRows() {
+        return rows_;
+      }
+      /**
+       * <code>required int32 rows = 1;</code>
+       */
+      public Builder setRows(int value) {
+        bitField0_ |= 0x00000001;
+        rows_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 rows = 1;</code>
+       */
+      public Builder clearRows() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        rows_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int cols_ ;
+      /**
+       * <code>required int32 cols = 2;</code>
+       */
+      public boolean hasCols() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required int32 cols = 2;</code>
+       */
+      public int getCols() {
+        return cols_;
+      }
+      /**
+       * <code>required int32 cols = 2;</code>
+       */
+      public Builder setCols(int value) {
+        bitField0_ |= 0x00000002;
+        cols_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 cols = 2;</code>
+       */
+      public Builder clearCols() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        cols_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int type_ ;
+      /**
+       * <code>required int32 type = 3;</code>
+       */
+      public boolean hasType() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required int32 type = 3;</code>
+       */
+      public int getType() {
+        return type_;
+      }
+      /**
+       * <code>required int32 type = 3;</code>
+       */
+      public Builder setType(int value) {
+        bitField0_ |= 0x00000004;
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 type = 3;</code>
+       */
+      public Builder clearType() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        type_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>required bytes data = 4;</code>
+       */
+      public boolean hasData() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required bytes data = 4;</code>
+       */
+      public com.google.protobuf.ByteString getData() {
+        return data_;
+      }
+      /**
+       * <code>required bytes data = 4;</code>
+       */
+      public Builder setData(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        data_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bytes data = 4;</code>
+       */
+      public Builder clearData() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        data_ = getDefaultInstance().getData();
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:DescMat)
+    }
+
+    // @@protoc_insertion_point(class_scope:DescMat)
+    private static final DescMat DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new DescMat();
+    }
+
+    public static DescMat getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @Deprecated public static final com.google.protobuf.Parser<DescMat>
+        PARSER = new com.google.protobuf.AbstractParser<DescMat>() {
+      public DescMat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new DescMat(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<DescMat> parser() {
+      return PARSER;
+    }
+
+    @Override
+    public com.google.protobuf.Parser<DescMat> getParserForType() {
+      return PARSER;
+    }
+
+    public DescMat getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface KeyPointOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:KeyPoint)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required double x = 1;</code>
+     */
+    boolean hasX();
+    /**
+     * <code>required double x = 1;</code>
+     */
+    double getX();
+
+    /**
+     * <code>required double y = 2;</code>
+     */
+    boolean hasY();
+    /**
+     * <code>required double y = 2;</code>
+     */
+    double getY();
+  }
+  /**
+   * Protobuf type {@code KeyPoint}
+   */
+  public  static final class KeyPoint extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:KeyPoint)
+      KeyPointOrBuilder {
+    // Use KeyPoint.newBuilder() to construct.
+    private KeyPoint(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private KeyPoint() {
+      x_ = 0D;
+      y_ = 0D;
+    }
+
+    @Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private KeyPoint(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 9: {
+              bitField0_ |= 0x00000001;
+              x_ = input.readDouble();
+              break;
+            }
+            case 17: {
+              bitField0_ |= 0x00000002;
+              y_ = input.readDouble();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return ObjRecServiceProto.internal_static_KeyPoint_descriptor;
+    }
+
+    protected FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return ObjRecServiceProto.internal_static_KeyPoint_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              KeyPoint.class, Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int X_FIELD_NUMBER = 1;
+    private double x_;
+    /**
+     * <code>required double x = 1;</code>
+     */
+    public boolean hasX() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required double x = 1;</code>
+     */
+    public double getX() {
+      return x_;
+    }
+
+    public static final int Y_FIELD_NUMBER = 2;
+    private double y_;
+    /**
+     * <code>required double y = 2;</code>
+     */
+    public boolean hasY() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required double y = 2;</code>
+     */
+    public double getY() {
+      return y_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasX()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasY()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeDouble(1, x_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeDouble(2, y_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(1, x_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(2, y_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    public static KeyPoint parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static KeyPoint parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static KeyPoint parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static KeyPoint parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static KeyPoint parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static KeyPoint parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static KeyPoint parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static KeyPoint parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static KeyPoint parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static KeyPoint parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(KeyPoint prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @Override
+    protected Builder newBuilderForType(
+        BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code KeyPoint}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:KeyPoint)
+        KeyPointOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return ObjRecServiceProto.internal_static_KeyPoint_descriptor;
+      }
+
+      protected FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return ObjRecServiceProto.internal_static_KeyPoint_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                KeyPoint.class, Builder.class);
+      }
+
+      // Construct using ObjRecServiceProto.KeyPoint.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        x_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        y_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return ObjRecServiceProto.internal_static_KeyPoint_descriptor;
+      }
+
+      public KeyPoint getDefaultInstanceForType() {
+        return KeyPoint.getDefaultInstance();
+      }
+
+      public KeyPoint build() {
+        KeyPoint result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public KeyPoint buildPartial() {
+        KeyPoint result = new KeyPoint(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.x_ = x_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.y_ = y_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof KeyPoint) {
+          return mergeFrom((KeyPoint)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(KeyPoint other) {
+        if (other == KeyPoint.getDefaultInstance()) return this;
+        if (other.hasX()) {
+          setX(other.getX());
+        }
+        if (other.hasY()) {
+          setY(other.getY());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasX()) {
+          return false;
+        }
+        if (!hasY()) {
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        KeyPoint parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (KeyPoint) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private double x_ ;
+      /**
+       * <code>required double x = 1;</code>
+       */
+      public boolean hasX() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required double x = 1;</code>
+       */
+      public double getX() {
+        return x_;
+      }
+      /**
+       * <code>required double x = 1;</code>
+       */
+      public Builder setX(double value) {
+        bitField0_ |= 0x00000001;
+        x_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required double x = 1;</code>
+       */
+      public Builder clearX() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        x_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double y_ ;
+      /**
+       * <code>required double y = 2;</code>
+       */
+      public boolean hasY() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required double y = 2;</code>
+       */
+      public double getY() {
+        return y_;
+      }
+      /**
+       * <code>required double y = 2;</code>
+       */
+      public Builder setY(double value) {
+        bitField0_ |= 0x00000002;
+        y_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required double y = 2;</code>
+       */
+      public Builder clearY() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        y_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:KeyPoint)
+    }
+
+    // @@protoc_insertion_point(class_scope:KeyPoint)
+    private static final KeyPoint DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new KeyPoint();
+    }
+
+    public static KeyPoint getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @Deprecated public static final com.google.protobuf.Parser<KeyPoint>
+        PARSER = new com.google.protobuf.AbstractParser<KeyPoint>() {
+      public KeyPoint parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new KeyPoint(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<KeyPoint> parser() {
+      return PARSER;
+    }
+
+    @Override
+    public com.google.protobuf.Parser<KeyPoint> getParserForType() {
+      return PARSER;
+    }
+
+    public KeyPoint getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   /**
    * Protobuf service {@code ObjRecService}
    */
@@ -903,6 +2936,30 @@ public final class ObjRecServiceProto {
               Image request,
               com.google.protobuf.RpcCallback<Annotation> done);
 
+      /**
+       * <code>rpc RecognizeFeatures(.Features) returns (.Annotation);</code>
+       */
+      public abstract void recognizeFeatures(
+              com.google.protobuf.RpcController controller,
+              Features request,
+              com.google.protobuf.RpcCallback<Annotation> done);
+
+      /**
+       * <code>rpc GetImage(.Annotation) returns (.Image);</code>
+       */
+      public abstract void getImage(
+              com.google.protobuf.RpcController controller,
+              Annotation request,
+              com.google.protobuf.RpcCallback<Image> done);
+
+      /**
+       * <code>rpc GetFeatures(.Annotation) returns (.Features);</code>
+       */
+      public abstract void getFeatures(
+              com.google.protobuf.RpcController controller,
+              Annotation request,
+              com.google.protobuf.RpcCallback<Features> done);
+
     }
 
     public static com.google.protobuf.Service newReflectiveService(
@@ -914,6 +2971,30 @@ public final class ObjRecServiceProto {
             Image request,
             com.google.protobuf.RpcCallback<Annotation> done) {
           impl.recognize(controller, request, done);
+        }
+
+        @Override
+        public  void recognizeFeatures(
+            com.google.protobuf.RpcController controller,
+            Features request,
+            com.google.protobuf.RpcCallback<Annotation> done) {
+          impl.recognizeFeatures(controller, request, done);
+        }
+
+        @Override
+        public  void getImage(
+            com.google.protobuf.RpcController controller,
+            Annotation request,
+            com.google.protobuf.RpcCallback<Image> done) {
+          impl.getImage(controller, request, done);
+        }
+
+        @Override
+        public  void getFeatures(
+            com.google.protobuf.RpcController controller,
+            Annotation request,
+            com.google.protobuf.RpcCallback<Features> done) {
+          impl.getFeatures(controller, request, done);
         }
 
       };
@@ -940,6 +3021,12 @@ public final class ObjRecServiceProto {
           switch(method.getIndex()) {
             case 0:
               return impl.recognize(controller, (Image)request);
+            case 1:
+              return impl.recognizeFeatures(controller, (Features)request);
+            case 2:
+              return impl.getImage(controller, (Annotation)request);
+            case 3:
+              return impl.getFeatures(controller, (Annotation)request);
             default:
               throw new AssertionError("Can't get here.");
           }
@@ -956,6 +3043,12 @@ public final class ObjRecServiceProto {
           switch(method.getIndex()) {
             case 0:
               return Image.getDefaultInstance();
+            case 1:
+              return Features.getDefaultInstance();
+            case 2:
+              return Annotation.getDefaultInstance();
+            case 3:
+              return Annotation.getDefaultInstance();
             default:
               throw new AssertionError("Can't get here.");
           }
@@ -972,6 +3065,12 @@ public final class ObjRecServiceProto {
           switch(method.getIndex()) {
             case 0:
               return Annotation.getDefaultInstance();
+            case 1:
+              return Annotation.getDefaultInstance();
+            case 2:
+              return Image.getDefaultInstance();
+            case 3:
+              return Features.getDefaultInstance();
             default:
               throw new AssertionError("Can't get here.");
           }
@@ -987,6 +3086,30 @@ public final class ObjRecServiceProto {
         com.google.protobuf.RpcController controller,
         Image request,
         com.google.protobuf.RpcCallback<Annotation> done);
+
+    /**
+     * <code>rpc RecognizeFeatures(.Features) returns (.Annotation);</code>
+     */
+    public abstract void recognizeFeatures(
+        com.google.protobuf.RpcController controller,
+        Features request,
+        com.google.protobuf.RpcCallback<Annotation> done);
+
+    /**
+     * <code>rpc GetImage(.Annotation) returns (.Image);</code>
+     */
+    public abstract void getImage(
+        com.google.protobuf.RpcController controller,
+        Annotation request,
+        com.google.protobuf.RpcCallback<Image> done);
+
+    /**
+     * <code>rpc GetFeatures(.Annotation) returns (.Features);</code>
+     */
+    public abstract void getFeatures(
+        com.google.protobuf.RpcController controller,
+        Annotation request,
+        com.google.protobuf.RpcCallback<Features> done);
 
     public static final
         com.google.protobuf.Descriptors.ServiceDescriptor
@@ -1015,6 +3138,21 @@ public final class ObjRecServiceProto {
             com.google.protobuf.RpcUtil.<Annotation>specializeCallback(
               done));
           return;
+        case 1:
+          this.recognizeFeatures(controller, (Features)request,
+            com.google.protobuf.RpcUtil.<Annotation>specializeCallback(
+              done));
+          return;
+        case 2:
+          this.getImage(controller, (Annotation)request,
+            com.google.protobuf.RpcUtil.<Image>specializeCallback(
+              done));
+          return;
+        case 3:
+          this.getFeatures(controller, (Annotation)request,
+            com.google.protobuf.RpcUtil.<Features>specializeCallback(
+              done));
+          return;
         default:
           throw new AssertionError("Can't get here.");
       }
@@ -1031,6 +3169,12 @@ public final class ObjRecServiceProto {
       switch(method.getIndex()) {
         case 0:
           return Image.getDefaultInstance();
+        case 1:
+          return Features.getDefaultInstance();
+        case 2:
+          return Annotation.getDefaultInstance();
+        case 3:
+          return Annotation.getDefaultInstance();
         default:
           throw new AssertionError("Can't get here.");
       }
@@ -1047,6 +3191,12 @@ public final class ObjRecServiceProto {
       switch(method.getIndex()) {
         case 0:
           return Annotation.getDefaultInstance();
+        case 1:
+          return Annotation.getDefaultInstance();
+        case 2:
+          return Image.getDefaultInstance();
+        case 3:
+          return Features.getDefaultInstance();
         default:
           throw new AssertionError("Can't get here.");
       }
@@ -1082,6 +3232,51 @@ public final class ObjRecServiceProto {
             Annotation.class,
             Annotation.getDefaultInstance()));
       }
+
+      public  void recognizeFeatures(
+          com.google.protobuf.RpcController controller,
+          Features request,
+          com.google.protobuf.RpcCallback<Annotation> done) {
+        channel.callMethod(
+          getDescriptor().getMethods().get(1),
+          controller,
+          request,
+          Annotation.getDefaultInstance(),
+          com.google.protobuf.RpcUtil.generalizeCallback(
+            done,
+            Annotation.class,
+            Annotation.getDefaultInstance()));
+      }
+
+      public  void getImage(
+          com.google.protobuf.RpcController controller,
+          Annotation request,
+          com.google.protobuf.RpcCallback<Image> done) {
+        channel.callMethod(
+          getDescriptor().getMethods().get(2),
+          controller,
+          request,
+          Image.getDefaultInstance(),
+          com.google.protobuf.RpcUtil.generalizeCallback(
+            done,
+            Image.class,
+            Image.getDefaultInstance()));
+      }
+
+      public  void getFeatures(
+          com.google.protobuf.RpcController controller,
+          Annotation request,
+          com.google.protobuf.RpcCallback<Features> done) {
+        channel.callMethod(
+          getDescriptor().getMethods().get(3),
+          controller,
+          request,
+          Features.getDefaultInstance(),
+          com.google.protobuf.RpcUtil.generalizeCallback(
+            done,
+            Features.class,
+            Features.getDefaultInstance()));
+      }
     }
 
     public static BlockingInterface newBlockingStub(
@@ -1093,6 +3288,21 @@ public final class ObjRecServiceProto {
       public Annotation recognize(
               com.google.protobuf.RpcController controller,
               Image request)
+          throws com.google.protobuf.ServiceException;
+
+      public Annotation recognizeFeatures(
+              com.google.protobuf.RpcController controller,
+              Features request)
+          throws com.google.protobuf.ServiceException;
+
+      public Image getImage(
+              com.google.protobuf.RpcController controller,
+              Annotation request)
+          throws com.google.protobuf.ServiceException;
+
+      public Features getFeatures(
+              com.google.protobuf.RpcController controller,
+              Annotation request)
           throws com.google.protobuf.ServiceException;
     }
 
@@ -1114,6 +3324,42 @@ public final class ObjRecServiceProto {
           Annotation.getDefaultInstance());
       }
 
+
+      public Annotation recognizeFeatures(
+          com.google.protobuf.RpcController controller,
+          Features request)
+          throws com.google.protobuf.ServiceException {
+        return (Annotation) channel.callBlockingMethod(
+          getDescriptor().getMethods().get(1),
+          controller,
+          request,
+          Annotation.getDefaultInstance());
+      }
+
+
+      public Image getImage(
+          com.google.protobuf.RpcController controller,
+          Annotation request)
+          throws com.google.protobuf.ServiceException {
+        return (Image) channel.callBlockingMethod(
+          getDescriptor().getMethods().get(2),
+          controller,
+          request,
+          Image.getDefaultInstance());
+      }
+
+
+      public Features getFeatures(
+          com.google.protobuf.RpcController controller,
+          Annotation request)
+          throws com.google.protobuf.ServiceException {
+        return (Features) channel.callBlockingMethod(
+          getDescriptor().getMethods().get(3),
+          controller,
+          request,
+          Features.getDefaultInstance());
+      }
+
     }
 
     // @@protoc_insertion_point(class_scope:ObjRecService)
@@ -1129,6 +3375,21 @@ public final class ObjRecServiceProto {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Annotation_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Features_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_Features_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_DescMat_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_DescMat_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_KeyPoint_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_KeyPoint_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1139,9 +3400,16 @@ public final class ObjRecServiceProto {
   static {
     String[] descriptorData = {
       "\n\014objrec.proto\"\026\n\005Image\022\r\n\005image\030\001 \002(\014\" " +
-      "\n\nAnnotation\022\022\n\nannotation\030\001 \002(\t21\n\rObjR" +
-      "ecService\022 \n\tRecognize\022\006.Image\032\013.Annotat" +
-      "ionB\027B\022ObjRecServiceProto\210\001\001"
+      "\n\nAnnotation\022\022\n\nannotation\030\001 \002(\t\"A\n\010Feat" +
+      "ures\022\027\n\005descs\030\001 \002(\0132\010.DescMat\022\034\n\tkeypoin" +
+      "ts\030\002 \003(\0132\t.KeyPoint\"A\n\007DescMat\022\014\n\004rows\030\001" +
+      " \002(\005\022\014\n\004cols\030\002 \002(\005\022\014\n\004type\030\003 \002(\005\022\014\n\004data" +
+      "\030\004 \002(\014\" \n\010KeyPoint\022\t\n\001x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001" +
+      "2\246\001\n\rObjRecService\022 \n\tRecognize\022\006.Image\032" +
+      "\013.Annotation\022+\n\021RecognizeFeatures\022\t.Feat" +
+      "ures\032\013.Annotation\022\037\n\010GetImage\022\013.Annotati" +
+      "on\032\006.Image\022%\n\013GetFeatures\022\013.Annotation\032\t",
+      ".FeaturesB\027B\022ObjRecServiceProto\210\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1167,6 +3435,24 @@ public final class ObjRecServiceProto {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Annotation_descriptor,
         new String[] { "Annotation", });
+    internal_static_Features_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_Features_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Features_descriptor,
+        new String[] { "Descs", "Keypoints", });
+    internal_static_DescMat_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_DescMat_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_DescMat_descriptor,
+        new String[] { "Rows", "Cols", "Type", "Data", });
+    internal_static_KeyPoint_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_KeyPoint_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_KeyPoint_descriptor,
+        new String[] { "X", "Y", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
