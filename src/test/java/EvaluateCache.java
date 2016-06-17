@@ -1,4 +1,5 @@
 import org.crowdcache.Cache;
+import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM_NB;
 import org.crowdcache.objreccache.ObjectRecogCache;
 import org.crowdcache.objrec.opencv.FeatureExtractor;
 import org.crowdcache.objrec.opencv.KeypointDescList;
@@ -25,7 +26,7 @@ public class EvaluateCache
             String resultspath = args[2];
 
             FeatureExtractor extractor = new ORB();
-            Matcher matcher = new BFMatcher_HAM();
+            Matcher matcher = new BFMatcher_HAM_NB();
             Recognizer recognizer = new Recognizer(extractor ,extractor, matcher, DBdirpath);
             ObjectRecogCache cache = new ObjectRecogCache(50);
 

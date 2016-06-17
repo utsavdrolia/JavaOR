@@ -63,7 +63,7 @@ public class EvaluateOpenCV
             switch (matchertype)
             {
                 case BIN_NN:
-                    matcher = new BFMatcher_HAM();
+                    matcher = new BFMatcher_HAM_NB();
                     System.out.println("Using NN");
                     break;
                 case BIN_NB:
@@ -75,7 +75,7 @@ public class EvaluateOpenCV
                     System.out.println("Using NB");
                     break;
                 case LSH:
-                    matcher = new LSHMatcher_HAM(lshpars);
+                    matcher = new LSHMatcher_HAM(lshpars, -1);
                     System.out.println("Using LSH");
                     break;
                 default:
