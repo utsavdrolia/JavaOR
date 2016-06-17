@@ -32,8 +32,8 @@ public class Verify
 
         for(DMatch match: good_matches)
         {
-            good_dbkp.add(dbImage.points.get(match.trainIdx).pt);
-            good_scenekp.add(sceneImage.points.get(match.queryIdx).pt);
+            good_dbkp.add(dbImage.points.get(match.trainIdx));
+            good_scenekp.add(sceneImage.points.get(match.queryIdx));
         }
 
         MatOfPoint2f good_dbpoints = new MatOfPoint2f();
