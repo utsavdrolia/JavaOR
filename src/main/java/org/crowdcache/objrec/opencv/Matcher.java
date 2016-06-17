@@ -5,6 +5,7 @@ import org.opencv.core.MatOfDMatch;
 import org.opencv.features2d.DMatch;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by utsav on 2/7/16.
@@ -14,6 +15,7 @@ public abstract class Matcher
     protected Map<String, KeypointDescList> DB;
     private int max_size = Integer.MAX_VALUE;
     private boolean isFixed = false;
+    protected final Boolean trainingLock = true;
 
     /**
      *
@@ -24,11 +26,11 @@ public abstract class Matcher
         if(max_size != -1)
         {
             this.max_size = max_size;
-            this.DB = new LRUCache<>(max_size);
+            this.DB = Collections.synchronizedMap(new LRUCache<>(max_size));
             isFixed = true;
         }
         else
-            this.DB = new HashMap<>();
+            this.DB = new ConcurrentHashMap<>();
     }
 
     /**
@@ -44,7 +46,18 @@ public abstract class Matcher
      * @param sceneImage
      * @return Name of best match
      */
-    public abstract String matchAll(KeypointDescList sceneImage);
+    protected abstract String _matchAll(KeypointDescList sceneImage);
+
+    public String matchAll(KeypointDescList sceneImage)
+    {
+        String ret;
+        synchronized (trainingLock)
+        {
+            ret = _matchAll(sceneImage);
+        }
+        return ret;
+    }
+
     public abstract Matcher newMatcher();
 
 
@@ -56,8 +69,11 @@ public abstract class Matcher
     {
         if(dataset.size() <= max_size)
         {
-            this.DB .putAll(dataset);
-            _train();
+            synchronized (trainingLock)
+            {
+                this.DB.putAll(dataset);
+                _train();
+            }
         }
         else
             throw new IllegalArgumentException("Size of dataset bigger than set size");
@@ -70,15 +86,20 @@ public abstract class Matcher
      */
     public final void insert(String name, KeypointDescList kplist)
     {
-        if(DB.size() == max_size)
+        synchronized (trainingLock)
         {
-            DB.put(name, kplist);
-            _train();
-        }
-        else
-        {
-            DB.put(name, kplist);
-            _insert(name, kplist);
+            if (!DB.containsKey(name))
+            {
+                if (DB.size() == max_size)
+                {
+                    DB.put(name, kplist);
+                    _train();
+                } else
+                {
+                    DB.put(name, kplist);
+                    _insert(name, kplist);
+                }
+            }
         }
     }
 
@@ -86,11 +107,35 @@ public abstract class Matcher
      * Remove a specific image from matcher
      * @param name
      */
-    public final void remove(String name)
+    public final synchronized void remove(String name)
     {
-        if(DB.remove(name) != null)
-            _train();
+        synchronized (trainingLock)
+        {
+            if (DB.remove(name) != null)
+                _train();
+        }
     }
+
+    /**
+     * Do we know about this image?
+     * @param annotation
+     * @return
+     */
+    public boolean contains(String annotation)
+    {
+        return this.DB.containsKey(annotation);
+    }
+
+    /**
+     *
+     * @param annotation Image name
+     * @return Extracted {@link KeypointDescList} for the image
+     */
+    public KeypointDescList get(String annotation)
+    {
+        return this.DB.get(annotation);
+    }
+
     /**
      * Insert one image into matcher
      */

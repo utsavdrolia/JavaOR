@@ -29,17 +29,6 @@ public class BFMatcher_HAM_NB extends AbstractNBMatcher
     }
 
     /**
-     *
-     * @param path For matcher params
-     * @param size Size of Matcher
-     */
-    public BFMatcher_HAM_NB(String path, Integer size)
-    {
-        this(size);
-        matcher.read(path);
-    }
-
-    /**
      * @param size Size of Matcher. -1 for {@link Integer#MAX_VALUE}
      */
     public BFMatcher_HAM_NB(int size)

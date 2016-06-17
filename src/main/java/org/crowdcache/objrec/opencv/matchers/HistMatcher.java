@@ -61,7 +61,7 @@ public class HistMatcher extends Matcher
     }
 
     @Override
-    public String matchAll(KeypointDescList sceneImage)
+    public String _matchAll(KeypointDescList sceneImage)
     {
         return null;
     }

@@ -59,7 +59,7 @@ public abstract class BFMatcher_HAM extends Matcher
     }
 
     @Override
-    public String matchAll(KeypointDescList sceneImage)
+    public String _matchAll(KeypointDescList sceneImage)
     {
         String ret = "None";
         Double score = Double.MIN_VALUE;

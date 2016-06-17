@@ -1,18 +1,13 @@
 package org.crowdcache.objrec.opencv;
 
 import org.crowdcache.objrec.opencv.extractors.ORB;
-import org.crowdcache.objrec.opencv.extractors.SIFTFeatureExtractor;
-import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2_NB;
 import org.crowdcache.objrec.opencv.matchers.LSHMatcher_HAM;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
-import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
-import java.util.Map;
 
 import static org.opencv.imgproc.Imgproc.resize;
 
@@ -22,9 +17,8 @@ import static org.opencv.imgproc.Imgproc.resize;
 public class Recognizer
 {
 
-    private final Map<String, KeypointDescList> DB;
-    private final FeatureExtractor extractor;
-    private final Matcher matcher;
+    public FeatureExtractor extractor;
+    public Matcher matcher;
 
     /**
      * Loads the DB in memory so that it can be queried repeatedly using the recognize function
@@ -36,16 +30,16 @@ public class Recognizer
     {
         this.extractor = extractor;
         this.matcher = matcher;
-        this.DB = DBLoader.processDB(dblistpath, dbextractor);
-        this.matcher.train(DB);
+        this.matcher.train(DBLoader.processDB(dblistpath, dbextractor));
     }
 
-    public Recognizer(FeatureExtractor dbextractor, FeatureExtractor extractor, Matcher matcher, Map<String, KeypointDescList> db)
+    public Recognizer(FeatureExtractor extractor, Matcher matcher)
     {
         this.extractor = extractor;
         this.matcher = matcher;
-        this.DB = db;
     }
+
+
 
     /**
      * Extract features from image, match against all of the images in the DB.

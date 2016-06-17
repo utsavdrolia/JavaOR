@@ -89,7 +89,7 @@ public abstract class BFMatcher_HAM2 extends Matcher
     }
 
     @Override
-    public String matchAll(KeypointDescList sceneImage) {
+    public String _matchAll(KeypointDescList sceneImage) {
         return null;
     }
 }

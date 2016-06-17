@@ -11,6 +11,7 @@ import org.opencv.features2d.DescriptorMatcher;
 import org.opencv.highgui.Highgui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,6 @@ public abstract class AbstractNBMatcher extends Matcher
     protected int NUM_MATCHES_THRESH = 3;
     protected List<String> objects;
     protected Double SCORE_THRESH = 0.6;
-    private final Boolean trainingLock = true;
 
 
 
@@ -34,6 +34,7 @@ public abstract class AbstractNBMatcher extends Matcher
     protected AbstractNBMatcher(int size)
     {
         super(size);
+        objects = Collections.synchronizedList(new ArrayList<>());
     }
 
     /**
@@ -41,15 +42,14 @@ public abstract class AbstractNBMatcher extends Matcher
      */
     public void _insert(String name, KeypointDescList kplist)
     {
-
-        objects.add(name);
         List<Mat> m = new ArrayList<>();
 
-        synchronized (trainingLock)
-        {
-            m.add(kplist.descriptions);
-            matcher.add(m);
-        }
+        objects.add(name);
+        m.add(kplist.descriptions);
+        matcher.add(m);
+
+//        System.out.println("Image:" + name);
+//        System.out.println("Train:" + matcher.getTrainDescriptors().size() + " DB:" + DB.size() + " Objects:"+objects.size());
     }
 
     /**
@@ -57,14 +57,12 @@ public abstract class AbstractNBMatcher extends Matcher
      */
     public void _train()
     {
-        synchronized (trainingLock)
+        objects.clear();
+        matcher.clear();
+        List<String> keys = new ArrayList<>(this.DB.keySet());
+        for (String object : keys)
         {
-            objects = new ArrayList<>();
-            this.matcher.clear();
-            for (String object : this.DB.keySet())
-            {
-                _insert(object, this.DB.get(object));
-            }
+            _insert(object, this.DB.get(object));
         }
     }
 
@@ -75,7 +73,7 @@ public abstract class AbstractNBMatcher extends Matcher
     }
 
     @Override
-    public String matchAll(KeypointDescList sceneImage)
+    protected String _matchAll(KeypointDescList sceneImage)
     {
 
         List<MatOfDMatch> matches = new ArrayList<>();
@@ -84,10 +82,7 @@ public abstract class AbstractNBMatcher extends Matcher
         String ret = "None";
         Double score = Double.MIN_VALUE;
 
-        synchronized (trainingLock)
-        {
-            matcher.knnMatch(sceneImage.descriptions, matches, 2);
-        }
+        matcher.knnMatch(sceneImage.descriptions, matches, 2);
 
         // Ratio test
         good_matches = ratioTest(matches);
@@ -114,6 +109,7 @@ public abstract class AbstractNBMatcher extends Matcher
                     }
                 }
             }
+
         }
 
 
