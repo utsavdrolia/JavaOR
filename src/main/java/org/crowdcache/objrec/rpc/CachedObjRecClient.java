@@ -5,12 +5,8 @@ import org.crowdcache.objrec.opencv.FeatureExtractor;
 import org.crowdcache.objrec.opencv.KeypointDescList;
 import org.crowdcache.objrec.opencv.Matcher;
 import org.crowdcache.objrec.opencv.Recognizer;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by utsav on 6/16/16.
@@ -19,7 +15,8 @@ import java.util.List;
 public class CachedObjRecClient extends ObjRecClient
 {
     // Cache
-    private Recognizer recognizer;
+    protected Recognizer recognizer;
+    private String name;
 
     /**
      *
@@ -27,25 +24,73 @@ public class CachedObjRecClient extends ObjRecClient
      * @param matcher {@link Matcher} To use in the cache
      * @param server {@link ObjRecServer} to connect to
      */
-    public CachedObjRecClient(FeatureExtractor extractor, Matcher matcher, String server)
+    public CachedObjRecClient(FeatureExtractor extractor, Matcher matcher, String server, String name)
     {
         super(server);
         recognizer = new Recognizer(extractor, matcher);
+        this.name = name;
     }
 
     @Override
     public void recognize(String imagePath, ObjRecCallback cb) throws IOException
     {
+        // Extract Keypoints
         KeypointDescList kplist = recognizer.extractor.extract(imagePath);
+        // Recognize from local cache
         String res = recognizer.recognize(kplist);
+        // Check if Hit
         if(!res.equals("None"))
         {
             cb.run(res);
-            System.out.println("*!!!Cache Hit!!!*");
+            System.out.println(name+ " : *!!!Cache Hit!!!*");
         }
         else
-        ObjRecServiceStub.recognizeFeatures(rpc, Utils.serialize(kplist), new CachedObjRecCallback(cb));
-//            super.recognize(imagePath, new CachedObjRecCallback(cb));
+            // If not, send to server
+            ObjRecServiceStub.recognizeFeatures(rpc, Utils.serialize(kplist), new CachedObjRecCallback(cb));
+    }
+
+    /**
+     * Check in local cache if we have image and if not send request to cloud
+     * @param features
+     * @param cb
+     */
+    public void recognize(ObjRecServiceProto.Features features, ObjRecCallback cb)
+    {
+        KeypointDescList kplist = Utils.deserialize(features);
+        String res = recognizer.recognize(kplist);
+        // Check if Hit
+        if(!res.equals("None"))
+        {
+            cb.run(res);
+            System.out.println(name+ " : *!!!Cache Hit!!!*");
+        }
+        else
+            // If not, send to server
+            ObjRecServiceStub.recognizeFeatures(rpc, features, new CachedObjRecCallback(cb));
+    }
+
+
+    /**
+     * Check in local cache if we have image and if not send request to cloud
+     * @param imagePath
+     * @param cb
+     * @throws IOException
+     */
+    public void recognize(byte[] imagePath, ObjRecCallback cb)
+    {
+        // Extract Keypoints
+        KeypointDescList kplist = recognizer.extractor.extract(imagePath);
+        // Recognize from local cache
+        String res = recognizer.recognize(kplist);
+        // Check if Hit
+        if(!res.equals("None"))
+        {
+            cb.run(res);
+            System.out.println(name+ " : *!!!Cache Hit!!!*");
+        }
+        else
+            // If not, send to server
+            ObjRecServiceStub.recognizeFeatures(rpc, Utils.serialize(kplist), new CachedObjRecCallback(cb));
     }
 
     /**
@@ -71,13 +116,14 @@ public class CachedObjRecClient extends ObjRecClient
             if(!annotation.equals("None"))
                 if(!recognizer.matcher.contains(annotation))
                 {
+                    // If not, fetch from server
                     ObjRecServiceStub.getFeatures(rpc,
                             ObjRecServiceProto.Annotation.newBuilder().setAnnotation(annotation).build(),
                             new FeaturesRecvCallback(annotation));
                 }
                 else
                 {
-                    System.out.println("Present in Cache but not matched");
+                    System.out.println(name+ " : Present in Cache but not matched");
                 }
         }
     }
@@ -98,7 +144,7 @@ public class CachedObjRecClient extends ObjRecClient
         @Override
         public void run(ObjRecServiceProto.Features features)
         {
-            System.out.println("Received Features from Server");
+            System.out.println(name+ " : Received Features from Server");
             KeypointDescList kdlist = Utils.deserialize(features);
             recognizer.matcher.insert(annotation, kdlist);
         }
