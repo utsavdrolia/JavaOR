@@ -26,8 +26,6 @@ public abstract class AbstractNBMatcher extends Matcher
     protected List<String> objects;
     protected Double SCORE_THRESH = 0.6;
 
-
-
     /**
      * @param size Size of Matcher. -1 for {@link Integer#MAX_VALUE}
      */
@@ -47,7 +45,7 @@ public abstract class AbstractNBMatcher extends Matcher
         objects.add(name);
         m.add(kplist.descriptions);
         matcher.add(m);
-
+        matcher.train();
 //        System.out.println("Image:" + name);
 //        System.out.println("Train:" + matcher.getTrainDescriptors().size() + " DB:" + DB.size() + " Objects:"+objects.size());
     }

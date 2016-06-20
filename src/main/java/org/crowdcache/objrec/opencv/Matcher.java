@@ -6,6 +6,8 @@ import org.opencv.features2d.DMatch;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by utsav on 2/7/16.
@@ -15,7 +17,7 @@ public abstract class Matcher
     protected Map<String, KeypointDescList> DB;
     private int max_size = Integer.MAX_VALUE;
     private boolean isFixed = false;
-    protected final Boolean trainingLock = true;
+    private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     /**
      *
@@ -51,10 +53,11 @@ public abstract class Matcher
     public String matchAll(KeypointDescList sceneImage)
     {
         String ret;
-        synchronized (trainingLock)
+        readWriteLock.readLock().lock();
         {
             ret = _matchAll(sceneImage);
         }
+        readWriteLock.readLock().unlock();
         return ret;
     }
 
@@ -69,11 +72,12 @@ public abstract class Matcher
     {
         if(dataset.size() <= max_size)
         {
-            synchronized (trainingLock)
+            readWriteLock.writeLock().lock();
             {
                 this.DB.putAll(dataset);
                 _train();
             }
+            readWriteLock.writeLock().unlock();
         }
         else
             throw new IllegalArgumentException("Size of dataset bigger than set size");
@@ -86,7 +90,7 @@ public abstract class Matcher
      */
     public final void insert(String name, KeypointDescList kplist)
     {
-        synchronized (trainingLock)
+        readWriteLock.writeLock().lock();
         {
             if (!DB.containsKey(name))
             {
@@ -101,6 +105,7 @@ public abstract class Matcher
                 }
             }
         }
+        readWriteLock.writeLock().unlock();
     }
 
     /**
@@ -109,11 +114,12 @@ public abstract class Matcher
      */
     public final synchronized void remove(String name)
     {
-        synchronized (trainingLock)
+        readWriteLock.writeLock().lock();
         {
             if (DB.remove(name) != null)
                 _train();
         }
+        readWriteLock.writeLock().unlock();
     }
 
     /**
