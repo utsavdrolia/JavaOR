@@ -27,7 +27,6 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
     @Override
     public void recognize(RpcController controller, ObjRecServiceProto.Image request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
-        //TODO: Parallelize - push request into a queue and have a set of workers process the queue
         byte[] img = request.getImage().toByteArray();
         String ret = recognizer.recognize(img);
         done.run(ObjRecServiceProto.Annotation.newBuilder().setAnnotation(ret).build());
