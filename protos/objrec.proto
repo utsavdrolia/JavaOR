@@ -1,6 +1,7 @@
 syntax = "proto2";
 option java_outer_classname = "ObjRecServiceProto";
 option java_generic_services = true;
+option optimize_for = SPEED;
 
 service ObjRecService
 {
@@ -18,12 +19,14 @@ message Image
 message Annotation
 {
     required string annotation = 1;
+    repeated Latency latencies = 2;
 }
 
 message Features
 {
     required DescMat descs = 1;
     repeated KeyPoint keypoints = 2;
+    repeated Latency latencies = 3;
 }
 
 message DescMat
@@ -38,4 +41,11 @@ message KeyPoint
 {
     required double x = 1;
     required double y = 2;
+}
+
+message Latency
+{
+    required string name = 1;
+    required int32 computation = 2;
+    required int32 network = 3;
 }
