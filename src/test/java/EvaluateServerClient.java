@@ -19,8 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class EvaluateServerClient
 {
-    private static ConcurrentHashMap<String, Result> resultMap = new ConcurrentHashMap<>();
-
     public static void main(String args[]) throws IOException, InterruptedException
     {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -42,46 +40,19 @@ public class EvaluateServerClient
 
             FeatureExtractor dbextractor = Util.createExtractor(featuretype, pars_db);
             FeatureExtractor extractor = Util.createExtractor(featuretype, pars);
-            Matcher servermatcher = Util.createMatcher(matchertype_db, matcherpars_db, -1);
-            ObjRecServer objRecServer = new ObjRecServer(dbextractor, extractor, servermatcher, DBdirpath, "192.168.25.145:10101");
+            Matcher servermatcher = Util.createMatcher(matchertype_db, matcherpars_db, -1, 3, 0.6);
+            ObjRecServer objRecServer = new ObjRecServer(dbextractor, extractor, servermatcher, DBdirpath, serverAdd);
 
-            Matcher cloudletmatcher = Util.createMatcher(matchertype_db, matcherpars_db, matchercache_size*5);
-            ObjRecCloudlet objRecCloudlet = new ObjRecCloudlet(extractor, cloudletmatcher, serverAdd, "192.168.25.145:10101");
+//            Matcher cloudletmatcher = Util.createMatcher(matchertype_db, matcherpars_db, matchercache_size*5, 6, 0.7);
+//            ObjRecCloudlet objRecCloudlet = new ObjRecCloudlet(extractor, cloudletmatcher, serverAdd, "192.168.25.145:10101");
 
-            Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, matchercache_size);
+            Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, matchercache_size, 6, 0.8);
             CachedObjRecClient objRecClient = new CachedObjRecClient(extractor, clientmatcher, serverAdd, "Client");
 
 //            ObjRecClient objRecClient = new ObjRecClient(serverAdd);
-            BufferedReader dir = new BufferedReader(new FileReader(queryList));
-            BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
 
-            Integer count = 0;
-            String line = dir.readLine();
-            Long procstart = System.currentTimeMillis();
-            ArrayList<String> querylist = new ArrayList<>();
-            do
-            {
-                String[] chunks = line.split(",");
-                String img = chunks[0] + "_" + count.toString();
-                String imgpath = chunks[1];
-                querylist.add(img);
-                objRecClient.recognize(imgpath, new EvaluateCallback(System.currentTimeMillis(), img));
-                Thread.sleep(500);
-                line = dir.readLine();
-                count++;
-                //System.out.println(count);
-            }while ((line != null));
-//            resultsfile.write(img + "," + result + "," + Long.toString(end - start) + "\n");
-//            System.out.println(img + "," + result + "," + Long.toString(end - start));
-            for(String key: querylist)
-            {
-                while(!resultMap.containsKey(key));
-            }
-            System.out.println("Results:\n" + resultMap.toString());
-            Long procend = System.currentTimeMillis() - procstart;
-            //System.out.println("Time:" + procend + " Count:" + count);
-            resultsfile.flush();
-            resultsfile.close();
+            Util.evaluate(objRecClient, queryList, resultspath);
+
         }
         else
         {
@@ -90,39 +61,4 @@ public class EvaluateServerClient
         System.exit(0);
     }
 
-
-    private static class EvaluateCallback extends ObjRecCallback
-    {
-        long startime;
-        long endtime;
-        String query;
-        public EvaluateCallback(long millis, String query)
-        {
-            super();
-            startime = millis;
-            this.query = query;
-        }
-
-        @Override
-        public void run(ObjRecServiceProto.Annotation annotation)
-        {
-            endtime = System.currentTimeMillis();
-            Result res = new Result();
-            res.result = annotation.getAnnotation();
-            res.time = annotation.getLatenciesList();
-            System.out.println(query + "," + annotation + "," + Long.toString(endtime - startime));
-            resultMap.put(query, res);
-        }
-    }
-
-    private static class Result
-    {
-        public String result;
-        public List<ObjRecServiceProto.Latency> time;
-
-        public String toString()
-        {
-            return result + ":" + String.valueOf(time);
-        }
-    }
 }
