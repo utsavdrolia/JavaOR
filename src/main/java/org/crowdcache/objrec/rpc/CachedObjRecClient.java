@@ -99,7 +99,7 @@ public class CachedObjRecClient extends ObjRecClient
             System.out.println(name+ " : *!!!Cache Hit!!!*");
         }
         else
-            // If not, send to server
+            // If not, send upwards
             ObjRecServiceStub.recognizeFeatures(rpc, features, new CachedObjRecCallback(cb, complatency));
     }
 
@@ -114,7 +114,7 @@ public class CachedObjRecClient extends ObjRecClient
         private long start;
         ObjRecServiceProto.Latency.Builder complatency;
 
-        public CachedObjRecCallback(ObjRecCallback cb, ObjRecServiceProto.Latency.Builder complatency)
+        CachedObjRecCallback(ObjRecCallback cb, ObjRecServiceProto.Latency.Builder complatency)
         {
             this.cb = cb;
             this.complatency = complatency;
@@ -155,18 +155,22 @@ public class CachedObjRecClient extends ObjRecClient
     private class FeaturesRecvCallback implements RpcCallback<ObjRecServiceProto.Features>
     {
         private String annotation;
-
+        private long start;
         public FeaturesRecvCallback(String annotation)
         {
             this.annotation = annotation;
+            this.start = System.currentTimeMillis();
         }
 
         @Override
         public void run(ObjRecServiceProto.Features features)
         {
+            long compstart = System.currentTimeMillis();
             System.out.println(name+ " : Received Features from Server");
             KeypointDescList kdlist = Utils.deserialize(features);
             recognizer.matcher.insert(annotation, kdlist);
+            long compdur = System.currentTimeMillis() - compstart;
+            long netdur = compstart - start;
         }
     }
 }

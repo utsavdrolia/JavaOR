@@ -36,6 +36,7 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
     public void recognizeFeatures(RpcController controller, ObjRecServiceProto.Features request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
         // Check in local cache if we have image and if not send request to cloud
+//        System.out.println("Recv:Cloudlet");
         objRecClient.recognize(request, new CloudletObjRecCallback(done));
     }
 

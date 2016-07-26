@@ -17,7 +17,7 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
 {
     private Recognizer recognizer;
     private RPCServer rpc;
-    private final String CLOUD = "Cloud";
+    private final String NAME = "Cloud";
     public ObjRecServer(FeatureExtractor dbextractor, FeatureExtractor extractor, Matcher matcher, String dblistpath, String myaddress) throws IOException
     {
         recognizer = new Recognizer(dbextractor, extractor, matcher, dblistpath);
@@ -33,7 +33,7 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
         done.run(ObjRecServiceProto.Annotation.newBuilder()
                 .setAnnotation(ret)
                 .addLatencies(ObjRecServiceProto.Latency.newBuilder()
-                        .setName(CLOUD)
+                        .setName(NAME)
                         .setComputation((int) (System.currentTimeMillis() - start)))
                 .build());
     }
@@ -47,7 +47,7 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
         done.run(ObjRecServiceProto.Annotation.newBuilder()
                 .setAnnotation(ret)
                 .addLatencies(ObjRecServiceProto.Latency.newBuilder()
-                        .setName(CLOUD)
+                        .setName(NAME)
                         .setComputation((int) (System.currentTimeMillis() - start)))
                 .build());
     }
@@ -67,7 +67,7 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
         // Return
         done.run(features
                 .addLatencies(ObjRecServiceProto.Latency.newBuilder()
-                        .setName(CLOUD)
+                        .setName(NAME)
                         .setComputation((int) (System.currentTimeMillis() - start)))
                 .build());
     }

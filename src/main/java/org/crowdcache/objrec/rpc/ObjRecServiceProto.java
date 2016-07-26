@@ -3681,20 +3681,20 @@ public final class ObjRecServiceProto {
         getNameBytes();
 
     /**
-     * <code>required int32 computation = 2;</code>
+     * <code>optional int32 computation = 2;</code>
      */
     boolean hasComputation();
     /**
-     * <code>required int32 computation = 2;</code>
+     * <code>optional int32 computation = 2;</code>
      */
     int getComputation();
 
     /**
-     * <code>required int32 network = 3;</code>
+     * <code>optional int32 network = 3;</code>
      */
     boolean hasNetwork();
     /**
-     * <code>required int32 network = 3;</code>
+     * <code>optional int32 network = 3;</code>
      */
     int getNetwork();
   }
@@ -3829,13 +3829,13 @@ public final class ObjRecServiceProto {
     public static final int COMPUTATION_FIELD_NUMBER = 2;
     private int computation_;
     /**
-     * <code>required int32 computation = 2;</code>
+     * <code>optional int32 computation = 2;</code>
      */
     public boolean hasComputation() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required int32 computation = 2;</code>
+     * <code>optional int32 computation = 2;</code>
      */
     public int getComputation() {
       return computation_;
@@ -3844,13 +3844,13 @@ public final class ObjRecServiceProto {
     public static final int NETWORK_FIELD_NUMBER = 3;
     private int network_;
     /**
-     * <code>required int32 network = 3;</code>
+     * <code>optional int32 network = 3;</code>
      */
     public boolean hasNetwork() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required int32 network = 3;</code>
+     * <code>optional int32 network = 3;</code>
      */
     public int getNetwork() {
       return network_;
@@ -3863,14 +3863,6 @@ public final class ObjRecServiceProto {
       if (isInitialized == 0) return false;
 
       if (!hasName()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasComputation()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasNetwork()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -4104,12 +4096,6 @@ public final class ObjRecServiceProto {
         if (!hasName()) {
           return false;
         }
-        if (!hasComputation()) {
-          return false;
-        }
-        if (!hasNetwork()) {
-          return false;
-        }
         return true;
       }
 
@@ -4210,19 +4196,19 @@ public final class ObjRecServiceProto {
 
       private int computation_ ;
       /**
-       * <code>required int32 computation = 2;</code>
+       * <code>optional int32 computation = 2;</code>
        */
       public boolean hasComputation() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required int32 computation = 2;</code>
+       * <code>optional int32 computation = 2;</code>
        */
       public int getComputation() {
         return computation_;
       }
       /**
-       * <code>required int32 computation = 2;</code>
+       * <code>optional int32 computation = 2;</code>
        */
       public Builder setComputation(int value) {
         bitField0_ |= 0x00000002;
@@ -4231,7 +4217,7 @@ public final class ObjRecServiceProto {
         return this;
       }
       /**
-       * <code>required int32 computation = 2;</code>
+       * <code>optional int32 computation = 2;</code>
        */
       public Builder clearComputation() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -4242,19 +4228,19 @@ public final class ObjRecServiceProto {
 
       private int network_ ;
       /**
-       * <code>required int32 network = 3;</code>
+       * <code>optional int32 network = 3;</code>
        */
       public boolean hasNetwork() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required int32 network = 3;</code>
+       * <code>optional int32 network = 3;</code>
        */
       public int getNetwork() {
         return network_;
       }
       /**
-       * <code>required int32 network = 3;</code>
+       * <code>optional int32 network = 3;</code>
        */
       public Builder setNetwork(int value) {
         bitField0_ |= 0x00000004;
@@ -4263,7 +4249,7 @@ public final class ObjRecServiceProto {
         return this;
       }
       /**
-       * <code>required int32 network = 3;</code>
+       * <code>optional int32 network = 3;</code>
        */
       public Builder clearNetwork() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -4802,7 +4788,7 @@ public final class ObjRecServiceProto {
       "\007DescMat\022\014\n\004rows\030\001 \002(\005\022\014\n\004cols\030\002 \002(\005\022\014\n\004" +
       "type\030\003 \002(\005\022\014\n\004data\030\004 \002(\014\" \n\010KeyPoint\022\t\n\001" +
       "x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001\"=\n\007Latency\022\014\n\004name\030\001 " +
-      "\002(\t\022\023\n\013computation\030\002 \002(\005\022\017\n\007network\030\003 \002(" +
+      "\002(\t\022\023\n\013computation\030\002 \001(\005\022\017\n\007network\030\003 \001(" +
       "\0052\246\001\n\rObjRecService\022 \n\tRecognize\022\006.Image",
       "\032\013.Annotation\022+\n\021RecognizeFeatures\022\t.Fea" +
       "tures\032\013.Annotation\022\037\n\010GetImage\022\013.Annotat" +
