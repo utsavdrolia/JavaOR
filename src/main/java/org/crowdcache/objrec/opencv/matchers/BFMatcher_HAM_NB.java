@@ -29,6 +29,19 @@ public class BFMatcher_HAM_NB extends AbstractNBMatcher
     }
 
     /**
+     *
+     * @param size Size of matcher
+     * @param match_thresh Min. Number of matches
+     * @param score_thresh Min. score
+     */
+    public BFMatcher_HAM_NB(int size, int match_thresh, Double score_thresh)
+    {
+        this(size);
+        NUM_MATCHES_THRESH = match_thresh;
+        SCORE_THRESH = score_thresh;
+    }
+
+    /**
      * @param size Size of Matcher. -1 for {@link Integer#MAX_VALUE}
      */
     public BFMatcher_HAM_NB(int size)
@@ -36,7 +49,7 @@ public class BFMatcher_HAM_NB extends AbstractNBMatcher
         super(size);
         matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
         NUM_MATCHES_THRESH = 3;
-        SCORE_THRESH = 0.6;
+        SCORE_THRESH = 0.8;
     }
 
     public static void main(String args[])
