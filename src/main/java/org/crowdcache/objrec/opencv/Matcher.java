@@ -28,7 +28,7 @@ public abstract class Matcher
         if(max_size != -1)
         {
             this.max_size = max_size;
-            this.DB = Collections.synchronizedMap(new LRUCache<>(max_size));
+            this.DB = Collections.synchronizedMap(new LRUCache<String, KeypointDescList>(max_size));
             isFixed = true;
         }
         else
