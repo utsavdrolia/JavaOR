@@ -16,12 +16,13 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
 {
     private RPCServer listeningrpc;
     private CachedObjRecClient objRecClient;
+    private final String CLOUDLET = "Cloudlet";
 
 
     public ObjRecCloudlet(FeatureExtractor extractor, Matcher matcher, String myaddress, String serveraddress) throws IOException
     {
         listeningrpc = new RPCServer(myaddress, this);
-        objRecClient = new CachedObjRecClient(extractor, matcher, serveraddress, "Cloudlet");
+        objRecClient = new CachedObjRecClient(extractor, matcher, serveraddress, CLOUDLET);
     }
 
 
@@ -35,6 +36,7 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
     public void recognizeFeatures(RpcController controller, ObjRecServiceProto.Features request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
         // Check in local cache if we have image and if not send request to cloud
+//        System.out.println("Recv:Cloudlet");
         objRecClient.recognize(request, new CloudletObjRecCallback(done));
     }
 
@@ -53,10 +55,15 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
     @Override
     public void getFeatures(RpcController controller, ObjRecServiceProto.Annotation request, RpcCallback<ObjRecServiceProto.Features> done)
     {
+        Long start = System.currentTimeMillis();
         KeypointDescList kp = objRecClient.recognizer.matcher.get(request.getAnnotation());
-        ObjRecServiceProto.Features features = Utils.serialize(kp);
+        ObjRecServiceProto.Features.Builder features = Utils.serialize(kp);
         // Return
-        done.run(features);
+        done.run(features
+                .addLatencies(ObjRecServiceProto.Latency.newBuilder()
+                        .setName(CLOUDLET)
+                        .setComputation((int) (System.currentTimeMillis() - start)))
+                .build());
     }
 
     private class CloudletObjRecCallback extends ObjRecCallback
@@ -69,9 +76,9 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
         }
 
         @Override
-        public void run(String annotation)
+        public void run(ObjRecServiceProto.Annotation annotation)
         {
-            done.run(ObjRecServiceProto.Annotation.newBuilder().setAnnotation(annotation).build());
+            done.run(annotation);
         }
     }
 }

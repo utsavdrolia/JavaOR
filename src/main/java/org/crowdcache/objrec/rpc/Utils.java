@@ -18,7 +18,7 @@ public class Utils
      * @param kp {@link KeypointDescList}
      * @return {@link org.crowdcache.objrec.rpc.ObjRecServiceProto.Features}
      */
-    public static ObjRecServiceProto.Features serialize(KeypointDescList kp)
+    public static ObjRecServiceProto.Features.Builder serialize(KeypointDescList kp)
     {
         Mat descs = kp.descriptions;
         ArrayList<Point> points = kp.points;
@@ -39,9 +39,8 @@ public class Utils
                     setX(p.x).
                     setY(p.y).build());
         }
-        ObjRecServiceProto.Features features = reply.build();
         // Return
-        return features;
+        return reply;
     }
 
     /**

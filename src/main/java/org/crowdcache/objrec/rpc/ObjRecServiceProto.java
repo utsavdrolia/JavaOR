@@ -426,6 +426,30 @@ public final class ObjRecServiceProto {
      */
     com.google.protobuf.ByteString
         getAnnotationBytes();
+
+    /**
+     * <code>repeated .Latency latencies = 2;</code>
+     */
+    java.util.List<Latency>
+        getLatenciesList();
+    /**
+     * <code>repeated .Latency latencies = 2;</code>
+     */
+    Latency getLatencies(int index);
+    /**
+     * <code>repeated .Latency latencies = 2;</code>
+     */
+    int getLatenciesCount();
+    /**
+     * <code>repeated .Latency latencies = 2;</code>
+     */
+    java.util.List<? extends LatencyOrBuilder>
+        getLatenciesOrBuilderList();
+    /**
+     * <code>repeated .Latency latencies = 2;</code>
+     */
+    LatencyOrBuilder getLatenciesOrBuilder(
+            int index);
   }
   /**
    * Protobuf type {@code Annotation}
@@ -440,6 +464,7 @@ public final class ObjRecServiceProto {
     }
     private Annotation() {
       annotation_ = "";
+      latencies_ = java.util.Collections.emptyList();
     }
 
     @Override
@@ -476,6 +501,14 @@ public final class ObjRecServiceProto {
               annotation_ = bs;
               break;
             }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                latencies_ = new java.util.ArrayList<Latency>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              latencies_.add(input.readMessage(Latency.parser(), extensionRegistry));
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -484,6 +517,9 @@ public final class ObjRecServiceProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          latencies_ = java.util.Collections.unmodifiableList(latencies_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -543,6 +579,41 @@ public final class ObjRecServiceProto {
       }
     }
 
+    public static final int LATENCIES_FIELD_NUMBER = 2;
+    private java.util.List<Latency> latencies_;
+    /**
+     * <code>repeated .Latency latencies = 2;</code>
+     */
+    public java.util.List<Latency> getLatenciesList() {
+      return latencies_;
+    }
+    /**
+     * <code>repeated .Latency latencies = 2;</code>
+     */
+    public java.util.List<? extends LatencyOrBuilder>
+        getLatenciesOrBuilderList() {
+      return latencies_;
+    }
+    /**
+     * <code>repeated .Latency latencies = 2;</code>
+     */
+    public int getLatenciesCount() {
+      return latencies_.size();
+    }
+    /**
+     * <code>repeated .Latency latencies = 2;</code>
+     */
+    public Latency getLatencies(int index) {
+      return latencies_.get(index);
+    }
+    /**
+     * <code>repeated .Latency latencies = 2;</code>
+     */
+    public LatencyOrBuilder getLatenciesOrBuilder(
+        int index) {
+      return latencies_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -553,6 +624,12 @@ public final class ObjRecServiceProto {
         memoizedIsInitialized = 0;
         return false;
       }
+      for (int i = 0; i < getLatenciesCount(); i++) {
+        if (!getLatencies(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -561,6 +638,9 @@ public final class ObjRecServiceProto {
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 1, annotation_);
+      }
+      for (int i = 0; i < latencies_.size(); i++) {
+        output.writeMessage(2, latencies_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -572,6 +652,10 @@ public final class ObjRecServiceProto {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(1, annotation_);
+      }
+      for (int i = 0; i < latencies_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, latencies_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -687,12 +771,19 @@ public final class ObjRecServiceProto {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getLatenciesFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
         annotation_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
+        if (latenciesBuilder_ == null) {
+          latencies_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          latenciesBuilder_.clear();
+        }
         return this;
       }
 
@@ -721,6 +812,15 @@ public final class ObjRecServiceProto {
           to_bitField0_ |= 0x00000001;
         }
         result.annotation_ = annotation_;
+        if (latenciesBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            latencies_ = java.util.Collections.unmodifiableList(latencies_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.latencies_ = latencies_;
+        } else {
+          result.latencies_ = latenciesBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -742,6 +842,32 @@ public final class ObjRecServiceProto {
           annotation_ = other.annotation_;
           onChanged();
         }
+        if (latenciesBuilder_ == null) {
+          if (!other.latencies_.isEmpty()) {
+            if (latencies_.isEmpty()) {
+              latencies_ = other.latencies_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureLatenciesIsMutable();
+              latencies_.addAll(other.latencies_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.latencies_.isEmpty()) {
+            if (latenciesBuilder_.isEmpty()) {
+              latenciesBuilder_.dispose();
+              latenciesBuilder_ = null;
+              latencies_ = other.latencies_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              latenciesBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getLatenciesFieldBuilder() : null;
+            } else {
+              latenciesBuilder_.addAllMessages(other.latencies_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -750,6 +876,11 @@ public final class ObjRecServiceProto {
       public final boolean isInitialized() {
         if (!hasAnnotation()) {
           return false;
+        }
+        for (int i = 0; i < getLatenciesCount(); i++) {
+          if (!getLatencies(i).isInitialized()) {
+            return false;
+          }
         }
         return true;
       }
@@ -849,6 +980,246 @@ public final class ObjRecServiceProto {
         return this;
       }
 
+      private java.util.List<Latency> latencies_ =
+        java.util.Collections.emptyList();
+      private void ensureLatenciesIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          latencies_ = new java.util.ArrayList<Latency>(latencies_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          Latency, Latency.Builder, LatencyOrBuilder> latenciesBuilder_;
+
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public java.util.List<Latency> getLatenciesList() {
+        if (latenciesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(latencies_);
+        } else {
+          return latenciesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public int getLatenciesCount() {
+        if (latenciesBuilder_ == null) {
+          return latencies_.size();
+        } else {
+          return latenciesBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Latency getLatencies(int index) {
+        if (latenciesBuilder_ == null) {
+          return latencies_.get(index);
+        } else {
+          return latenciesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Builder setLatencies(
+          int index, Latency value) {
+        if (latenciesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureLatenciesIsMutable();
+          latencies_.set(index, value);
+          onChanged();
+        } else {
+          latenciesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Builder setLatencies(
+          int index, Latency.Builder builderForValue) {
+        if (latenciesBuilder_ == null) {
+          ensureLatenciesIsMutable();
+          latencies_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          latenciesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Builder addLatencies(Latency value) {
+        if (latenciesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureLatenciesIsMutable();
+          latencies_.add(value);
+          onChanged();
+        } else {
+          latenciesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Builder addLatencies(
+          int index, Latency value) {
+        if (latenciesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureLatenciesIsMutable();
+          latencies_.add(index, value);
+          onChanged();
+        } else {
+          latenciesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Builder addLatencies(
+          Latency.Builder builderForValue) {
+        if (latenciesBuilder_ == null) {
+          ensureLatenciesIsMutable();
+          latencies_.add(builderForValue.build());
+          onChanged();
+        } else {
+          latenciesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Builder addLatencies(
+          int index, Latency.Builder builderForValue) {
+        if (latenciesBuilder_ == null) {
+          ensureLatenciesIsMutable();
+          latencies_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          latenciesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Builder addAllLatencies(
+          Iterable<? extends Latency> values) {
+        if (latenciesBuilder_ == null) {
+          ensureLatenciesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, latencies_);
+          onChanged();
+        } else {
+          latenciesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Builder clearLatencies() {
+        if (latenciesBuilder_ == null) {
+          latencies_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          latenciesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Builder removeLatencies(int index) {
+        if (latenciesBuilder_ == null) {
+          ensureLatenciesIsMutable();
+          latencies_.remove(index);
+          onChanged();
+        } else {
+          latenciesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Latency.Builder getLatenciesBuilder(
+          int index) {
+        return getLatenciesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public LatencyOrBuilder getLatenciesOrBuilder(
+          int index) {
+        if (latenciesBuilder_ == null) {
+          return latencies_.get(index);  } else {
+          return latenciesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public java.util.List<? extends LatencyOrBuilder>
+           getLatenciesOrBuilderList() {
+        if (latenciesBuilder_ != null) {
+          return latenciesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(latencies_);
+        }
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Latency.Builder addLatenciesBuilder() {
+        return getLatenciesFieldBuilder().addBuilder(
+            Latency.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public Latency.Builder addLatenciesBuilder(
+          int index) {
+        return getLatenciesFieldBuilder().addBuilder(
+            index, Latency.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Latency latencies = 2;</code>
+       */
+      public java.util.List<Latency.Builder>
+           getLatenciesBuilderList() {
+        return getLatenciesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          Latency, Latency.Builder, LatencyOrBuilder>
+          getLatenciesFieldBuilder() {
+        if (latenciesBuilder_ == null) {
+          latenciesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              Latency, Latency.Builder, LatencyOrBuilder>(
+                  latencies_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          latencies_ = null;
+        }
+        return latenciesBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:Annotation)
     }
 
@@ -927,6 +1298,30 @@ public final class ObjRecServiceProto {
      */
     KeyPointOrBuilder getKeypointsOrBuilder(
             int index);
+
+    /**
+     * <code>repeated .Latency latencies = 3;</code>
+     */
+    java.util.List<Latency>
+        getLatenciesList();
+    /**
+     * <code>repeated .Latency latencies = 3;</code>
+     */
+    Latency getLatencies(int index);
+    /**
+     * <code>repeated .Latency latencies = 3;</code>
+     */
+    int getLatenciesCount();
+    /**
+     * <code>repeated .Latency latencies = 3;</code>
+     */
+    java.util.List<? extends LatencyOrBuilder>
+        getLatenciesOrBuilderList();
+    /**
+     * <code>repeated .Latency latencies = 3;</code>
+     */
+    LatencyOrBuilder getLatenciesOrBuilder(
+            int index);
   }
   /**
    * Protobuf type {@code Features}
@@ -941,6 +1336,7 @@ public final class ObjRecServiceProto {
     }
     private Features() {
       keypoints_ = java.util.Collections.emptyList();
+      latencies_ = java.util.Collections.emptyList();
     }
 
     @Override
@@ -992,6 +1388,14 @@ public final class ObjRecServiceProto {
               keypoints_.add(input.readMessage(KeyPoint.parser(), extensionRegistry));
               break;
             }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                latencies_ = new java.util.ArrayList<Latency>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              latencies_.add(input.readMessage(Latency.parser(), extensionRegistry));
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -1002,6 +1406,9 @@ public final class ObjRecServiceProto {
       } finally {
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           keypoints_ = java.util.Collections.unmodifiableList(keypoints_);
+        }
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          latencies_ = java.util.Collections.unmodifiableList(latencies_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1076,6 +1483,41 @@ public final class ObjRecServiceProto {
       return keypoints_.get(index);
     }
 
+    public static final int LATENCIES_FIELD_NUMBER = 3;
+    private java.util.List<Latency> latencies_;
+    /**
+     * <code>repeated .Latency latencies = 3;</code>
+     */
+    public java.util.List<Latency> getLatenciesList() {
+      return latencies_;
+    }
+    /**
+     * <code>repeated .Latency latencies = 3;</code>
+     */
+    public java.util.List<? extends LatencyOrBuilder>
+        getLatenciesOrBuilderList() {
+      return latencies_;
+    }
+    /**
+     * <code>repeated .Latency latencies = 3;</code>
+     */
+    public int getLatenciesCount() {
+      return latencies_.size();
+    }
+    /**
+     * <code>repeated .Latency latencies = 3;</code>
+     */
+    public Latency getLatencies(int index) {
+      return latencies_.get(index);
+    }
+    /**
+     * <code>repeated .Latency latencies = 3;</code>
+     */
+    public LatencyOrBuilder getLatenciesOrBuilder(
+        int index) {
+      return latencies_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -1096,6 +1538,12 @@ public final class ObjRecServiceProto {
           return false;
         }
       }
+      for (int i = 0; i < getLatenciesCount(); i++) {
+        if (!getLatencies(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -1107,6 +1555,9 @@ public final class ObjRecServiceProto {
       }
       for (int i = 0; i < keypoints_.size(); i++) {
         output.writeMessage(2, keypoints_.get(i));
+      }
+      for (int i = 0; i < latencies_.size(); i++) {
+        output.writeMessage(3, latencies_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1123,6 +1574,10 @@ public final class ObjRecServiceProto {
       for (int i = 0; i < keypoints_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, keypoints_.get(i));
+      }
+      for (int i = 0; i < latencies_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, latencies_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1240,6 +1695,7 @@ public final class ObjRecServiceProto {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getDescsFieldBuilder();
           getKeypointsFieldBuilder();
+          getLatenciesFieldBuilder();
         }
       }
       public Builder clear() {
@@ -1255,6 +1711,12 @@ public final class ObjRecServiceProto {
           bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           keypointsBuilder_.clear();
+        }
+        if (latenciesBuilder_ == null) {
+          latencies_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        } else {
+          latenciesBuilder_.clear();
         }
         return this;
       }
@@ -1296,6 +1758,15 @@ public final class ObjRecServiceProto {
           result.keypoints_ = keypoints_;
         } else {
           result.keypoints_ = keypointsBuilder_.build();
+        }
+        if (latenciesBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            latencies_ = java.util.Collections.unmodifiableList(latencies_);
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.latencies_ = latencies_;
+        } else {
+          result.latencies_ = latenciesBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -1342,6 +1813,32 @@ public final class ObjRecServiceProto {
             }
           }
         }
+        if (latenciesBuilder_ == null) {
+          if (!other.latencies_.isEmpty()) {
+            if (latencies_.isEmpty()) {
+              latencies_ = other.latencies_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensureLatenciesIsMutable();
+              latencies_.addAll(other.latencies_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.latencies_.isEmpty()) {
+            if (latenciesBuilder_.isEmpty()) {
+              latenciesBuilder_.dispose();
+              latenciesBuilder_ = null;
+              latencies_ = other.latencies_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              latenciesBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getLatenciesFieldBuilder() : null;
+            } else {
+              latenciesBuilder_.addAllMessages(other.latencies_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -1356,6 +1853,11 @@ public final class ObjRecServiceProto {
         }
         for (int i = 0; i < getKeypointsCount(); i++) {
           if (!getKeypoints(i).isInitialized()) {
+            return false;
+          }
+        }
+        for (int i = 0; i < getLatenciesCount(); i++) {
+          if (!getLatencies(i).isInitialized()) {
             return false;
           }
         }
@@ -1737,6 +2239,246 @@ public final class ObjRecServiceProto {
           keypoints_ = null;
         }
         return keypointsBuilder_;
+      }
+
+      private java.util.List<Latency> latencies_ =
+        java.util.Collections.emptyList();
+      private void ensureLatenciesIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          latencies_ = new java.util.ArrayList<Latency>(latencies_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          Latency, Latency.Builder, LatencyOrBuilder> latenciesBuilder_;
+
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public java.util.List<Latency> getLatenciesList() {
+        if (latenciesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(latencies_);
+        } else {
+          return latenciesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public int getLatenciesCount() {
+        if (latenciesBuilder_ == null) {
+          return latencies_.size();
+        } else {
+          return latenciesBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Latency getLatencies(int index) {
+        if (latenciesBuilder_ == null) {
+          return latencies_.get(index);
+        } else {
+          return latenciesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Builder setLatencies(
+          int index, Latency value) {
+        if (latenciesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureLatenciesIsMutable();
+          latencies_.set(index, value);
+          onChanged();
+        } else {
+          latenciesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Builder setLatencies(
+          int index, Latency.Builder builderForValue) {
+        if (latenciesBuilder_ == null) {
+          ensureLatenciesIsMutable();
+          latencies_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          latenciesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Builder addLatencies(Latency value) {
+        if (latenciesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureLatenciesIsMutable();
+          latencies_.add(value);
+          onChanged();
+        } else {
+          latenciesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Builder addLatencies(
+          int index, Latency value) {
+        if (latenciesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureLatenciesIsMutable();
+          latencies_.add(index, value);
+          onChanged();
+        } else {
+          latenciesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Builder addLatencies(
+          Latency.Builder builderForValue) {
+        if (latenciesBuilder_ == null) {
+          ensureLatenciesIsMutable();
+          latencies_.add(builderForValue.build());
+          onChanged();
+        } else {
+          latenciesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Builder addLatencies(
+          int index, Latency.Builder builderForValue) {
+        if (latenciesBuilder_ == null) {
+          ensureLatenciesIsMutable();
+          latencies_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          latenciesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Builder addAllLatencies(
+          Iterable<? extends Latency> values) {
+        if (latenciesBuilder_ == null) {
+          ensureLatenciesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, latencies_);
+          onChanged();
+        } else {
+          latenciesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Builder clearLatencies() {
+        if (latenciesBuilder_ == null) {
+          latencies_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          latenciesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Builder removeLatencies(int index) {
+        if (latenciesBuilder_ == null) {
+          ensureLatenciesIsMutable();
+          latencies_.remove(index);
+          onChanged();
+        } else {
+          latenciesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Latency.Builder getLatenciesBuilder(
+          int index) {
+        return getLatenciesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public LatencyOrBuilder getLatenciesOrBuilder(
+          int index) {
+        if (latenciesBuilder_ == null) {
+          return latencies_.get(index);  } else {
+          return latenciesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public java.util.List<? extends LatencyOrBuilder>
+           getLatenciesOrBuilderList() {
+        if (latenciesBuilder_ != null) {
+          return latenciesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(latencies_);
+        }
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Latency.Builder addLatenciesBuilder() {
+        return getLatenciesFieldBuilder().addBuilder(
+            Latency.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public Latency.Builder addLatenciesBuilder(
+          int index) {
+        return getLatenciesFieldBuilder().addBuilder(
+            index, Latency.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Latency latencies = 3;</code>
+       */
+      public java.util.List<Latency.Builder>
+           getLatenciesBuilderList() {
+        return getLatenciesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          Latency, Latency.Builder, LatencyOrBuilder>
+          getLatenciesFieldBuilder() {
+        if (latenciesBuilder_ == null) {
+          latenciesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              Latency, Latency.Builder, LatencyOrBuilder>(
+                  latencies_,
+                  ((bitField0_ & 0x00000004) == 0x00000004),
+                  getParentForChildren(),
+                  isClean());
+          latencies_ = null;
+        }
+        return latenciesBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:Features)
@@ -2920,6 +3662,640 @@ public final class ObjRecServiceProto {
 
   }
 
+  public interface LatencyOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Latency)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required string name = 1;</code>
+     */
+    boolean hasName();
+    /**
+     * <code>required string name = 1;</code>
+     */
+    String getName();
+    /**
+     * <code>required string name = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>optional int32 computation = 2;</code>
+     */
+    boolean hasComputation();
+    /**
+     * <code>optional int32 computation = 2;</code>
+     */
+    int getComputation();
+
+    /**
+     * <code>optional int32 network = 3;</code>
+     */
+    boolean hasNetwork();
+    /**
+     * <code>optional int32 network = 3;</code>
+     */
+    int getNetwork();
+  }
+  /**
+   * Protobuf type {@code Latency}
+   */
+  public  static final class Latency extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:Latency)
+      LatencyOrBuilder {
+    // Use Latency.newBuilder() to construct.
+    private Latency(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private Latency() {
+      name_ = "";
+      computation_ = 0;
+      network_ = 0;
+    }
+
+    @Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Latency(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              name_ = bs;
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              computation_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              network_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return ObjRecServiceProto.internal_static_Latency_descriptor;
+    }
+
+    protected FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return ObjRecServiceProto.internal_static_Latency_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              Latency.class, Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int NAME_FIELD_NUMBER = 1;
+    private volatile Object name_;
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public boolean hasName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public String getName() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          name_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int COMPUTATION_FIELD_NUMBER = 2;
+    private int computation_;
+    /**
+     * <code>optional int32 computation = 2;</code>
+     */
+    public boolean hasComputation() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional int32 computation = 2;</code>
+     */
+    public int getComputation() {
+      return computation_;
+    }
+
+    public static final int NETWORK_FIELD_NUMBER = 3;
+    private int network_;
+    /**
+     * <code>optional int32 network = 3;</code>
+     */
+    public boolean hasNetwork() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional int32 network = 3;</code>
+     */
+    public int getNetwork() {
+      return network_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, computation_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, network_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, computation_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, network_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    public static Latency parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static Latency parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static Latency parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static Latency parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static Latency parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static Latency parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static Latency parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static Latency parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static Latency parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static Latency parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(Latency prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @Override
+    protected Builder newBuilderForType(
+        BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Latency}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Latency)
+        LatencyOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return ObjRecServiceProto.internal_static_Latency_descriptor;
+      }
+
+      protected FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return ObjRecServiceProto.internal_static_Latency_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                Latency.class, Builder.class);
+      }
+
+      // Construct using ObjRecServiceProto.Latency.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        name_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        computation_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        network_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return ObjRecServiceProto.internal_static_Latency_descriptor;
+      }
+
+      public Latency getDefaultInstanceForType() {
+        return Latency.getDefaultInstance();
+      }
+
+      public Latency build() {
+        Latency result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public Latency buildPartial() {
+        Latency result = new Latency(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.name_ = name_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.computation_ = computation_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.network_ = network_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof Latency) {
+          return mergeFrom((Latency)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(Latency other) {
+        if (other == Latency.getDefaultInstance()) return this;
+        if (other.hasName()) {
+          bitField0_ |= 0x00000001;
+          name_ = other.name_;
+          onChanged();
+        }
+        if (other.hasComputation()) {
+          setComputation(other.getComputation());
+        }
+        if (other.hasNetwork()) {
+          setNetwork(other.getNetwork());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasName()) {
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        Latency parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (Latency) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private Object name_ = "";
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public boolean hasName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public String getName() {
+        Object ref = name_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            name_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder setName(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder clearName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int computation_ ;
+      /**
+       * <code>optional int32 computation = 2;</code>
+       */
+      public boolean hasComputation() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional int32 computation = 2;</code>
+       */
+      public int getComputation() {
+        return computation_;
+      }
+      /**
+       * <code>optional int32 computation = 2;</code>
+       */
+      public Builder setComputation(int value) {
+        bitField0_ |= 0x00000002;
+        computation_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 computation = 2;</code>
+       */
+      public Builder clearComputation() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        computation_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int network_ ;
+      /**
+       * <code>optional int32 network = 3;</code>
+       */
+      public boolean hasNetwork() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int32 network = 3;</code>
+       */
+      public int getNetwork() {
+        return network_;
+      }
+      /**
+       * <code>optional int32 network = 3;</code>
+       */
+      public Builder setNetwork(int value) {
+        bitField0_ |= 0x00000004;
+        network_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 network = 3;</code>
+       */
+      public Builder clearNetwork() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        network_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:Latency)
+    }
+
+    // @@protoc_insertion_point(class_scope:Latency)
+    private static final Latency DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new Latency();
+    }
+
+    public static Latency getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @Deprecated public static final com.google.protobuf.Parser<Latency>
+        PARSER = new com.google.protobuf.AbstractParser<Latency>() {
+      public Latency parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Latency(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Latency> parser() {
+      return PARSER;
+    }
+
+    @Override
+    public com.google.protobuf.Parser<Latency> getParserForType() {
+      return PARSER;
+    }
+
+    public Latency getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   /**
    * Protobuf service {@code ObjRecService}
    */
@@ -3390,6 +4766,11 @@ public final class ObjRecServiceProto {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_KeyPoint_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Latency_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_Latency_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3399,17 +4780,20 @@ public final class ObjRecServiceProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\014objrec.proto\"\026\n\005Image\022\r\n\005image\030\001 \002(\014\" " +
-      "\n\nAnnotation\022\022\n\nannotation\030\001 \002(\t\"A\n\010Feat" +
-      "ures\022\027\n\005descs\030\001 \002(\0132\010.DescMat\022\034\n\tkeypoin" +
-      "ts\030\002 \003(\0132\t.KeyPoint\"A\n\007DescMat\022\014\n\004rows\030\001" +
-      " \002(\005\022\014\n\004cols\030\002 \002(\005\022\014\n\004type\030\003 \002(\005\022\014\n\004data" +
-      "\030\004 \002(\014\" \n\010KeyPoint\022\t\n\001x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001" +
-      "2\246\001\n\rObjRecService\022 \n\tRecognize\022\006.Image\032" +
-      "\013.Annotation\022+\n\021RecognizeFeatures\022\t.Feat" +
-      "ures\032\013.Annotation\022\037\n\010GetImage\022\013.Annotati" +
-      "on\032\006.Image\022%\n\013GetFeatures\022\013.Annotation\032\t",
-      ".FeaturesB\027B\022ObjRecServiceProto\210\001\001"
+      "\n\014objrec.proto\"\026\n\005Image\022\r\n\005image\030\001 \002(\014\"=" +
+      "\n\nAnnotation\022\022\n\nannotation\030\001 \002(\t\022\033\n\tlate" +
+      "ncies\030\002 \003(\0132\010.Latency\"^\n\010Features\022\027\n\005des" +
+      "cs\030\001 \002(\0132\010.DescMat\022\034\n\tkeypoints\030\002 \003(\0132\t." +
+      "KeyPoint\022\033\n\tlatencies\030\003 \003(\0132\010.Latency\"A\n" +
+      "\007DescMat\022\014\n\004rows\030\001 \002(\005\022\014\n\004cols\030\002 \002(\005\022\014\n\004" +
+      "type\030\003 \002(\005\022\014\n\004data\030\004 \002(\014\" \n\010KeyPoint\022\t\n\001" +
+      "x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001\"=\n\007Latency\022\014\n\004name\030\001 " +
+      "\002(\t\022\023\n\013computation\030\002 \001(\005\022\017\n\007network\030\003 \001(" +
+      "\0052\246\001\n\rObjRecService\022 \n\tRecognize\022\006.Image",
+      "\032\013.Annotation\022+\n\021RecognizeFeatures\022\t.Fea" +
+      "tures\032\013.Annotation\022\037\n\010GetImage\022\013.Annotat" +
+      "ion\032\006.Image\022%\n\013GetFeatures\022\013.Annotation\032" +
+      "\t.FeaturesB\031B\022ObjRecServiceProtoH\001\210\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3434,13 +4818,13 @@ public final class ObjRecServiceProto {
     internal_static_Annotation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Annotation_descriptor,
-        new String[] { "Annotation", });
+        new String[] { "Annotation", "Latencies", });
     internal_static_Features_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_Features_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Features_descriptor,
-        new String[] { "Descs", "Keypoints", });
+        new String[] { "Descs", "Keypoints", "Latencies", });
     internal_static_DescMat_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_DescMat_fieldAccessorTable = new
@@ -3453,6 +4837,12 @@ public final class ObjRecServiceProto {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_KeyPoint_descriptor,
         new String[] { "X", "Y", });
+    internal_static_Latency_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_Latency_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Latency_descriptor,
+        new String[] { "Name", "Computation", "Network", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

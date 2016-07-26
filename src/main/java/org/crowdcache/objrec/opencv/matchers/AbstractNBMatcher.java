@@ -32,7 +32,7 @@ public abstract class AbstractNBMatcher extends Matcher
     protected AbstractNBMatcher(int size)
     {
         super(size);
-        objects = Collections.synchronizedList(new ArrayList<>());
+        objects = Collections.synchronizedList(new ArrayList<String>());
     }
 
     /**
