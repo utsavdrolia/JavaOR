@@ -46,6 +46,6 @@ message KeyPoint
 message Latency
 {
     required string name = 1;
-    required int32 computation = 2;
-    required int32 network = 3;
+    optional int32 computation = 2;
+    optional int32 network = 3;
 }
