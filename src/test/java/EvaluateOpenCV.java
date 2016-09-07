@@ -39,49 +39,9 @@ public class EvaluateOpenCV
             if(args.length == 8)
                 lshpars = args[7];
 
-            FeatureExtractor extractor;
-            FeatureExtractor dbextractor;
-            Matcher matcher;
-
-            switch (featuretype)
-            {
-                case ORB:
-                    extractor = new ORB(pars);
-                    dbextractor = new ORB(pars_db);
-                    System.out.println("Using ORB");
-                    break;
-                case SIFT:
-                    extractor = new SIFTFeatureExtractor(pars);
-                    dbextractor = new SIFTFeatureExtractor(pars_db);
-                    System.out.println("Using SIFT");
-                    break;
-                default:
-                    extractor = new ORB(pars);
-                    dbextractor = new ORB(pars_db);
-                    break;
-            }
-            switch (matchertype)
-            {
-                case BIN_NN:
-                    matcher = new BFMatcher_HAM_NB();
-                    System.out.println("Using NN");
-                    break;
-                case BIN_NB:
-                    matcher = new BFMatcher_HAM_NB();
-                    System.out.println("Using NB");
-                    break;
-                case FLOAT_NB:
-                    matcher = new BFMatcher_L2_NB();
-                    System.out.println("Using NB");
-                    break;
-                case LSH:
-                    matcher = new LSHMatcher_HAM(lshpars, -1);
-                    System.out.println("Using LSH");
-                    break;
-                default:
-                    matcher = new BFMatcher_HAM_NB();
-                    break;
-            }
+            FeatureExtractor extractor = Util.createExtractor(featuretype, pars);
+            FeatureExtractor dbextractor = Util.createExtractor(featuretype, pars);
+            Matcher matcher = Util.createMatcher(matchertype, lshpars, 5, 0.8);
 
             Recognizer recognizer = new Recognizer(dbextractor, extractor, matcher, DBdirpath);
 
@@ -96,7 +56,6 @@ public class EvaluateOpenCV
                 String[] chunks = line.split(",");
                 String img = chunks[0];
                 String imgpath = chunks[1];
-
                 Long start = System.currentTimeMillis();
                 String result = recognizer.recognize(imgpath);
                 Long end = System.currentTimeMillis();

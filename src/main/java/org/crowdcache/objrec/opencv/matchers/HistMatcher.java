@@ -15,19 +15,10 @@ import org.opencv.imgproc.Imgproc;
  */
 public class HistMatcher extends Matcher
 {
-    /**  
-     */
+
     public HistMatcher()
     {
-        this(-1);
-    }
-
-    /**
-     * @param max_size If not -1, limit the size of the Matcher
-     */
-    public HistMatcher(int max_size)
-    {
-        super(max_size);
+        super();
     }
 
     /**

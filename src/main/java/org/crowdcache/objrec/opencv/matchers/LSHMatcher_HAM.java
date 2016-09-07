@@ -17,45 +17,33 @@ import java.util.*;
  */
 public class LSHMatcher_HAM extends AbstractNBMatcher
 {
-    /**
-     * Matcher with default size
-     */
-    public LSHMatcher_HAM()
-    {
-        this(-1);
-    }
 
     /**
      *
      * @param path For matcher params
-     * @param size Size of Matcher
      */
-    public LSHMatcher_HAM(String path, Integer size)
+    public LSHMatcher_HAM(String path)
     {
-        this(size);
+        this();
         matcher.read(path);
     }
 
     /**
      *
-     * @param size Size of matcher
      * @param match_thresh Min. Number of matches
      * @param score_thresh Min. score
      */
-    public LSHMatcher_HAM(String path, int size, int match_thresh, Double score_thresh)
+    public LSHMatcher_HAM(String path, int match_thresh, Double score_thresh)
     {
-        this(size);
+        this();
         matcher.read(path);
         NUM_MATCHES_THRESH = match_thresh;
         SCORE_THRESH = score_thresh;
     }
 
-    /**
-     * @param size Size of Matcher. -1 for {@link Integer#MAX_VALUE}
-     */
-    public LSHMatcher_HAM(int size)
+    public LSHMatcher_HAM()
     {
-        super(size);
+        super();
         matcher = DescriptorMatcher.create(DescriptorMatcher.FLANNBASED);
         NUM_MATCHES_THRESH = 5;
         SCORE_THRESH = 0.6;

@@ -24,12 +24,7 @@ public abstract class BFMatcher_HAM2 extends Matcher
 
     public BFMatcher_HAM2()
     {
-        this(-1);
-    }
-
-    public BFMatcher_HAM2(int size)
-    {
-        super(size);
+        super();
     }
 
     public Double match(KeypointDescList dbImage, KeypointDescList sceneImage)

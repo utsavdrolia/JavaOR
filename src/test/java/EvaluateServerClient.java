@@ -40,13 +40,13 @@ public class EvaluateServerClient
 
             FeatureExtractor dbextractor = Util.createExtractor(featuretype, pars_db);
             FeatureExtractor extractor = Util.createExtractor(featuretype, pars);
-            Matcher servermatcher = Util.createMatcher(matchertype_db, matcherpars_db, -1, 3, 0.6);
+            Matcher servermatcher = Util.createMatcher(matchertype_db, matcherpars_db, 3, 0.6);
             ObjRecServer objRecServer = new ObjRecServer(dbextractor, extractor, servermatcher, DBdirpath, serverAdd);
 
 //            Matcher cloudletmatcher = Util.createMatcher(matchertype_db, matcherpars_db, matchercache_size*5, 6, 0.7);
 //            ObjRecCloudlet objRecCloudlet = new ObjRecCloudlet(extractor, cloudletmatcher, serverAdd, "192.168.25.145:10101");
 
-            Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, matchercache_size, 6, 0.8);
+            Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 6, 0.8);
             CachedObjRecClient objRecClient = new CachedObjRecClient(extractor, clientmatcher, serverAdd, "Client");
 
 //            ObjRecClient objRecClient = new ObjRecClient(serverAdd);

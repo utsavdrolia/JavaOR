@@ -32,7 +32,7 @@ public class RunServer
 
             FeatureExtractor dbextractor = Util.createExtractor(featuretype, pars_db);
             FeatureExtractor extractor = Util.createExtractor(featuretype, pars);
-            Matcher servermatcher = Util.createMatcher(matchertype_db, matcherpars_db, -1, 3, 0.6);
+            Matcher servermatcher = Util.createMatcher(matchertype_db, matcherpars_db, 3, 0.6);
             ObjRecServer objRecServer = new ObjRecServer(dbextractor, extractor, servermatcher, DBdirpath, serverAdd);
 
             while(System.in.available() == 0);

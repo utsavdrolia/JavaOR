@@ -26,12 +26,9 @@ public abstract class AbstractNBMatcher extends Matcher
     protected List<String> objects;
     protected Double SCORE_THRESH = 0.6;
 
-    /**
-     * @param size Size of Matcher. -1 for {@link Integer#MAX_VALUE}
-     */
-    protected AbstractNBMatcher(int size)
+    protected AbstractNBMatcher()
     {
-        super(size);
+        super();
         objects = Collections.synchronizedList(new ArrayList<String>());
     }
 

@@ -31,7 +31,7 @@ public class EvaluateCachedClient
             String serverAdd = args[7];
 
             FeatureExtractor extractor = Util.createExtractor(featuretype, pars);
-            Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, matchercache_size, 6, 0.8);
+            Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 6, 0.8);
             CachedObjRecClient objRecClient = new CachedObjRecClient(extractor, clientmatcher, serverAdd, "Cloudlet");
 
             Util.evaluate(objRecClient, queryList, resultspath);

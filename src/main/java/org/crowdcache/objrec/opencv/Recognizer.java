@@ -102,7 +102,7 @@ public class Recognizer
             String DBdirpath = args[1];
             FeatureExtractor extractor = new ORB("/Users/utsav/Documents/DATA/Research/HYRAX/Code/JavaOR/orb_pars.txt");
             FeatureExtractor dbextractor = new ORB("/Users/utsav/Documents/DATA/Research/HYRAX/Code/JavaOR/orb_pars_db.txt");
-            Matcher matcher = new LSHMatcher_HAM("/Users/utsav/Documents/DATA/Research/HYRAX/Code/JavaOR/lsh_pars.txt", -1);
+            Matcher matcher = new LSHMatcher_HAM("/Users/utsav/Documents/DATA/Research/HYRAX/Code/JavaOR/lsh_pars.txt");
             Recognizer recognizer = new Recognizer(dbextractor, extractor, matcher, DBdirpath);
 
             Mat img = Highgui.imread(query, Highgui.CV_LOAD_IMAGE_GRAYSCALE);

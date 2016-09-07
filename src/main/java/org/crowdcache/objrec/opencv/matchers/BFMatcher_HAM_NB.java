@@ -21,32 +21,20 @@ import java.util.concurrent.ThreadFactory;
 public class BFMatcher_HAM_NB extends AbstractNBMatcher
 {
     /**
-     * Matcher with default size
-     */
-    public BFMatcher_HAM_NB()
-    {
-        this(-1);
-    }
-
-    /**
      *
-     * @param size Size of matcher
      * @param match_thresh Min. Number of matches
      * @param score_thresh Min. score
      */
-    public BFMatcher_HAM_NB(int size, int match_thresh, Double score_thresh)
+    public BFMatcher_HAM_NB(int match_thresh, Double score_thresh)
     {
-        this(size);
+        this();
         NUM_MATCHES_THRESH = match_thresh;
         SCORE_THRESH = score_thresh;
     }
 
-    /**
-     * @param size Size of Matcher. -1 for {@link Integer#MAX_VALUE}
-     */
-    public BFMatcher_HAM_NB(int size)
+    public BFMatcher_HAM_NB()
     {
-        super(size);
+        super();
         matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
         NUM_MATCHES_THRESH = 3;
         SCORE_THRESH = 0.8;

@@ -12,8 +12,6 @@ import org.opencv.highgui.Highgui;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static com.sun.tools.javac.jvm.ByteCodes.ret;
-
 /**
  * Created by utsav on 2/6/16.
  * Uses Hamming distance, Brute Force Matcher, Lowe's Distance ratio test, and Homography verification
@@ -25,15 +23,9 @@ public abstract class BFMatcher_HAM extends Matcher
     private final int THREADS=16;
     private static final Double SCORE_THRESH = 0.6;
 
-
     public BFMatcher_HAM()
     {
-        this(-1);
-    }
-
-    public BFMatcher_HAM(int size)
-    {
-        super(size);
+        super();
     }
 
     public Double match(KeypointDescList dbImage, KeypointDescList sceneImage)

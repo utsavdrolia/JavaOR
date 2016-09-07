@@ -51,7 +51,7 @@ public class Util
         return extractor;
     }
 
-    public static Matcher createMatcher(int matchertype, String pars, int size, int match_t, double score_t)
+    public static Matcher createMatcher(int matchertype, String pars, int match_t, double score_t)
     {
         Matcher matcher;
         switch (matchertype)
@@ -61,19 +61,20 @@ public class Util
                 System.out.println("Using NN");
                 break;
             case BIN_NB:
-                matcher = new BFMatcher_HAM_NB(size, match_t, score_t);
-                System.out.println("Using NB");
+                matcher = new BFMatcher_HAM_NB(match_t, score_t);
+                System.out.println("Using HAM NB");
                 break;
             case FLOAT_NB:
                 matcher = new BFMatcher_L2_NB();
-                System.out.println("Using NB");
+                System.out.println("Using L2 NB");
                 break;
             case LSH:
-                matcher = new LSHMatcher_HAM(pars, size, match_t, score_t);
+                matcher = new LSHMatcher_HAM(pars, match_t, score_t);
                 System.out.println("Using LSH");
                 break;
             default:
                 matcher = new BFMatcher_HAM_NB();
+                System.out.println("Using Default HAM NB");
                 break;
         }
 

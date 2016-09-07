@@ -15,31 +15,20 @@ import java.util.*;
  */
 public class BFMatcher_L2_NB extends AbstractNBMatcher
 {
-    /**
-     * Matcher with default size
-     */
-    public BFMatcher_L2_NB()
-    {
-        this(-1);
-    }
 
     /**
      *
      * @param path For matcher params
-     * @param size Size of Matcher
      */
-    public BFMatcher_L2_NB(String path, Integer size)
+    public BFMatcher_L2_NB(String path)
     {
-        this(size);
+        this();
         matcher.read(path);
     }
 
-    /**
-     * @param size Size of Matcher. -1 for {@link Integer#MAX_VALUE}
-     */
-    public BFMatcher_L2_NB(int size)
+    public BFMatcher_L2_NB()
     {
-        super(size);
+        super();
         matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_SL2);
         NUM_MATCHES_THRESH = 5;
         SCORE_THRESH = 0.6;

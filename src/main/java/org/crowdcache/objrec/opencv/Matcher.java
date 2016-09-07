@@ -20,19 +20,11 @@ public abstract class Matcher
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     /**
-     *
-     * @param max_size If not -1, limit the size of the Matcher
+     * Matcher constructor
      */
-    public Matcher(int max_size)
+    public Matcher()
     {
-        if(max_size != -1)
-        {
-            this.max_size = max_size;
-            this.DB = Collections.synchronizedMap(new LRUCache<String, KeypointDescList>(max_size));
-            isFixed = true;
-        }
-        else
-            this.DB = new ConcurrentHashMap<>();
+        this.DB = new ConcurrentHashMap<>();
     }
 
     /**
@@ -74,8 +66,29 @@ public abstract class Matcher
         {
             readWriteLock.writeLock().lock();
             {
-                this.DB.putAll(dataset);
-                _train();
+                // Check if DB is a subset of dataset
+                Set<String> dataset_keys = new HashSet<>(dataset.keySet());
+                Set<String> DB_keys = DB.keySet();
+                if(dataset_keys.containsAll(DB_keys))
+                {
+                    // Is a subset
+                    // Subtract common elements from the two key sets
+                    dataset_keys.removeAll(DB_keys);
+                    // Insert the uncommon elements
+                    for (String key:dataset_keys)
+                    {
+                        DB.put(key, dataset.get(key));
+                        _insert(key, dataset.get(key));
+                    }
+                }
+                else
+                {
+                    // Is not a subset
+                    // Re-train the entire thing
+                    this.DB.clear();
+                    this.DB.putAll(dataset);
+                    _train();
+                }
             }
             readWriteLock.writeLock().unlock();
         }
@@ -94,15 +107,8 @@ public abstract class Matcher
         {
             if (!DB.containsKey(name))
             {
-                if (DB.size() == max_size)
-                {
-                    DB.put(name, kplist);
-                    _train();
-                } else
-                {
-                    DB.put(name, kplist);
-                    _insert(name, kplist);
-                }
+                DB.put(name, kplist);
+                _insert(name, kplist);
             }
         }
         readWriteLock.writeLock().unlock();
