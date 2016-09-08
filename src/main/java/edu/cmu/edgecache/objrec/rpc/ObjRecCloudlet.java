@@ -3,6 +3,7 @@ package edu.cmu.edgecache.objrec.rpc;
 import com.google.protobuf.RpcCallback;
 import com.google.protobuf.RpcController;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
+import edu.cmu.edgecache.recog.CacheType;
 import org.crowd.rpc.RPCServer;
 import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.KeypointDescList;
@@ -10,6 +11,7 @@ import edu.cmu.edgecache.objrec.opencv.KeypointDescList;
 import java.io.IOException;
 
 /**
+ * Combines a {@link ObjRecServer} and {@link CachedObjRecClient} to create a cached proxy
  * Created by utsav on 6/20/16.
  */
 public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
@@ -19,10 +21,10 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
     private final String CLOUDLET = "Cloudlet";
 
 
-    public ObjRecCloudlet(FeatureExtractor extractor, Matcher matcher, String myaddress, String serveraddress) throws IOException
+    public ObjRecCloudlet(FeatureExtractor extractor, Matcher matcher, String myaddress, String serveraddress, int cachesize, CacheType cachetype) throws IOException
     {
         listeningrpc = new RPCServer(myaddress, this);
-        objRecClient = new CachedObjRecClient(extractor, matcher, serveraddress, CLOUDLET);
+        objRecClient = new CachedObjRecClient(extractor, matcher, serveraddress, CLOUDLET, cachesize, cachetype);
     }
 
 
@@ -35,8 +37,6 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
     @Override
     public void recognizeFeatures(RpcController controller, ObjRecServiceProto.Features request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
-        // Check in local cache if we have image and if not send request to cloud
-//        System.out.println("Recv:Cloudlet");
         objRecClient.recognize(request, new CloudletObjRecCallback(done));
     }
 
@@ -47,7 +47,7 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
     }
 
     /**
-     * Get the features for the given annotation from the local cache
+     * Get the features for the given annotation from the local knownItems
      * @param controller
      * @param request
      * @param done
@@ -56,7 +56,7 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
     public void getFeatures(RpcController controller, ObjRecServiceProto.Annotation request, RpcCallback<ObjRecServiceProto.Features> done)
     {
         Long start = System.currentTimeMillis();
-        KeypointDescList kp = objRecClient.recognizer.matcher.get(request.getAnnotation());
+        KeypointDescList kp = objRecClient.getFeatures(request.getAnnotation());
         ObjRecServiceProto.Features.Builder features = Utils.serialize(kp);
         // Return
         done.run(features
