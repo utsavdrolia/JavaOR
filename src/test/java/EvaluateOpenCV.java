@@ -1,12 +1,6 @@
-import org.crowdcache.objrec.opencv.FeatureExtractor;
-import org.crowdcache.objrec.opencv.Matcher;
-import org.crowdcache.objrec.opencv.Recognizer;
-import org.crowdcache.objrec.opencv.extractors.ORB;
-import org.crowdcache.objrec.opencv.extractors.SIFTFeatureExtractor;
-import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM;
-import org.crowdcache.objrec.opencv.matchers.BFMatcher_HAM_NB;
-import org.crowdcache.objrec.opencv.matchers.BFMatcher_L2_NB;
-import org.crowdcache.objrec.opencv.matchers.LSHMatcher_HAM;
+import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
+import edu.cmu.edgecache.objrec.opencv.Matcher;
+import edu.cmu.edgecache.objrec.opencv.Recognizer;
 import org.opencv.core.Core;
 
 import java.io.*;

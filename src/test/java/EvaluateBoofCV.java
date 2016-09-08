@@ -2,9 +2,9 @@ import boofcv.io.image.UtilImageIO;
 import boofcv.struct.feature.BrightFeature;
 import boofcv.struct.feature.ScalePoint;
 import boofcv.struct.image.ImageUInt8;
-import org.crowdcache.objrec.boofcv.Recognizer;
-import org.crowdcache.objrec.boofcv.surf.SURFExtractor;
-import org.crowdcache.objrec.boofcv.surf.SurfBFAssociator;
+import edu.cmu.edgecache.objrec.boofcv.Recognizer;
+import edu.cmu.edgecache.objrec.boofcv.surf.SURFExtractor;
+import edu.cmu.edgecache.objrec.boofcv.surf.SurfBFAssociator;
 
 import java.io.*;
 

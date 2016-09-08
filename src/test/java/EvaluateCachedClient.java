@@ -1,15 +1,9 @@
-import org.crowdcache.objrec.opencv.FeatureExtractor;
-import org.crowdcache.objrec.opencv.Matcher;
-import org.crowdcache.objrec.rpc.CachedObjRecClient;
-import org.crowdcache.objrec.rpc.ObjRecCallback;
-import org.crowdcache.objrec.rpc.ObjRecServer;
-import org.crowdcache.objrec.rpc.ObjRecServiceProto;
+import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
+import edu.cmu.edgecache.objrec.opencv.Matcher;
+import edu.cmu.edgecache.objrec.rpc.CachedObjRecClient;
 import org.opencv.core.Core;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by utsav on 2/5/16.

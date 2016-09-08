@@ -1,7 +1,4 @@
-import org.crowdcache.objrec.opencv.FeatureExtractor;
-import org.crowdcache.objrec.opencv.Matcher;
-import org.crowdcache.objrec.rpc.CachedObjRecClient;
-import org.crowdcache.objrec.rpc.ObjRecClient;
+import edu.cmu.edgecache.objrec.rpc.ObjRecClient;
 import org.opencv.core.Core;
 
 import java.io.IOException;
