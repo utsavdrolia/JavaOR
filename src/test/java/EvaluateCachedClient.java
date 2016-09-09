@@ -1,6 +1,7 @@
 import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
 import edu.cmu.edgecache.objrec.rpc.CachedObjRecClient;
+import edu.cmu.edgecache.recog.CacheType;
 import org.opencv.core.Core;
 
 import java.io.*;
@@ -21,12 +22,12 @@ public class EvaluateCachedClient
             Integer featuretype = Integer.valueOf(args[3]);
             Integer matchertype_cache = Integer.valueOf(args[4]);
             String matcherpars_cache = args[5];
-            Integer matchercache_size = Integer.valueOf(args[6]);
+            Integer cache_size = Integer.valueOf(args[6]);
             String serverAdd = args[7];
 
             FeatureExtractor extractor = Util.createExtractor(featuretype, pars);
             Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 6, 0.8);
-            CachedObjRecClient objRecClient = new CachedObjRecClient(extractor, clientmatcher, serverAdd, "Cloudlet");
+            CachedObjRecClient objRecClient = new CachedObjRecClient(extractor, clientmatcher, serverAdd, "Cloudlet", cache_size, CacheType.LFU);
 
             Util.evaluate(objRecClient, queryList, resultspath);
         }

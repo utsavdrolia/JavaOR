@@ -98,6 +98,41 @@ public class Util
             String imgpath = chunks[1];
             querylist.add(img);
             objRecClient.recognize(imgpath, new EvaluateCallback(System.currentTimeMillis(), img));
+            while(!resultMap.containsKey(img));
+//            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).result + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
+            line = dir.readLine();
+            count++;
+        } while ((line != null));
+
+        for(String key: querylist)
+        {
+            while(!resultMap.containsKey(key));
+            resultsfile.write(key.split("_")[0] + "," + resultMap.get(key).result + "," + (1 - (resultMap.get(key).time.size() - 1)) + "," + "\n");
+        }
+//        System.out.println("Results:\n" + resultMap.toString());
+        Long procend = System.currentTimeMillis() - procstart;
+        System.out.println("Time:" + procend + " Count:" + count);
+        resultsfile.flush();
+        resultsfile.close();
+    }
+
+    public static void evaluateAsync(ObjRecClient objRecClient, String queryList, String resultspath) throws IOException, InterruptedException
+    {
+        BufferedReader dir = new BufferedReader(new FileReader(queryList));
+        BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
+
+        Integer count = 0;
+        String line = dir.readLine();
+        Long procstart = System.currentTimeMillis();
+        ArrayList<String> querylist = new ArrayList<>();
+
+        do
+        {
+            String[] chunks = line.split(",");
+            String img = chunks[0] + "_" + count.toString();
+            String imgpath = chunks[1];
+            querylist.add(img);
+            objRecClient.recognize(imgpath, new EvaluateCallback(System.currentTimeMillis(), img));
             Thread.sleep(100);
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).result + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = dir.readLine();
@@ -132,10 +167,11 @@ public class Util
         public void run(ObjRecServiceProto.Annotation annotation)
         {
             endtime = System.currentTimeMillis();
+            long dur = endtime - startime;
             Result res = new Result();
             res.result = annotation.getAnnotation();
             res.time = annotation.getLatenciesList();
-//            System.out.println(query + "," + annotation);
+            System.out.println(query + "," + res.result + "," + String.valueOf(dur));
             resultMap.put(query, res);
         }
     }

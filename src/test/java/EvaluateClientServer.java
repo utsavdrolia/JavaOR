@@ -2,6 +2,7 @@ import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
 import edu.cmu.edgecache.objrec.rpc.CachedObjRecClient;
 import edu.cmu.edgecache.objrec.rpc.ObjRecServer;
+import edu.cmu.edgecache.recog.CacheType;
 import org.opencv.core.Core;
 
 import java.io.*;
@@ -9,7 +10,7 @@ import java.io.*;
 /**
  * Created by utsav on 2/5/16.
  */
-public class EvaluateServerClient
+public class EvaluateClientServer
 {
     public static void main(String args[]) throws IOException, InterruptedException
     {
@@ -26,7 +27,7 @@ public class EvaluateServerClient
             String matcherpars_db = args[7];
             Integer matchertype_cache = Integer.valueOf(args[8]);
             String matcherpars_cache = args[9];
-            Integer matchercache_size = Integer.valueOf(args[10]);
+            Integer cache_size = Integer.valueOf(args[10]);
             String serverAdd = args[11];
 
 
@@ -34,12 +35,11 @@ public class EvaluateServerClient
             FeatureExtractor extractor = Util.createExtractor(featuretype, pars);
             Matcher servermatcher = Util.createMatcher(matchertype_db, matcherpars_db, 3, 0.6);
             ObjRecServer objRecServer = new ObjRecServer(dbextractor, extractor, servermatcher, DBdirpath, serverAdd);
-
 //            Matcher cloudletmatcher = Util.createMatcher(matchertype_db, matcherpars_db, matchercache_size*5, 6, 0.7);
 //            ObjRecCloudlet objRecCloudlet = new ObjRecCloudlet(extractor, cloudletmatcher, serverAdd, "192.168.25.145:10101");
 
-            Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 6, 0.8);
-            CachedObjRecClient objRecClient = new CachedObjRecClient(extractor, clientmatcher, serverAdd, "Client");
+            Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 5, 0.8);
+            CachedObjRecClient objRecClient = new CachedObjRecClient(extractor, clientmatcher, serverAdd, "Client", cache_size, CacheType.LFU);
 
 //            ObjRecClient objRecClient = new ObjRecClient(serverAdd);
 
