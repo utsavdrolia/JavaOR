@@ -1,10 +1,11 @@
-import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
-import edu.cmu.edgecache.objrec.opencv.Matcher;
+import edu.cmu.edgecache.objrec.opencv.*;
 import edu.cmu.edgecache.objrec.rpc.CachedObjRecClient;
-import edu.cmu.edgecache.recog.CacheType;
+import edu.cmu.edgecache.objrec.rpc.Names;
+import edu.cmu.edgecache.recog.AbstractRecogCache;
+import edu.cmu.edgecache.recog.LFURecogCache;
 import org.opencv.core.Core;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Created by utsav on 2/5/16.
@@ -26,8 +27,10 @@ public class EvaluateCachedClient
             String serverAdd = args[7];
 
             FeatureExtractor extractor = Util.createExtractor(featuretype, pars);
-            Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 6, 0.8);
-            CachedObjRecClient objRecClient = new CachedObjRecClient(extractor, clientmatcher, serverAdd, "Cloudlet", cache_size, CacheType.LFU);
+            Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 3, 0.5);
+            Recognizer recognizer = new Recognizer(extractor, clientmatcher);
+            AbstractRecogCache<String, KeypointDescList> recogCache = new LFURecogCache<>(new ImageRecognizerInterface(recognizer), cache_size);
+            CachedObjRecClient objRecClient = new CachedObjRecClient(recognizer, recogCache, serverAdd, Names.Edge, cache_size>0);
 
             Util.evaluate(objRecClient, queryList, resultspath);
         }

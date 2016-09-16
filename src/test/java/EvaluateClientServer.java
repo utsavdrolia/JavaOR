@@ -1,11 +1,11 @@
 import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
 import edu.cmu.edgecache.objrec.rpc.CachedObjRecClient;
+import edu.cmu.edgecache.objrec.rpc.Names;
 import edu.cmu.edgecache.objrec.rpc.ObjRecServer;
-import edu.cmu.edgecache.recog.CacheType;
 import org.opencv.core.Core;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Created by utsav on 2/5/16.
@@ -39,7 +39,8 @@ public class EvaluateClientServer
 //            ObjRecCloudlet objRecCloudlet = new ObjRecCloudlet(extractor, cloudletmatcher, serverAdd, "192.168.25.145:10101");
 
             Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 5, 0.8);
-            CachedObjRecClient objRecClient = new CachedObjRecClient(extractor, clientmatcher, serverAdd, "Client", cache_size, CacheType.LFU);
+            CachedObjRecClient objRecClient = new CachedObjRecClient(extractor, clientmatcher, serverAdd,
+                                                                     Names.Edge, cache_size);
 
 //            ObjRecClient objRecClient = new ObjRecClient(serverAdd);
 

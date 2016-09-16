@@ -33,9 +33,9 @@ public class EvaluateOpenCV
             if(args.length == 8)
                 lshpars = args[7];
 
-            FeatureExtractor extractor = Util.createExtractor(featuretype, pars);
-            FeatureExtractor dbextractor = Util.createExtractor(featuretype, pars);
-            Matcher matcher = Util.createMatcher(matchertype, lshpars, 5, 0.8);
+            FeatureExtractor extractor = Util.createExtractor(featuretype, pars_db);
+            FeatureExtractor dbextractor = Util.createExtractor(featuretype, pars_db);
+            Matcher matcher = Util.createMatcher(matchertype, lshpars, 3, 0.5);
 
             Recognizer recognizer = new Recognizer(dbextractor, extractor, matcher, DBdirpath);
 

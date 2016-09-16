@@ -5,6 +5,7 @@ import edu.cmu.edgecache.objrec.opencv.extractors.SIFTFeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.matchers.BFMatcher_HAM_NB;
 import edu.cmu.edgecache.objrec.opencv.matchers.BFMatcher_L2_NB;
 import edu.cmu.edgecache.objrec.opencv.matchers.LSHMatcher_HAM;
+import edu.cmu.edgecache.objrec.rpc.Names;
 import edu.cmu.edgecache.objrec.rpc.ObjRecCallback;
 import edu.cmu.edgecache.objrec.rpc.ObjRecClient;
 import edu.cmu.edgecache.objrec.rpc.ObjRecServiceProto;
@@ -13,6 +14,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static java.lang.Thread.sleep;
 
 /**
  * Created by utsav on 6/17/16.
@@ -27,7 +30,11 @@ public class Util
     private static final int ORB = 1;
     private static final int SIFT = 2;
 
+    private static final String LFU_cache = "LFU";
+    private static final String Opt_cache = "OPT";
+
     private static ConcurrentHashMap<String, Result> resultMap = new ConcurrentHashMap<>();
+
 
     public static FeatureExtractor createExtractor(int featuretype, String pars)
     {
@@ -90,7 +97,6 @@ public class Util
         String line = dir.readLine();
         Long procstart = System.currentTimeMillis();
         ArrayList<String> querylist = new ArrayList<>();
-
         do
         {
             String[] chunks = line.split(",");
@@ -98,7 +104,15 @@ public class Util
             String imgpath = chunks[1];
             querylist.add(img);
             objRecClient.recognize(imgpath, new EvaluateCallback(System.currentTimeMillis(), img));
-            while(!resultMap.containsKey(img));
+            while(!resultMap.containsKey(img))
+            {
+                sleep(100);
+            }
+            sleep(200);
+            System.out.println(img + "," +
+                    resultMap.get(img).result + "," +
+                    (1 - (resultMap.get(img).time.size() - 1)) + "," +
+                    resultMap.get(img).getEdgeLatency());
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).result + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = dir.readLine();
             count++;
@@ -107,7 +121,11 @@ public class Util
         for(String key: querylist)
         {
             while(!resultMap.containsKey(key));
-            resultsfile.write(key.split("_")[0] + "," + resultMap.get(key).result + "," + (1 - (resultMap.get(key).time.size() - 1)) + "," + "\n");
+            resultsfile.write(
+                    key.split("_")[0] + "," +
+                            resultMap.get(key).result + "," +
+                            (1 - (resultMap.get(key).time.size() - 1)) + "," +
+                            String.valueOf(resultMap.get(key).getEdgeLatency()) + "\n");
         }
 //        System.out.println("Results:\n" + resultMap.toString());
         Long procend = System.currentTimeMillis() - procstart;
@@ -133,16 +151,20 @@ public class Util
             String imgpath = chunks[1];
             querylist.add(img);
             objRecClient.recognize(imgpath, new EvaluateCallback(System.currentTimeMillis(), img));
-            Thread.sleep(100);
+            sleep(100);
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).result + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = dir.readLine();
             count++;
         } while ((line != null));
 
-        for(String key: querylist)
+        for (String key : querylist)
         {
-            while(!resultMap.containsKey(key));
-            resultsfile.write(key.split("_")[0] + "," + resultMap.get(key).result + "," + (1 - (resultMap.get(key).time.size() - 1)) + "," + "\n");
+            while (!resultMap.containsKey(key)) ;
+            resultsfile.write(
+                    key.split("_")[0] + "," +
+                            resultMap.get(key).result + "," +
+                            (1 - (resultMap.get(key).time.size() - 1)) + "," +
+                            String.valueOf(resultMap.get(key).getEdgeLatency()) + "\n");
         }
 //        System.out.println("Results:\n" + resultMap.toString());
         Long procend = System.currentTimeMillis() - procstart;
@@ -171,7 +193,6 @@ public class Util
             Result res = new Result();
             res.result = annotation.getAnnotation();
             res.time = annotation.getLatenciesList();
-            System.out.println(query + "," + res.result + "," + String.valueOf(dur));
             resultMap.put(query, res);
         }
     }
@@ -185,6 +206,21 @@ public class Util
         public String toString()
         {
             return result + ":" + String.valueOf(time);
+        }
+
+        public long getEdgeLatency()
+        {
+            long latency = 0;
+            for (ObjRecServiceProto.Latency l: time)
+            {
+                if(l.getName().equals(Names.Edge))
+                {
+                    latency += l.getComputation();
+                    if(l.hasNetwork())
+                        latency += l.getNetwork();
+                }
+            }
+            return latency;
         }
     }
 }
