@@ -3,7 +3,6 @@ package edu.cmu.edgecache.objrec.rpc;
 import com.google.protobuf.RpcCallback;
 import edu.cmu.edgecache.objrec.opencv.*;
 import edu.cmu.edgecache.recog.AbstractRecogCache;
-import edu.cmu.edgecache.recog.CacheType;
 import edu.cmu.edgecache.recog.LFURecogCache;
 
 import java.io.IOException;
@@ -15,10 +14,11 @@ import java.io.IOException;
 public class CachedObjRecClient extends ObjRecClient
 {
     // Cache
-    AbstractRecogCache<String, KeypointDescList> recogCache;
+    private AbstractRecogCache<String, KeypointDescList> recogCache;
     // Recognizer
-    protected Recognizer recognizer;
+    private Recognizer recognizer;
     private String name;
+    private boolean isCacheEnabled = false;
 
     /**
      *
@@ -26,23 +26,26 @@ public class CachedObjRecClient extends ObjRecClient
      * @param matcher {@link Matcher} To use in the Recognizer
      * @param server {@link ObjRecServer} to connect to
      */
-    public CachedObjRecClient(FeatureExtractor extractor, Matcher matcher, String server, String name, int cachesize, CacheType cachetype)
+    public CachedObjRecClient(FeatureExtractor extractor, Matcher matcher, String server, String name, Integer cache_size)
     {
         super(server);
         recognizer = new Recognizer(extractor, matcher);
-
-        switch (cachetype)
-        {
-            case LFU:
-                recogCache = new LFURecogCache<>(new ImageRecognizerInterface(recognizer), cachesize);
-                break;
-            case Optimal:
-                break;
-            default:
-                recogCache = new LFURecogCache<>(new ImageRecognizerInterface(recognizer), cachesize);
-        }
-
+        recogCache = new LFURecogCache<>(new ImageRecognizerInterface(recognizer), cache_size);
         this.name = name;
+        if(cache_size > 0)
+            isCacheEnabled = true;
+        System.out.println("Cache enabled:" + isCacheEnabled);
+    }
+
+    public CachedObjRecClient(Recognizer recognizer, AbstractRecogCache<String, KeypointDescList> recogCache, String serverAdd, String name, boolean enableCache)
+    {
+        super(serverAdd);
+        this.recognizer = recognizer;
+        this.recogCache = recogCache;
+        this.name = name;
+        isCacheEnabled = enableCache;
+        System.out.println("Cache enabled:" + isCacheEnabled);
+
     }
 
     @Override
@@ -52,7 +55,9 @@ public class CachedObjRecClient extends ObjRecClient
         // Extract Keypoints
         KeypointDescList kplist = recognizer.extractor.extract(imagePath);
         // Recognize from local cache
-        String res = recogCache.get(kplist);
+        String res = recogCache.invalid();
+        if(isCacheEnabled)
+            res = recogCache.get(kplist);
         long dur = System.currentTimeMillis() - start;
         checkAndSend(dur, res, Utils.serialize(kplist).build(), cb);
     }
@@ -66,7 +71,9 @@ public class CachedObjRecClient extends ObjRecClient
     {
         Long start = System.currentTimeMillis();
         KeypointDescList kplist = Utils.deserialize(features);
-        String res = recogCache.get(kplist);
+        String res = recogCache.invalid();
+        if(isCacheEnabled)
+            res = recogCache.get(kplist);
         long dur = System.currentTimeMillis() - start;
         checkAndSend(dur, res, features, cb);
     }
@@ -83,8 +90,10 @@ public class CachedObjRecClient extends ObjRecClient
         Long start = System.currentTimeMillis();
         // Extract Keypoints
         KeypointDescList kplist = recognizer.extractor.extract(imagedata);
-        // Recognize from local cache
-        String res = recogCache.get(kplist);
+        String res = recogCache.invalid();
+        if(isCacheEnabled)
+            // Recognize from local cache
+            res = recogCache.get(kplist);
         long dur = System.currentTimeMillis() - start;
         checkAndSend(dur, res, Utils.serialize(kplist).build(), cb);
     }
@@ -103,7 +112,7 @@ public class CachedObjRecClient extends ObjRecClient
                 setComputation((int) dur).
                 setName(name);
         // Check if Hit
-        if(!res.equals("None"))
+        if(recogCache.isValid(res))
         {
             ObjRecServiceProto.Annotation annotation = ObjRecServiceProto.Annotation.newBuilder().
                     setAnnotation(res).
@@ -148,28 +157,35 @@ public class CachedObjRecClient extends ObjRecClient
         @Override
         public void run(ObjRecServiceProto.Annotation annotation)
         {
+            int latency = (int) (System.currentTimeMillis() - start);
             // Add latencies to Annotation
             ObjRecServiceProto.Annotation.Builder ann = ObjRecServiceProto.Annotation.newBuilder(annotation);
-            ann.addLatencies(complatency.setNetwork((int) (System.currentTimeMillis() - start)));
+            ann.addLatencies(complatency.setNetwork(latency));
             // Run the client's callback
             cb.run(ann.build());
 
-            String annotationstring = annotation.getAnnotation();
+            if (isCacheEnabled)
+            {
+                String annotationstring = annotation.getAnnotation();
 
-            // Check if you have this image in your knownItems
-            if(!annotationstring.equals("None"))
-                if(!recogCache.contains(annotationstring))
-                {
-                    // If not, fetch from server
-                    ObjRecServiceStub.getFeatures(rpc,
-                            annotation,
-                            new FeaturesRecvCallback(annotationstring));
-                }
-                else
-                {
-                    recogCache.put(annotationstring, null);
-                    System.out.println(name+ " : Present in Cache but not matched");
-                }
+                // Update cache about latency
+                recogCache.setMissLatency(latency);
+
+                // Check if you have this image in your knownItems
+                if (recogCache.isValid(annotationstring))
+                    if (!recogCache.contains(annotationstring))
+                    {
+                        // If not, fetch from server
+                        ObjRecServiceStub.getFeatures(rpc,
+                                                      annotation,
+                                                      new FeaturesRecvCallback(annotationstring));
+                    } else
+                    {
+                        recogCache.put(annotationstring, null);
+                        System.out.println(name + " : Present in Cache but not matched");
+                    }
+
+            }
         }
     }
 

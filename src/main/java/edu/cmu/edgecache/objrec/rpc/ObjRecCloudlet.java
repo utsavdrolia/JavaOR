@@ -18,13 +18,13 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
 {
     private RPCServer listeningrpc;
     private CachedObjRecClient objRecClient;
-    private final String CLOUDLET = "Cloudlet";
+    private final String EDGE = Names.Edge;
 
 
     public ObjRecCloudlet(FeatureExtractor extractor, Matcher matcher, String myaddress, String serveraddress, int cachesize, CacheType cachetype) throws IOException
     {
         listeningrpc = new RPCServer(myaddress, this);
-        objRecClient = new CachedObjRecClient(extractor, matcher, serveraddress, CLOUDLET, cachesize, cachetype);
+        objRecClient = new CachedObjRecClient(extractor, matcher, serveraddress, EDGE, cachesize);
     }
 
 
@@ -61,7 +61,7 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
         // Return
         done.run(features
                 .addLatencies(ObjRecServiceProto.Latency.newBuilder()
-                        .setName(CLOUDLET)
+                        .setName(EDGE)
                         .setComputation((int) (System.currentTimeMillis() - start)))
                 .build());
     }

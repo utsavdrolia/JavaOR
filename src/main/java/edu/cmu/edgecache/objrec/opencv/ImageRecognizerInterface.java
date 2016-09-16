@@ -9,6 +9,7 @@ import java.util.Map;
  */
 public class ImageRecognizerInterface implements RecognizeInterface<String, KeypointDescList>
 {
+    private static final String INVALID = "None";
     private Recognizer recognizer;
 
     /**
@@ -41,8 +42,14 @@ public class ImageRecognizerInterface implements RecognizeInterface<String, Keyp
     }
 
     @Override
-    public boolean valid(String result)
+    public boolean isValid(String result)
     {
-        return !result.equals("None");
+        return !result.equals(INVALID);
+    }
+
+    @Override
+    public String invalid()
+    {
+        return INVALID;
     }
 }

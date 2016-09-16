@@ -2,11 +2,11 @@ package edu.cmu.edgecache.objrec.rpc;
 
 import com.google.protobuf.RpcCallback;
 import com.google.protobuf.RpcController;
-import edu.cmu.edgecache.objrec.opencv.Recognizer;
-import org.crowd.rpc.RPCServer;
 import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.KeypointDescList;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
+import edu.cmu.edgecache.objrec.opencv.Recognizer;
+import org.crowd.rpc.RPCServer;
 
 import java.io.IOException;
 
@@ -17,11 +17,11 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
 {
     private Recognizer recognizer;
     private RPCServer rpc;
-    private final String NAME = "Cloud";
+    private final String NAME = Names.Cloud;
     public ObjRecServer(FeatureExtractor dbextractor, FeatureExtractor extractor, Matcher matcher, String dblistpath, String myaddress) throws IOException
     {
         recognizer = new Recognizer(dbextractor, extractor, matcher, dblistpath);
-        rpc = new RPCServer(myaddress, this, 24);
+        rpc = new RPCServer(myaddress, this, 1);
     }
 
     @Override
@@ -42,6 +42,13 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
     public void recognizeFeatures(RpcController controller, ObjRecServiceProto.Features request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
         Long start = System.currentTimeMillis();
+//        try
+//        {
+//            sleep(200);
+//        } catch (InterruptedException e)
+//        {
+//            e.printStackTrace();
+//        }
         KeypointDescList kplist = Utils.deserialize(request);
         String ret = recognizer.recognize(kplist);
         done.run(ObjRecServiceProto.Annotation.newBuilder()

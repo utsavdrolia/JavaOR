@@ -35,4 +35,14 @@ public class KeypointDescList
         points = kp;
         this.descriptions = descriptions;
     }
+
+    /**
+     * Append a {@link KeypointDescList} to this one
+     * @param list
+     */
+    public void append(KeypointDescList list)
+    {
+        this.points.addAll(list.points);
+        this.descriptions.push_back(list.descriptions);
+    }
 }
