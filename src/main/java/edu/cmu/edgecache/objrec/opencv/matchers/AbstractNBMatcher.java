@@ -1,7 +1,8 @@
 package edu.cmu.edgecache.objrec.opencv.matchers;
 
-import edu.cmu.edgecache.objrec.opencv.Matcher;
 import edu.cmu.edgecache.objrec.opencv.KeypointDescList;
+import edu.cmu.edgecache.objrec.opencv.Matcher;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDMatch;
 import org.opencv.features2d.DMatch;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * Created by utsav on 2/6/16.
@@ -23,6 +25,7 @@ public abstract class AbstractNBMatcher extends Matcher
     protected List<String> objects;
     protected Double SCORE_THRESH = 0.6;
 
+    ExecutorService executorService = Executors.newFixedThreadPool(Core.getNumThreads());
     protected AbstractNBMatcher()
     {
         super();
@@ -65,7 +68,7 @@ public abstract class AbstractNBMatcher extends Matcher
     }
 
     @Override
-    protected String _matchAll(KeypointDescList sceneImage)
+    protected String _matchAll(final KeypointDescList sceneImage)
     {
 
         List<MatOfDMatch> matches = new ArrayList<>();
@@ -84,24 +87,44 @@ public abstract class AbstractNBMatcher extends Matcher
 
         //printInvertedMatches(image2match);
 
+        ArrayList<Future<HomographyResult>> results = new ArrayList<>();
         // Minimum number of good matches and homography verification
-        for (Integer img : image2match.keySet())
+        for (final Integer img : image2match.keySet())
         {
-            List<DMatch> dmatches = image2match.get(img);
+            final List<DMatch> dmatches = image2match.get(img);
             if (dmatches.size() > NUM_MATCHES_THRESH)
             {
-                Double matchscore = Verify.homography(dmatches, DB.get(objects.get(img)), sceneImage);
+                results.add(executorService.submit(new Callable<HomographyResult>()
+                {
+                    @Override
+                    public HomographyResult call() throws Exception
+                    {
+                        return new HomographyResult(img,
+                                                    Verify.homography(dmatches, DB.get(objects.get(img)), sceneImage));
+                    }
+                }));
+            }
+        }
+
+        for (Future<HomographyResult> futresult : results)
+        {
+            try
+            {
+                HomographyResult result = futresult.get();
+                double matchscore = result.getMatchscore();
                 //System.out.println(objects.get(img) + ":" + matchscore);
                 if (matchscore > SCORE_THRESH)
                 {
                     if (matchscore > score)
                     {
                         score = matchscore;
-                        ret = objects.get(img);
+                        ret = objects.get(result.getImg());
                     }
                 }
+            } catch (InterruptedException | ExecutionException e)
+            {
+                e.printStackTrace();
             }
-
         }
 
 
@@ -127,5 +150,27 @@ public abstract class AbstractNBMatcher extends Matcher
     public Matcher newMatcher()
     {
         return new BFMatcher_HAM_NB();
+    }
+
+    private class HomographyResult
+    {
+        private double matchscore;
+        private int img;
+
+        public HomographyResult(Integer img, Double matchscore)
+        {
+            this.matchscore = matchscore;
+            this.img = img;
+        }
+
+        public double getMatchscore()
+        {
+            return matchscore;
+        }
+
+        public int getImg()
+        {
+            return img;
+        }
     }
 }
