@@ -9,11 +9,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
-
-import static org.opencv.imgproc.Imgproc.resize;
 
 /**
  * Created by utsav on 2/3/16.
@@ -31,58 +31,67 @@ public class DBLoader
     {
         ExecutorService executorService = Executors.newFixedThreadPool(24);
         HashMap<String, KeypointDescList> dbMap = new HashMap<String, KeypointDescList>();
-        HashMap<String, Future<KeypointDescList>> futMap = new HashMap<String, Future<KeypointDescList>>();
+        HashMap<String, List<Future<KeypointDescList>>> futMap = new HashMap<>();
         BufferedReader dir = new BufferedReader(new FileReader(dblistpath));
-        HashMap<String, String> paths = new HashMap<String, String>();
+        HashMap<String, List<String>> paths = new HashMap<>();
         Long total_KPs = 0l;
         String line = dir.readLine();
         do
         {
             String[] chunks = line.split(",");
-            paths.put(chunks[0], chunks[1]);
+            if(!paths.containsKey(chunks[0]))
+                paths.put(chunks[0], new ArrayList<String>());
+            paths.get(chunks[0]).add(chunks[1]);
             line = dir.readLine();
         }while (line != null);
 
-        for (Map.Entry<String, String> image : paths.entrySet())
+        for (Map.Entry<String, List<String>> imagelist : paths.entrySet())
         {
-            final String imagepath = image.getValue();
-            Mat imagemat = Highgui.imread(imagepath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-            final Mat dst = new Mat();
-            CVUtil.resize(imagemat, dst);
-            File imagefile = new File(imagepath);
-            final String imgname = image.getKey();
-            if (imagefile.exists())
+            for (String image: imagelist.getValue())
             {
-                futMap.put(imgname, executorService.submit(new Callable<KeypointDescList>()
+                final String imagepath = image;
+                Mat imagemat = Highgui.imread(imagepath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+                final Mat dst = new Mat();
+                CVUtil.resize(imagemat, dst);
+                File imagefile = new File(imagepath);
+                final String imgname = imagelist.getKey();
+                if (imagefile.exists())
                 {
-                    public KeypointDescList call() throws Exception
+                    if(!futMap.containsKey(imgname))
+                        futMap.put(imgname, new ArrayList<Future<KeypointDescList>>());
+                    futMap.get(imgname).add(executorService.submit(new Callable<KeypointDescList>()
                     {
-                        return extractor.extract(dst);
-                    }
-                }));
-                //System.out.println("Loading " + imagepath);
+                        public KeypointDescList call() throws Exception
+                        {
+                            return extractor.extract(dst);
+                        }
+                    }));
+                    //System.out.println("Loading " + imagepath);
+                } else
+                    System.out.println("Could not find image");
             }
-            else
-                System.out.println("Could not find image");
         }
 
-        for(Map.Entry<String, Future<KeypointDescList>> future:futMap.entrySet())
+        for(Map.Entry<String, List<Future<KeypointDescList>>> future:futMap.entrySet())
         {
-            try
+            for (Future<KeypointDescList> kp: future.getValue())
             {
-                dbMap.put(future.getKey(), future.getValue().get());
-                total_KPs += future.getValue().get().points.size();
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-            catch (ExecutionException e)
-            {
-                e.printStackTrace();
+                try
+                {
+                    if (!dbMap.containsKey(future.getKey()))
+                        dbMap.put(future.getKey(), kp.get());
+                    else
+                        dbMap.get(future.getKey()).append(kp.get());
+                    total_KPs += kp.get().points.size();
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                } catch (ExecutionException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
-
         executorService.shutdown();
         futMap = null;
         paths = null;
