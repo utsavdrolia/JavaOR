@@ -13,7 +13,7 @@ import edu.cmu.edgecache.objrec.rpc.ObjRecServiceProto;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static java.lang.Thread.sleep;
 
@@ -32,9 +32,6 @@ public class Util
 
     private static final String LFU_cache = "LFU";
     private static final String Opt_cache = "OPT";
-
-    private static ConcurrentHashMap<String, Result> resultMap = new ConcurrentHashMap<>();
-
 
     public static FeatureExtractor createExtractor(int featuretype, String pars)
     {
@@ -90,46 +87,49 @@ public class Util
 
     public static void evaluate(ObjRecClient objRecClient, String queryList, String resultspath) throws IOException, InterruptedException
     {
+        ConcurrentLinkedQueue<EvaluateCallback> evaluateCallbacks = new ConcurrentLinkedQueue<>();
         BufferedReader dir = new BufferedReader(new FileReader(queryList));
         BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
 
         Integer count = 0;
         String line = dir.readLine();
         Long procstart = System.currentTimeMillis();
-        ArrayList<String> querylist = new ArrayList<>();
         do
         {
             String[] chunks = line.split(",");
-            String img = chunks[0] + "_" + count.toString();
+            String img = chunks[0];
             String imgpath = chunks[1];
-            querylist.add(img);
-            objRecClient.recognize(imgpath, new EvaluateCallback(System.currentTimeMillis(), img));
-            while(!resultMap.containsKey(img))
+            EvaluateCallback cb = new EvaluateCallback(System.currentTimeMillis(), img);
+            objRecClient.recognize(imgpath, cb);
+            evaluateCallbacks.add(cb);
+            while(!cb.isDone())
             {
                 sleep(100);
             }
             sleep(200);
+            Result result = cb.getResult();
             System.out.println(img + "," +
-                    resultMap.get(img).result + "," +
-                    (1 - (resultMap.get(img).time.size() - 1)) + "," +
-                    resultMap.get(img).getEdgeLatency()+ "," +
-                                       String.valueOf(resultMap.get(img).getCacheSize()));
-//            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).result + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
+                               result.getAnnotation() + "," +
+                               (1 - (result.getTime().size() - 1)) + "," +
+                               result.getEdgeLatency() + "," +
+                               String.valueOf(result.getCacheSize()));
+//            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).annotation + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = dir.readLine();
             count++;
         } while ((line != null));
 
-        for(String key: querylist)
+        for(EvaluateCallback callback: evaluateCallbacks)
         {
-            while(!resultMap.containsKey(key));
+            // Ensure callback is processed
+            while(callback.isDone());
+            Result result = callback.getResult();
             resultsfile.write(
-                    key.split("_")[0] + "," +
-                            resultMap.get(key).result + "," +
-                            (1 - (resultMap.get(key).time.size() - 1)) + "," +
-                            String.valueOf(resultMap.get(key).getEdgeLatency())+ "," +
-                            String.valueOf(resultMap.get(key).getCacheSize()) + "\n");
+                    callback.getQuery() + "," +
+                            result.getAnnotation() + "," +
+                            (1 - (result.getTime().size() - 1)) + "," +
+                            String.valueOf(result.getEdgeLatency())+ "," +
+                            String.valueOf(result.getCacheSize()) + "\n");
         }
-//        System.out.println("Results:\n" + resultMap.toString());
         Long procend = System.currentTimeMillis() - procstart;
         System.out.println("Time:" + procend + " Count:" + count);
         resultsfile.flush();
@@ -138,6 +138,7 @@ public class Util
 
     public static void evaluateAsync(ObjRecClient objRecClient, String queryList, String resultspath) throws IOException, InterruptedException
     {
+        ConcurrentLinkedQueue<EvaluateCallback> evaluateCallbacks = new ConcurrentLinkedQueue<>();
         BufferedReader dir = new BufferedReader(new FileReader(queryList));
         BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
 
@@ -145,29 +146,32 @@ public class Util
         String line = dir.readLine();
         Long procstart = System.currentTimeMillis();
         ArrayList<String> querylist = new ArrayList<>();
-
         do
         {
             String[] chunks = line.split(",");
-            String img = chunks[0] + "_" + count.toString();
+            String img = chunks[0];
             String imgpath = chunks[1];
             querylist.add(img);
-            objRecClient.recognize(imgpath, new EvaluateCallback(System.currentTimeMillis(), img));
+            EvaluateCallback cb = new EvaluateCallback(System.currentTimeMillis(), img);
+            objRecClient.recognize(imgpath, cb);
+            evaluateCallbacks.add(cb);
             sleep(100);
-//            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).result + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
+//            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).annotation + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = dir.readLine();
             count++;
         } while ((line != null));
 
-        for (String key : querylist)
+        for(EvaluateCallback callback: evaluateCallbacks)
         {
-            while (!resultMap.containsKey(key)) ;
+            // Ensure callback is processed
+            while(callback.isDone());
+            Result result = callback.getResult();
             resultsfile.write(
-                    key.split("_")[0] + "," +
-                            resultMap.get(key).result + "," +
-                            (1 - (resultMap.get(key).time.size() - 1)) + "," +
-                            String.valueOf(resultMap.get(key).getEdgeLatency()) + "," +
-                            String.valueOf(resultMap.get(key).getCacheSize()) + "\n");
+                    callback.getQuery() + "," +
+                            result.getAnnotation() + "," +
+                            (1 - (result.getTime().size() - 1)) + "," +
+                            String.valueOf(result.getEdgeLatency())+ "," +
+                            String.valueOf(result.getCacheSize()) + "\n");
         }
 //        System.out.println("Results:\n" + resultMap.toString());
         Long procend = System.currentTimeMillis() - procstart;
@@ -176,11 +180,14 @@ public class Util
         resultsfile.close();
     }
 
-    private static class EvaluateCallback extends ObjRecCallback
+    public static class EvaluateCallback extends ObjRecCallback
     {
-        long startime;
-        long endtime;
-        String query;
+        private long startime;
+        private long endtime;
+        private String query;
+        private Result result;
+        private boolean isDone = false;
+
         public EvaluateCallback(long millis, String query)
         {
             super();
@@ -192,23 +199,62 @@ public class Util
         public void run(ObjRecServiceProto.Annotation annotation)
         {
             endtime = System.currentTimeMillis();
-            long dur = endtime - startime;
-            Result res = new Result();
-            res.result = annotation.getAnnotation();
-            res.time = annotation.getLatenciesList();
-            resultMap.put(query, res);
+            result = new Result(annotation.getAnnotation(), annotation.getLatenciesList());
+            isDone = true;
+        }
+
+        public long getStartime()
+        {
+            return startime;
+        }
+
+        public boolean isDone()
+        {
+            return isDone;
+        }
+
+        public long getEndtime()
+        {
+            return endtime;
+        }
+
+        public String getQuery()
+        {
+            return query;
+        }
+
+        public Result getResult()
+        {
+            return result;
         }
     }
 
 
-    private static class Result
+    public static class Result
     {
-        public String result;
-        public List<ObjRecServiceProto.Latency> time;
+        private String annotation;
+        private List<ObjRecServiceProto.Latency> time;
+
+        public Result(String annotation,
+                      List<ObjRecServiceProto.Latency> latenciesList)
+        {
+            this.annotation = annotation;
+            time = latenciesList;
+        }
+
+        public String getAnnotation()
+        {
+            return annotation;
+        }
+
+        public List<ObjRecServiceProto.Latency> getTime()
+        {
+            return time;
+        }
 
         public String toString()
         {
-            return result + ":" + String.valueOf(time);
+            return annotation + ":" + String.valueOf(time);
         }
 
         public long getEdgeLatency()
