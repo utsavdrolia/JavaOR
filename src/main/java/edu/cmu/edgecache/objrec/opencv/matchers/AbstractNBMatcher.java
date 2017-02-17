@@ -74,7 +74,7 @@ public abstract class AbstractNBMatcher extends Matcher
         List<MatOfDMatch> matches = new ArrayList<>();
         List<DMatch> good_matches;
         Mat inliers = new Mat();
-        String ret = "None";
+        String ret = INVALID;
         Double score = Double.MIN_VALUE;
 
         matcher.knnMatch(sceneImage.descriptions, matches, 2);

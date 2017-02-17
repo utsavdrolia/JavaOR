@@ -110,7 +110,8 @@ public class CachedObjRecClient extends ObjRecClient
         // Calculate comp latency
         ObjRecServiceProto.Latency.Builder complatency = ObjRecServiceProto.Latency.newBuilder().
                 setComputation((int) dur).
-                setName(name);
+                setName(name).
+                setSize(recogCache.getSize());
         // Check if Hit
         if(recogCache.isValid(res))
         {

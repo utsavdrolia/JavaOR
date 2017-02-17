@@ -1,5 +1,5 @@
-import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
-import edu.cmu.edgecache.objrec.opencv.Matcher;
+package edu.cmu.edgecache.objrec.opencv;
+
 import edu.cmu.edgecache.objrec.opencv.extractors.ORB;
 import edu.cmu.edgecache.objrec.opencv.extractors.SIFTFeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.matchers.BFMatcher_HAM_NB;
@@ -22,13 +22,13 @@ import static java.lang.Thread.sleep;
  */
 public class Util
 {
-    private static final int BIN_NN = 1;
-    private static final int BIN_NB = 2;
-    private static final int FLOAT_NB = 3;
-    private static final int LSH = 4;
+    public static final int BIN_NN = 1;
+    public static final int BIN_NB = 2;
+    public static final int FLOAT_NB = 3;
+    public static final int LSH = 4;
 
-    private static final int ORB = 1;
-    private static final int SIFT = 2;
+    public static final int ORB = 1;
+    public static final int SIFT = 2;
 
     private static final String LFU_cache = "LFU";
     private static final String Opt_cache = "OPT";
@@ -112,7 +112,8 @@ public class Util
             System.out.println(img + "," +
                     resultMap.get(img).result + "," +
                     (1 - (resultMap.get(img).time.size() - 1)) + "," +
-                    resultMap.get(img).getEdgeLatency());
+                    resultMap.get(img).getEdgeLatency()+ "," +
+                                       String.valueOf(resultMap.get(img).getCacheSize()));
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).result + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = dir.readLine();
             count++;
@@ -125,7 +126,8 @@ public class Util
                     key.split("_")[0] + "," +
                             resultMap.get(key).result + "," +
                             (1 - (resultMap.get(key).time.size() - 1)) + "," +
-                            String.valueOf(resultMap.get(key).getEdgeLatency()) + "\n");
+                            String.valueOf(resultMap.get(key).getEdgeLatency())+ "," +
+                            String.valueOf(resultMap.get(key).getCacheSize()) + "\n");
         }
 //        System.out.println("Results:\n" + resultMap.toString());
         Long procend = System.currentTimeMillis() - procstart;
@@ -164,7 +166,8 @@ public class Util
                     key.split("_")[0] + "," +
                             resultMap.get(key).result + "," +
                             (1 - (resultMap.get(key).time.size() - 1)) + "," +
-                            String.valueOf(resultMap.get(key).getEdgeLatency()) + "\n");
+                            String.valueOf(resultMap.get(key).getEdgeLatency()) + "," +
+                            String.valueOf(resultMap.get(key).getCacheSize()) + "\n");
         }
 //        System.out.println("Results:\n" + resultMap.toString());
         Long procend = System.currentTimeMillis() - procstart;
@@ -221,6 +224,18 @@ public class Util
                 }
             }
             return latency;
+        }
+
+        public long getCacheSize()
+        {
+            for (ObjRecServiceProto.Latency l: time)
+            {
+                if(l.getName().equals(Names.Edge))
+                {
+                    return l.getSize();
+                }
+            }
+            return  -1;
         }
     }
 }

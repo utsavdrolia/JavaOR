@@ -1,3 +1,4 @@
+import edu.cmu.edgecache.objrec.opencv.Util;
 import edu.cmu.edgecache.objrec.rpc.ObjRecClient;
 import org.opencv.core.Core;
 

@@ -1,5 +1,6 @@
 import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
+import edu.cmu.edgecache.objrec.opencv.Util;
 import edu.cmu.edgecache.objrec.rpc.CachedObjRecClient;
 import edu.cmu.edgecache.objrec.rpc.Names;
 import edu.cmu.edgecache.objrec.rpc.ObjRecServer;
@@ -35,7 +36,7 @@ public class EvaluateClientServer
             FeatureExtractor extractor = Util.createExtractor(featuretype, pars);
             Matcher servermatcher = Util.createMatcher(matchertype_db, matcherpars_db, 3, 0.6);
             ObjRecServer objRecServer = new ObjRecServer(dbextractor, extractor, servermatcher, DBdirpath, serverAdd);
-//            Matcher cloudletmatcher = Util.createMatcher(matchertype_db, matcherpars_db, matchercache_size*5, 6, 0.7);
+//            Matcher cloudletmatcher = edu.cmu.edgecache.objrec.opencv.Util.createMatcher(matchertype_db, matcherpars_db, matchercache_size*5, 6, 0.7);
 //            ObjRecCloudlet objRecCloudlet = new ObjRecCloudlet(extractor, cloudletmatcher, serverAdd, "192.168.25.145:10101");
 
             Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 5, 0.8);

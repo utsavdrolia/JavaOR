@@ -1,6 +1,7 @@
 import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
 import edu.cmu.edgecache.objrec.opencv.Recognizer;
+import edu.cmu.edgecache.objrec.opencv.Util;
 import org.opencv.core.Core;
 
 import java.io.*;

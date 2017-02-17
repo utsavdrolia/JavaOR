@@ -9,14 +9,13 @@ import org.opencv.highgui.Highgui;
 
 import java.io.IOException;
 
-import static org.opencv.imgproc.Imgproc.resize;
-
 /**
  * Created by utsav on 2/5/16.
  */
 public class Recognizer
 {
 
+    public static final String INVALID = Matcher.INVALID;
     public FeatureExtractor extractor;
     public Matcher matcher;
 
@@ -93,6 +92,16 @@ public class Recognizer
         return matcher.matchAll(inputKDlist);
     }
 
+    /**
+     * Is the result valid or unknown?
+     * @param result
+     * @return
+     */
+    public boolean isValid(String result)
+    {
+        return !result.equals(INVALID);
+    }
+
     public static void main(String args[]) throws IOException
     {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -115,5 +124,4 @@ public class Recognizer
         }
         System.exit(1);
     }
-
 }

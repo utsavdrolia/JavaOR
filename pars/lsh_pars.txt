@@ -7,7 +7,7 @@ indexParams:
    -
       name: key_size
       type: 4
-      value: 14
+      value: 16
    -
       name: multi_probe_level
       type: 4
@@ -15,7 +15,7 @@ indexParams:
    -
       name: table_number
       type: 4
-      value: 4
+      value:12
 searchParams:
    -
       name: checks

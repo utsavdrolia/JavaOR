@@ -13,6 +13,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public abstract class Matcher
 {
+    public static final String INVALID = "None";
     protected Map<String, KeypointDescList> DB;
     private int max_size = Integer.MAX_VALUE;
     private boolean isFixed = false;

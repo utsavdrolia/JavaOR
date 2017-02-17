@@ -27,7 +27,7 @@ public final class ObjRecServiceProto {
       // @@protoc_insertion_point(message_implements:Image)
       ImageOrBuilder {
     // Use Image.newBuilder() to construct.
-    private Image(com.google.protobuf.GeneratedMessage.Builder builder) {
+    private Image(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
     private Image() {
@@ -41,7 +41,8 @@ public final class ObjRecServiceProto {
     }
     private Image(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
@@ -69,11 +70,10 @@ public final class ObjRecServiceProto {
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -129,9 +129,8 @@ public final class ObjRecServiceProto {
       unknownFields.writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
@@ -140,7 +139,7 @@ public final class ObjRecServiceProto {
           .computeBytesSize(1, image_);
       }
       size += unknownFields.getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
@@ -168,34 +167,40 @@ public final class ObjRecServiceProto {
     }
     public static Image parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
     }
     public static Image parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static Image parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static Image parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static Image parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
     }
     public static Image parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -321,7 +326,7 @@ public final class ObjRecServiceProto {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (Image) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -379,24 +384,19 @@ public final class ObjRecServiceProto {
       return DEFAULT_INSTANCE;
     }
 
-    public static final com.google.protobuf.Parser<Image> PARSER =
-        new com.google.protobuf.AbstractParser<Image>() {
+    @Deprecated public static final com.google.protobuf.Parser<Image>
+        PARSER = new com.google.protobuf.AbstractParser<Image>() {
       public Image parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new Image(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
+
+    public static com.google.protobuf.Parser<Image> parser() {
+      return PARSER;
+    }
 
     @Override
     public com.google.protobuf.Parser<Image> getParserForType() {
@@ -459,7 +459,7 @@ public final class ObjRecServiceProto {
       // @@protoc_insertion_point(message_implements:Annotation)
       AnnotationOrBuilder {
     // Use Annotation.newBuilder() to construct.
-    private Annotation(com.google.protobuf.GeneratedMessage.Builder builder) {
+    private Annotation(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
     private Annotation() {
@@ -474,7 +474,8 @@ public final class ObjRecServiceProto {
     }
     private Annotation(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
@@ -505,17 +506,16 @@ public final class ObjRecServiceProto {
                 latencies_ = new java.util.ArrayList<Latency>();
                 mutable_bitField0_ |= 0x00000002;
               }
-              latencies_.add(input.readMessage(Latency.PARSER, extensionRegistry));
+              latencies_.add(input.readMessage(Latency.parser(), extensionRegistry));
               break;
             }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           latencies_ = java.util.Collections.unmodifiableList(latencies_);
@@ -637,7 +637,7 @@ public final class ObjRecServiceProto {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getAnnotationBytes());
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, annotation_);
       }
       for (int i = 0; i < latencies_.size(); i++) {
         output.writeMessage(2, latencies_.get(i));
@@ -645,22 +645,20 @@ public final class ObjRecServiceProto {
       unknownFields.writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getAnnotationBytes());
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, annotation_);
       }
       for (int i = 0; i < latencies_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, latencies_.get(i));
       }
       size += unknownFields.getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
@@ -688,34 +686,40 @@ public final class ObjRecServiceProto {
     }
     public static Annotation parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
     }
     public static Annotation parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static Annotation parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static Annotation parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static Annotation parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
     }
     public static Annotation parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -890,7 +894,7 @@ public final class ObjRecServiceProto {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (Annotation) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -1229,24 +1233,19 @@ public final class ObjRecServiceProto {
       return DEFAULT_INSTANCE;
     }
 
-    public static final com.google.protobuf.Parser<Annotation> PARSER =
-        new com.google.protobuf.AbstractParser<Annotation>() {
+    @Deprecated public static final com.google.protobuf.Parser<Annotation>
+        PARSER = new com.google.protobuf.AbstractParser<Annotation>() {
       public Annotation parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new Annotation(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
+
+    public static com.google.protobuf.Parser<Annotation> parser() {
+      return PARSER;
+    }
 
     @Override
     public com.google.protobuf.Parser<Annotation> getParserForType() {
@@ -1332,7 +1331,7 @@ public final class ObjRecServiceProto {
       // @@protoc_insertion_point(message_implements:Features)
       FeaturesOrBuilder {
     // Use Features.newBuilder() to construct.
-    private Features(com.google.protobuf.GeneratedMessage.Builder builder) {
+    private Features(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
     private Features() {
@@ -1347,7 +1346,8 @@ public final class ObjRecServiceProto {
     }
     private Features(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
@@ -1372,7 +1372,7 @@ public final class ObjRecServiceProto {
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = descs_.toBuilder();
               }
-              descs_ = input.readMessage(DescMat.PARSER, extensionRegistry);
+              descs_ = input.readMessage(DescMat.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(descs_);
                 descs_ = subBuilder.buildPartial();
@@ -1385,7 +1385,7 @@ public final class ObjRecServiceProto {
                 keypoints_ = new java.util.ArrayList<KeyPoint>();
                 mutable_bitField0_ |= 0x00000002;
               }
-              keypoints_.add(input.readMessage(KeyPoint.PARSER, extensionRegistry));
+              keypoints_.add(input.readMessage(KeyPoint.parser(), extensionRegistry));
               break;
             }
             case 26: {
@@ -1393,17 +1393,16 @@ public final class ObjRecServiceProto {
                 latencies_ = new java.util.ArrayList<Latency>();
                 mutable_bitField0_ |= 0x00000004;
               }
-              latencies_.add(input.readMessage(Latency.PARSER, extensionRegistry));
+              latencies_.add(input.readMessage(Latency.parser(), extensionRegistry));
               break;
             }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           keypoints_ = java.util.Collections.unmodifiableList(keypoints_);
@@ -1563,9 +1562,8 @@ public final class ObjRecServiceProto {
       unknownFields.writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
@@ -1582,7 +1580,7 @@ public final class ObjRecServiceProto {
           .computeMessageSize(3, latencies_.get(i));
       }
       size += unknownFields.getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
@@ -1610,34 +1608,40 @@ public final class ObjRecServiceProto {
     }
     public static Features parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
     }
     public static Features parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static Features parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static Features parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static Features parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
     }
     public static Features parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -1869,7 +1873,7 @@ public final class ObjRecServiceProto {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (Features) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -2490,24 +2494,19 @@ public final class ObjRecServiceProto {
       return DEFAULT_INSTANCE;
     }
 
-    public static final com.google.protobuf.Parser<Features> PARSER =
-        new com.google.protobuf.AbstractParser<Features>() {
+    @Deprecated public static final com.google.protobuf.Parser<Features>
+        PARSER = new com.google.protobuf.AbstractParser<Features>() {
       public Features parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new Features(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
+
+    public static com.google.protobuf.Parser<Features> parser() {
+      return PARSER;
+    }
 
     @Override
     public com.google.protobuf.Parser<Features> getParserForType() {
@@ -2568,7 +2567,7 @@ public final class ObjRecServiceProto {
       // @@protoc_insertion_point(message_implements:DescMat)
       DescMatOrBuilder {
     // Use DescMat.newBuilder() to construct.
-    private DescMat(com.google.protobuf.GeneratedMessage.Builder builder) {
+    private DescMat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
     private DescMat() {
@@ -2585,7 +2584,8 @@ public final class ObjRecServiceProto {
     }
     private DescMat(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
@@ -2628,11 +2628,10 @@ public final class ObjRecServiceProto {
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -2754,9 +2753,8 @@ public final class ObjRecServiceProto {
       unknownFields.writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
@@ -2777,7 +2775,7 @@ public final class ObjRecServiceProto {
           .computeBytesSize(4, data_);
       }
       size += unknownFields.getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
@@ -2805,34 +2803,40 @@ public final class ObjRecServiceProto {
     }
     public static DescMat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
     }
     public static DescMat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static DescMat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static DescMat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static DescMat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
     }
     public static DescMat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -2994,7 +2998,7 @@ public final class ObjRecServiceProto {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (DescMat) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -3148,24 +3152,19 @@ public final class ObjRecServiceProto {
       return DEFAULT_INSTANCE;
     }
 
-    public static final com.google.protobuf.Parser<DescMat> PARSER =
-        new com.google.protobuf.AbstractParser<DescMat>() {
+    @Deprecated public static final com.google.protobuf.Parser<DescMat>
+        PARSER = new com.google.protobuf.AbstractParser<DescMat>() {
       public DescMat parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new DescMat(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
+
+    public static com.google.protobuf.Parser<DescMat> parser() {
+      return PARSER;
+    }
 
     @Override
     public com.google.protobuf.Parser<DescMat> getParserForType() {
@@ -3208,7 +3207,7 @@ public final class ObjRecServiceProto {
       // @@protoc_insertion_point(message_implements:KeyPoint)
       KeyPointOrBuilder {
     // Use KeyPoint.newBuilder() to construct.
-    private KeyPoint(com.google.protobuf.GeneratedMessage.Builder builder) {
+    private KeyPoint(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
     private KeyPoint() {
@@ -3223,7 +3222,8 @@ public final class ObjRecServiceProto {
     }
     private KeyPoint(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
@@ -3256,11 +3256,10 @@ public final class ObjRecServiceProto {
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -3338,9 +3337,8 @@ public final class ObjRecServiceProto {
       unknownFields.writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
@@ -3353,7 +3351,7 @@ public final class ObjRecServiceProto {
           .computeDoubleSize(2, y_);
       }
       size += unknownFields.getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
@@ -3381,34 +3379,40 @@ public final class ObjRecServiceProto {
     }
     public static KeyPoint parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
     }
     public static KeyPoint parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static KeyPoint parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static KeyPoint parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static KeyPoint parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
     }
     public static KeyPoint parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -3546,7 +3550,7 @@ public final class ObjRecServiceProto {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (KeyPoint) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -3633,24 +3637,19 @@ public final class ObjRecServiceProto {
       return DEFAULT_INSTANCE;
     }
 
-    public static final com.google.protobuf.Parser<KeyPoint> PARSER =
-        new com.google.protobuf.AbstractParser<KeyPoint>() {
+    @Deprecated public static final com.google.protobuf.Parser<KeyPoint>
+        PARSER = new com.google.protobuf.AbstractParser<KeyPoint>() {
       public KeyPoint parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new KeyPoint(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
+
+    public static com.google.protobuf.Parser<KeyPoint> parser() {
+      return PARSER;
+    }
 
     @Override
     public com.google.protobuf.Parser<KeyPoint> getParserForType() {
@@ -3698,6 +3697,15 @@ public final class ObjRecServiceProto {
      * <code>optional int32 network = 3;</code>
      */
     int getNetwork();
+
+    /**
+     * <code>optional int32 size = 4;</code>
+     */
+    boolean hasSize();
+    /**
+     * <code>optional int32 size = 4;</code>
+     */
+    int getSize();
   }
   /**
    * Protobuf type {@code Latency}
@@ -3707,13 +3715,14 @@ public final class ObjRecServiceProto {
       // @@protoc_insertion_point(message_implements:Latency)
       LatencyOrBuilder {
     // Use Latency.newBuilder() to construct.
-    private Latency(com.google.protobuf.GeneratedMessage.Builder builder) {
+    private Latency(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
     private Latency() {
       name_ = "";
       computation_ = 0;
       network_ = 0;
+      size_ = 0;
     }
 
     @Override
@@ -3723,7 +3732,8 @@ public final class ObjRecServiceProto {
     }
     private Latency(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
@@ -3759,14 +3769,18 @@ public final class ObjRecServiceProto {
               network_ = input.readInt32();
               break;
             }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              size_ = input.readInt32();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -3857,6 +3871,21 @@ public final class ObjRecServiceProto {
       return network_;
     }
 
+    public static final int SIZE_FIELD_NUMBER = 4;
+    private int size_;
+    /**
+     * <code>optional int32 size = 4;</code>
+     */
+    public boolean hasSize() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional int32 size = 4;</code>
+     */
+    public int getSize() {
+      return size_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -3874,7 +3903,7 @@ public final class ObjRecServiceProto {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getNameBytes());
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt32(2, computation_);
@@ -3882,18 +3911,19 @@ public final class ObjRecServiceProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt32(3, network_);
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeInt32(4, size_);
+      }
       unknownFields.writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getNameBytes());
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
@@ -3903,8 +3933,12 @@ public final class ObjRecServiceProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, network_);
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, size_);
+      }
       size += unknownFields.getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
@@ -3932,34 +3966,40 @@ public final class ObjRecServiceProto {
     }
     public static Latency parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
     }
     public static Latency parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static Latency parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static Latency parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static Latency parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
     }
     public static Latency parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -4021,6 +4061,8 @@ public final class ObjRecServiceProto {
         bitField0_ = (bitField0_ & ~0x00000002);
         network_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
+        size_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -4057,6 +4099,10 @@ public final class ObjRecServiceProto {
           to_bitField0_ |= 0x00000004;
         }
         result.network_ = network_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.size_ = size_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4084,6 +4130,9 @@ public final class ObjRecServiceProto {
         if (other.hasNetwork()) {
           setNetwork(other.getNetwork());
         }
+        if (other.hasSize()) {
+          setSize(other.getSize());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -4105,7 +4154,7 @@ public final class ObjRecServiceProto {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (Latency) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -4255,6 +4304,38 @@ public final class ObjRecServiceProto {
         return this;
       }
 
+      private int size_ ;
+      /**
+       * <code>optional int32 size = 4;</code>
+       */
+      public boolean hasSize() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional int32 size = 4;</code>
+       */
+      public int getSize() {
+        return size_;
+      }
+      /**
+       * <code>optional int32 size = 4;</code>
+       */
+      public Builder setSize(int value) {
+        bitField0_ |= 0x00000008;
+        size_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 size = 4;</code>
+       */
+      public Builder clearSize() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        size_ = 0;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:Latency)
     }
 
@@ -4268,24 +4349,19 @@ public final class ObjRecServiceProto {
       return DEFAULT_INSTANCE;
     }
 
-    public static final com.google.protobuf.Parser<Latency> PARSER =
-        new com.google.protobuf.AbstractParser<Latency>() {
+    @Deprecated public static final com.google.protobuf.Parser<Latency>
+        PARSER = new com.google.protobuf.AbstractParser<Latency>() {
       public Latency parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new Latency(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
+
+    public static com.google.protobuf.Parser<Latency> parser() {
+      return PARSER;
+    }
 
     @Override
     public com.google.protobuf.Parser<Latency> getParserForType() {
@@ -4743,34 +4819,34 @@ public final class ObjRecServiceProto {
     // @@protoc_insertion_point(class_scope:ObjRecService)
   }
 
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Image_descriptor;
-  private static
+  private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Image_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Annotation_descriptor;
-  private static
+  private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Annotation_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Features_descriptor;
-  private static
+  private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Features_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_DescMat_descriptor;
-  private static
+  private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_DescMat_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_KeyPoint_descriptor;
-  private static
+  private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_KeyPoint_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Latency_descriptor;
-  private static
+  private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Latency_fieldAccessorTable;
 
@@ -4778,7 +4854,7 @@ public final class ObjRecServiceProto {
       getDescriptor() {
     return descriptor;
   }
-  private static com.google.protobuf.Descriptors.FileDescriptor
+  private static  com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
     String[] descriptorData = {
@@ -4789,13 +4865,14 @@ public final class ObjRecServiceProto {
       "KeyPoint\022\033\n\tlatencies\030\003 \003(\0132\010.Latency\"A\n" +
       "\007DescMat\022\014\n\004rows\030\001 \002(\005\022\014\n\004cols\030\002 \002(\005\022\014\n\004" +
       "type\030\003 \002(\005\022\014\n\004data\030\004 \002(\014\" \n\010KeyPoint\022\t\n\001" +
-      "x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001\"=\n\007Latency\022\014\n\004name\030\001 " +
+      "x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001\"K\n\007Latency\022\014\n\004name\030\001 " +
       "\002(\t\022\023\n\013computation\030\002 \001(\005\022\017\n\007network\030\003 \001(" +
-      "\0052\246\001\n\rObjRecService\022 \n\tRecognize\022\006.Image",
-      "\032\013.Annotation\022+\n\021RecognizeFeatures\022\t.Fea" +
-      "tures\032\013.Annotation\022\037\n\010GetImage\022\013.Annotat" +
-      "ion\032\006.Image\022%\n\013GetFeatures\022\013.Annotation\032" +
-      "\t.FeaturesB\031B\022ObjRecServiceProtoH\001\210\001\001"
+      "\005\022\014\n\004size\030\004 \001(\0052\246\001\n\rObjRecService\022 \n\tRec",
+      "ognize\022\006.Image\032\013.Annotation\022+\n\021Recognize" +
+      "Features\022\t.Features\032\013.Annotation\022\037\n\010GetI" +
+      "mage\022\013.Annotation\032\006.Image\022%\n\013GetFeatures" +
+      "\022\013.Annotation\032\t.FeaturesB\031B\022ObjRecServic" +
+      "eProtoH\001\210\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -4844,7 +4921,7 @@ public final class ObjRecServiceProto {
     internal_static_Latency_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Latency_descriptor,
-        new String[] { "Name", "Computation", "Network", });
+        new String[] { "Name", "Computation", "Network", "Size", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

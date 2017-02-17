@@ -42,7 +42,7 @@ public class EvaluateOPTCachedClient
             } while ((line != null));
 
             FeatureExtractor extractor = Util.createExtractor(featuretype, pars);
-            Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 6, 0.8);
+            Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 3, 0.5);
             Recognizer recognizer = new Recognizer(extractor, clientmatcher);
             AbstractRecogCache<String, KeypointDescList> recogCache = new OptRecogCache<>(new ImageRecognizerInterface(recognizer),
                                                                                           getCoefs(f_k_coeffs_path),

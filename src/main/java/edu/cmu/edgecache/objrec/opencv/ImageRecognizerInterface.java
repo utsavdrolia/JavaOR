@@ -5,11 +5,10 @@ import edu.cmu.edgecache.recog.RecognizeInterface;
 import java.util.Map;
 
 /**
- * Created by utsav on 9/8/16.
+ * Interface mainly used by the recognition cache
  */
 public class ImageRecognizerInterface implements RecognizeInterface<String, KeypointDescList>
 {
-    private static final String INVALID = "None";
     private Recognizer recognizer;
 
     /**
@@ -44,12 +43,12 @@ public class ImageRecognizerInterface implements RecognizeInterface<String, Keyp
     @Override
     public boolean isValid(String result)
     {
-        return !result.equals(INVALID);
+        return recognizer.isValid(result);
     }
 
     @Override
     public String invalid()
     {
-        return INVALID;
+        return Recognizer.INVALID;
     }
 }

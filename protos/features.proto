@@ -1,0 +1,13 @@
+syntax = "proto2";
+option java_outer_classname = "FeaturesProto";
+
+message Desc
+{
+    repeated bytes desc = 1;
+}
+
+message KeyPoint
+{
+    required float x = 1;
+    required float y = 2;
+}
