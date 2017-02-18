@@ -27,20 +27,23 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
     @Override
     public void recognize(RpcController controller, ObjRecServiceProto.Image request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
+        Long req_rx = rpc.getRequestRxTime(request.hashCode());
         Long start = System.currentTimeMillis();
         byte[] img = request.getImage().toByteArray();
         String ret = recognizer.recognize(img);
         done.run(ObjRecServiceProto.Annotation.newBuilder()
                 .setAnnotation(ret)
                 .addLatencies(ObjRecServiceProto.Latency.newBuilder()
-                        .setName(NAME)
-                        .setComputation((int) (System.currentTimeMillis() - start)))
+                                  .setName(NAME)
+                                  .setComputation((int) (System.currentTimeMillis() - start))
+                                  .setInQueue((int) (start - req_rx)))
                 .build());
     }
 
     @Override
     public void recognizeFeatures(RpcController controller, ObjRecServiceProto.Features request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
+        Long req_rx = rpc.getRequestRxTime(request.hashCode());
         Long start = System.currentTimeMillis();
 //        try
 //        {
@@ -54,8 +57,9 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
         done.run(ObjRecServiceProto.Annotation.newBuilder()
                 .setAnnotation(ret)
                 .addLatencies(ObjRecServiceProto.Latency.newBuilder()
-                        .setName(NAME)
-                        .setComputation((int) (System.currentTimeMillis() - start)))
+                                      .setName(NAME)
+                                      .setComputation((int) (System.currentTimeMillis() - start))
+                                      .setInQueue((int) (start - req_rx)))
                 .build());
     }
 
@@ -68,14 +72,16 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
     @Override
     public void getFeatures(RpcController controller, ObjRecServiceProto.Annotation request, RpcCallback<ObjRecServiceProto.Features> done)
     {
+        Long req_rx = rpc.getRequestRxTime(request.hashCode());
         Long start = System.currentTimeMillis();
         KeypointDescList kp = recognizer.matcher.get(request.getAnnotation());
         ObjRecServiceProto.Features.Builder features = Utils.serialize(kp);
         // Return
         done.run(features
                 .addLatencies(ObjRecServiceProto.Latency.newBuilder()
-                        .setName(NAME)
-                        .setComputation((int) (System.currentTimeMillis() - start)))
+                                      .setName(NAME)
+                                      .setComputation((int) (System.currentTimeMillis() - start))
+                                      .setInQueue((int) (start - req_rx)))
                 .build());
     }
 }

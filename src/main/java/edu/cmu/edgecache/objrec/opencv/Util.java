@@ -12,7 +12,9 @@ import edu.cmu.edgecache.objrec.rpc.ObjRecServiceProto;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static java.lang.Thread.sleep;
@@ -232,6 +234,12 @@ public class Util
 
     public static class Result
     {
+        private static final String RESPONSE = "response";
+        private static final String NEXT = "next";
+        private static final String COMPUTE = "compute";
+        private static final String QUEUE = "inqueue";
+
+
         private String annotation;
         private List<ObjRecServiceProto.Latency> time;
 
@@ -265,8 +273,8 @@ public class Util
                 if(l.getName().equals(Names.Edge))
                 {
                     latency += l.getComputation();
-                    if(l.hasNetwork())
-                        latency += l.getNetwork();
+                    if(l.hasNextLevel())
+                        latency += l.getNextLevel();
                 }
             }
             return latency;
@@ -282,6 +290,28 @@ public class Util
                 }
             }
             return  -1;
+        }
+
+        /**
+         * Format - {RESPONSE:"", DEVICE:{QUEUE:ms, COMPUTE:ms, NEXT:ms} ... }
+         * @return
+         */
+
+        public Map<String,Map<String,Integer>> getLatencies()
+        {
+            Map<String, Map<String,Integer>> json = new HashMap<>();
+            for(ObjRecServiceProto.Latency level : this.getTime())
+            {
+                Map<String, Integer> latency = new HashMap<>();
+                if(level.hasNextLevel())
+                    latency.put(NEXT, level.getNextLevel());
+                if(level.hasComputation())
+                    latency.put(COMPUTE, level.getComputation());
+                if(level.hasInQueue())
+                    latency.put(QUEUE, level.getInQueue());
+                json.put(level.getName(), latency);
+            }
+            return json;
         }
     }
 }

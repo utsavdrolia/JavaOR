@@ -31,13 +31,15 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
     @Override
     public void recognize(RpcController controller, ObjRecServiceProto.Image request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
-        objRecClient.recognize(request.getImage().toByteArray(), new CloudletObjRecCallback(done));
+        Long req_rx = listeningrpc.getRequestRxTime(request.hashCode());
+        objRecClient.recognize(request.getImage().toByteArray(), req_rx, new CloudletObjRecCallback(done));
     }
 
     @Override
     public void recognizeFeatures(RpcController controller, ObjRecServiceProto.Features request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
-        objRecClient.recognize(request, new CloudletObjRecCallback(done));
+        Long req_rx = listeningrpc.getRequestRxTime(request.hashCode());
+        objRecClient.recognize(request, req_rx, new CloudletObjRecCallback(done));
     }
 
     @Override
@@ -55,14 +57,16 @@ public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
     @Override
     public void getFeatures(RpcController controller, ObjRecServiceProto.Annotation request, RpcCallback<ObjRecServiceProto.Features> done)
     {
+        Long req_rx = listeningrpc.getRequestRxTime(request.hashCode());
         Long start = System.currentTimeMillis();
         KeypointDescList kp = objRecClient.getFeatures(request.getAnnotation());
         ObjRecServiceProto.Features.Builder features = Utils.serialize(kp);
         // Return
         done.run(features
                 .addLatencies(ObjRecServiceProto.Latency.newBuilder()
-                        .setName(EDGE)
-                        .setComputation((int) (System.currentTimeMillis() - start)))
+                                      .setName(EDGE)
+                                      .setComputation((int) (System.currentTimeMillis() - start))
+                                      .setInQueue((int) (start - req_rx)))
                 .build());
     }
 

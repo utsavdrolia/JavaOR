@@ -3681,29 +3681,38 @@ public final class ObjRecServiceProto {
         getNameBytes();
 
     /**
-     * <code>optional int32 computation = 2;</code>
+     * <code>optional int32 in_queue = 2;</code>
+     */
+    boolean hasInQueue();
+    /**
+     * <code>optional int32 in_queue = 2;</code>
+     */
+    int getInQueue();
+
+    /**
+     * <code>optional int32 computation = 3;</code>
      */
     boolean hasComputation();
     /**
-     * <code>optional int32 computation = 2;</code>
+     * <code>optional int32 computation = 3;</code>
      */
     int getComputation();
 
     /**
-     * <code>optional int32 network = 3;</code>
+     * <code>optional int32 next_level = 4;</code>
      */
-    boolean hasNetwork();
+    boolean hasNextLevel();
     /**
-     * <code>optional int32 network = 3;</code>
+     * <code>optional int32 next_level = 4;</code>
      */
-    int getNetwork();
+    int getNextLevel();
 
     /**
-     * <code>optional int32 size = 4;</code>
+     * <code>optional int32 size = 5;</code>
      */
     boolean hasSize();
     /**
-     * <code>optional int32 size = 4;</code>
+     * <code>optional int32 size = 5;</code>
      */
     int getSize();
   }
@@ -3720,8 +3729,9 @@ public final class ObjRecServiceProto {
     }
     private Latency() {
       name_ = "";
+      inQueue_ = 0;
       computation_ = 0;
-      network_ = 0;
+      nextLevel_ = 0;
       size_ = 0;
     }
 
@@ -3761,16 +3771,21 @@ public final class ObjRecServiceProto {
             }
             case 16: {
               bitField0_ |= 0x00000002;
-              computation_ = input.readInt32();
+              inQueue_ = input.readInt32();
               break;
             }
             case 24: {
               bitField0_ |= 0x00000004;
-              network_ = input.readInt32();
+              computation_ = input.readInt32();
               break;
             }
             case 32: {
               bitField0_ |= 0x00000008;
+              nextLevel_ = input.readInt32();
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000010;
               size_ = input.readInt32();
               break;
             }
@@ -3841,46 +3856,61 @@ public final class ObjRecServiceProto {
       }
     }
 
-    public static final int COMPUTATION_FIELD_NUMBER = 2;
-    private int computation_;
+    public static final int IN_QUEUE_FIELD_NUMBER = 2;
+    private int inQueue_;
     /**
-     * <code>optional int32 computation = 2;</code>
+     * <code>optional int32 in_queue = 2;</code>
      */
-    public boolean hasComputation() {
+    public boolean hasInQueue() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional int32 computation = 2;</code>
+     * <code>optional int32 in_queue = 2;</code>
+     */
+    public int getInQueue() {
+      return inQueue_;
+    }
+
+    public static final int COMPUTATION_FIELD_NUMBER = 3;
+    private int computation_;
+    /**
+     * <code>optional int32 computation = 3;</code>
+     */
+    public boolean hasComputation() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional int32 computation = 3;</code>
      */
     public int getComputation() {
       return computation_;
     }
 
-    public static final int NETWORK_FIELD_NUMBER = 3;
-    private int network_;
+    public static final int NEXT_LEVEL_FIELD_NUMBER = 4;
+    private int nextLevel_;
     /**
-     * <code>optional int32 network = 3;</code>
+     * <code>optional int32 next_level = 4;</code>
      */
-    public boolean hasNetwork() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional int32 network = 3;</code>
-     */
-    public int getNetwork() {
-      return network_;
-    }
-
-    public static final int SIZE_FIELD_NUMBER = 4;
-    private int size_;
-    /**
-     * <code>optional int32 size = 4;</code>
-     */
-    public boolean hasSize() {
+    public boolean hasNextLevel() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>optional int32 size = 4;</code>
+     * <code>optional int32 next_level = 4;</code>
+     */
+    public int getNextLevel() {
+      return nextLevel_;
+    }
+
+    public static final int SIZE_FIELD_NUMBER = 5;
+    private int size_;
+    /**
+     * <code>optional int32 size = 5;</code>
+     */
+    public boolean hasSize() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional int32 size = 5;</code>
      */
     public int getSize() {
       return size_;
@@ -3906,13 +3936,16 @@ public final class ObjRecServiceProto {
         com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt32(2, computation_);
+        output.writeInt32(2, inQueue_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt32(3, network_);
+        output.writeInt32(3, computation_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt32(4, size_);
+        output.writeInt32(4, nextLevel_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeInt32(5, size_);
       }
       unknownFields.writeTo(output);
     }
@@ -3927,15 +3960,19 @@ public final class ObjRecServiceProto {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, computation_);
+          .computeInt32Size(2, inQueue_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, network_);
+          .computeInt32Size(3, computation_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, size_);
+          .computeInt32Size(4, nextLevel_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, size_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4057,12 +4094,14 @@ public final class ObjRecServiceProto {
         super.clear();
         name_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        computation_ = 0;
+        inQueue_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
-        network_ = 0;
+        computation_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
-        size_ = 0;
+        nextLevel_ = 0;
         bitField0_ = (bitField0_ & ~0x00000008);
+        size_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -4094,13 +4133,17 @@ public final class ObjRecServiceProto {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.computation_ = computation_;
+        result.inQueue_ = inQueue_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.network_ = network_;
+        result.computation_ = computation_;
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
+        }
+        result.nextLevel_ = nextLevel_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
         }
         result.size_ = size_;
         result.bitField0_ = to_bitField0_;
@@ -4124,11 +4167,14 @@ public final class ObjRecServiceProto {
           name_ = other.name_;
           onChanged();
         }
+        if (other.hasInQueue()) {
+          setInQueue(other.getInQueue());
+        }
         if (other.hasComputation()) {
           setComputation(other.getComputation());
         }
-        if (other.hasNetwork()) {
-          setNetwork(other.getNetwork());
+        if (other.hasNextLevel()) {
+          setNextLevel(other.getNextLevel());
         }
         if (other.hasSize()) {
           setSize(other.getSize());
@@ -4240,97 +4286,129 @@ public final class ObjRecServiceProto {
         return this;
       }
 
-      private int computation_ ;
+      private int inQueue_ ;
       /**
-       * <code>optional int32 computation = 2;</code>
+       * <code>optional int32 in_queue = 2;</code>
        */
-      public boolean hasComputation() {
+      public boolean hasInQueue() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional int32 computation = 2;</code>
+       * <code>optional int32 in_queue = 2;</code>
+       */
+      public int getInQueue() {
+        return inQueue_;
+      }
+      /**
+       * <code>optional int32 in_queue = 2;</code>
+       */
+      public Builder setInQueue(int value) {
+        bitField0_ |= 0x00000002;
+        inQueue_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 in_queue = 2;</code>
+       */
+      public Builder clearInQueue() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        inQueue_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int computation_ ;
+      /**
+       * <code>optional int32 computation = 3;</code>
+       */
+      public boolean hasComputation() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int32 computation = 3;</code>
        */
       public int getComputation() {
         return computation_;
       }
       /**
-       * <code>optional int32 computation = 2;</code>
+       * <code>optional int32 computation = 3;</code>
        */
       public Builder setComputation(int value) {
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000004;
         computation_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 computation = 2;</code>
+       * <code>optional int32 computation = 3;</code>
        */
       public Builder clearComputation() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         computation_ = 0;
         onChanged();
         return this;
       }
 
-      private int network_ ;
+      private int nextLevel_ ;
       /**
-       * <code>optional int32 network = 3;</code>
+       * <code>optional int32 next_level = 4;</code>
        */
-      public boolean hasNetwork() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+      public boolean hasNextLevel() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>optional int32 network = 3;</code>
+       * <code>optional int32 next_level = 4;</code>
        */
-      public int getNetwork() {
-        return network_;
+      public int getNextLevel() {
+        return nextLevel_;
       }
       /**
-       * <code>optional int32 network = 3;</code>
+       * <code>optional int32 next_level = 4;</code>
        */
-      public Builder setNetwork(int value) {
-        bitField0_ |= 0x00000004;
-        network_ = value;
+      public Builder setNextLevel(int value) {
+        bitField0_ |= 0x00000008;
+        nextLevel_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 network = 3;</code>
+       * <code>optional int32 next_level = 4;</code>
        */
-      public Builder clearNetwork() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        network_ = 0;
+      public Builder clearNextLevel() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        nextLevel_ = 0;
         onChanged();
         return this;
       }
 
       private int size_ ;
       /**
-       * <code>optional int32 size = 4;</code>
+       * <code>optional int32 size = 5;</code>
        */
       public boolean hasSize() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional int32 size = 4;</code>
+       * <code>optional int32 size = 5;</code>
        */
       public int getSize() {
         return size_;
       }
       /**
-       * <code>optional int32 size = 4;</code>
+       * <code>optional int32 size = 5;</code>
        */
       public Builder setSize(int value) {
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
         size_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 size = 4;</code>
+       * <code>optional int32 size = 5;</code>
        */
       public Builder clearSize() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000010);
         size_ = 0;
         onChanged();
         return this;
@@ -4865,14 +4943,14 @@ public final class ObjRecServiceProto {
       "KeyPoint\022\033\n\tlatencies\030\003 \003(\0132\010.Latency\"A\n" +
       "\007DescMat\022\014\n\004rows\030\001 \002(\005\022\014\n\004cols\030\002 \002(\005\022\014\n\004" +
       "type\030\003 \002(\005\022\014\n\004data\030\004 \002(\014\" \n\010KeyPoint\022\t\n\001" +
-      "x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001\"K\n\007Latency\022\014\n\004name\030\001 " +
-      "\002(\t\022\023\n\013computation\030\002 \001(\005\022\017\n\007network\030\003 \001(" +
-      "\005\022\014\n\004size\030\004 \001(\0052\246\001\n\rObjRecService\022 \n\tRec",
-      "ognize\022\006.Image\032\013.Annotation\022+\n\021Recognize" +
-      "Features\022\t.Features\032\013.Annotation\022\037\n\010GetI" +
-      "mage\022\013.Annotation\032\006.Image\022%\n\013GetFeatures" +
-      "\022\013.Annotation\032\t.FeaturesB\031B\022ObjRecServic" +
-      "eProtoH\001\210\001\001"
+      "x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001\"`\n\007Latency\022\014\n\004name\030\001 " +
+      "\002(\t\022\020\n\010in_queue\030\002 \001(\005\022\023\n\013computation\030\003 \001" +
+      "(\005\022\022\n\nnext_level\030\004 \001(\005\022\014\n\004size\030\005 \001(\0052\246\001\n",
+      "\rObjRecService\022 \n\tRecognize\022\006.Image\032\013.An" +
+      "notation\022+\n\021RecognizeFeatures\022\t.Features" +
+      "\032\013.Annotation\022\037\n\010GetImage\022\013.Annotation\032\006" +
+      ".Image\022%\n\013GetFeatures\022\013.Annotation\032\t.Fea" +
+      "turesB\031B\022ObjRecServiceProtoH\001\210\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -4921,7 +4999,7 @@ public final class ObjRecServiceProto {
     internal_static_Latency_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Latency_descriptor,
-        new String[] { "Name", "Computation", "Network", "Size", });
+        new String[] { "Name", "InQueue", "Computation", "NextLevel", "Size", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
