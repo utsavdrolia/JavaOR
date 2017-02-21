@@ -1,20 +1,17 @@
 package edu.cmu.edgecache.objrec.opencv;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.cmu.edgecache.objrec.opencv.extractors.ORB;
 import edu.cmu.edgecache.objrec.opencv.extractors.SIFTFeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.matchers.BFMatcher_HAM_NB;
 import edu.cmu.edgecache.objrec.opencv.matchers.BFMatcher_L2_NB;
 import edu.cmu.edgecache.objrec.opencv.matchers.LSHMatcher_HAM;
-import edu.cmu.edgecache.objrec.rpc.Names;
-import edu.cmu.edgecache.objrec.rpc.ObjRecCallback;
-import edu.cmu.edgecache.objrec.rpc.ObjRecClient;
-import edu.cmu.edgecache.objrec.rpc.ObjRecServiceProto;
+import edu.cmu.edgecache.objrec.rpc.*;
+import edu.cmu.edgecache.recog.AbstractRecogCache;
+import edu.cmu.edgecache.recog.OptRecogCache;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static java.lang.Thread.sleep;
@@ -24,6 +21,11 @@ import static java.lang.Thread.sleep;
  */
 public class Util
 {
+    private static final String REQUEST = "request";
+    private static final String STARTTIME = "start";
+    private static final String ENDTIME = "end";
+    private static final String RESPONSE = "response";
+    private static final String LATENCIES = "latencies";
     public static final int BIN_NN = 1;
     public static final int BIN_NB = 2;
     public static final int FLOAT_NB = 3;
@@ -32,8 +34,8 @@ public class Util
     public static final int ORB = 1;
     public static final int SIFT = 2;
 
-    private static final String LFU_cache = "LFU";
-    private static final String Opt_cache = "OPT";
+    public static final String LFU_cache = "LFU";
+    public static final String Opt_cache = "OPT";
 
     public static FeatureExtractor createExtractor(int featuretype, String pars)
     {
@@ -87,6 +89,69 @@ public class Util
         return matcher;
     }
 
+    public static double[] getCoefs(String path) throws IOException
+    {
+        BufferedReader dir = new BufferedReader(new FileReader(path));
+        String line = dir.readLine();
+        String[] chunks = line.split(",");
+        double[] coeffs = new double[chunks.length];
+        for (int i = 0; i < chunks.length; i++)
+        {
+            coeffs[i] = Double.parseDouble(chunks[i]);
+        }
+        return coeffs;
+    }
+
+    /**
+     * Create a Opt Cache based recognition client
+     * @param featureType
+     * @param featurePars
+     * @param matcherType
+     * @param matcherPars
+     * @param match_thresh
+     * @param score_thresh
+     * @param nextLevelAddress
+     * @param name
+     * @param F_K_PARS
+     * @param RECALL_PARS
+     * @param all_objects_path
+     * @return
+     * @throws IOException
+     */
+    public static CachedObjRecClient createOptCacheObjRecClient(int featureType,
+                                                                String featurePars,
+                                                                int matcherType,
+                                                                String matcherPars,
+                                                                int match_thresh,
+                                                                double score_thresh,
+                                                                String nextLevelAddress,
+                                                                String name,
+                                                                String F_K_PARS,
+                                                                String RECALL_PARS,
+                                                                String all_objects_path) throws IOException
+    {
+
+        FeatureExtractor extractor = Util.createExtractor(featureType, featurePars);
+        Matcher clientmatcher = Util.createMatcher(matcherType, matcherPars, match_thresh, score_thresh);
+        Recognizer recognizer = new Recognizer(extractor, clientmatcher);
+
+        BufferedReader all_objects_file = new BufferedReader(new FileReader(all_objects_path));
+
+        String line = all_objects_file.readLine();
+        ArrayList<String> all_objects = new ArrayList<>();
+        do
+        {
+            all_objects.add(line);
+            line = all_objects_file.readLine();
+        } while ((line != null));
+
+        AbstractRecogCache<String, KeypointDescList> recogCache = new OptRecogCache<>(new ImageRecognizerInterface(recognizer),
+                                                                                      getCoefs(F_K_PARS),
+                                                                                      getCoefs(RECALL_PARS),
+                                                                                      all_objects);
+        return new CachedObjRecClient(recognizer, recogCache, nextLevelAddress, name, true);
+    }
+
     public static void evaluate(ObjRecClient objRecClient, String queryList, String resultspath) throws IOException, InterruptedException
     {
         ConcurrentLinkedQueue<EvaluateCallback> evaluateCallbacks = new ConcurrentLinkedQueue<>();
@@ -111,75 +176,104 @@ public class Util
             sleep(200);
             Result result = cb.getResult();
             System.out.println(img + "," +
-                               result.getAnnotation() + "," +
-                               (1 - (result.getTime().size() - 1)) + "," +
-                               result.getEdgeLatency() + "," +
-                               String.valueOf(result.getCacheSize()));
+                               result.getAnnotation());
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).annotation + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = dir.readLine();
             count++;
+            if(count == 10)
+                break;
         } while ((line != null));
 
-        for(EvaluateCallback callback: evaluateCallbacks)
-        {
-            // Ensure callback is processed
-            while(callback.isDone());
-            Result result = callback.getResult();
-            resultsfile.write(
-                    callback.getQuery() + "," +
-                            result.getAnnotation() + "," +
-                            (1 - (result.getTime().size() - 1)) + "," +
-                            String.valueOf(result.getEdgeLatency())+ "," +
-                            String.valueOf(result.getCacheSize()) + "\n");
-        }
+        writeResultFile(evaluateCallbacks, resultsfile);
         Long procend = System.currentTimeMillis() - procstart;
         System.out.println("Time:" + procend + " Count:" + count);
-        resultsfile.flush();
         resultsfile.close();
     }
 
     public static void evaluateAsync(ObjRecClient objRecClient, String queryList, String resultspath) throws IOException, InterruptedException
     {
-        ConcurrentLinkedQueue<EvaluateCallback> evaluateCallbacks = new ConcurrentLinkedQueue<>();
-        BufferedReader dir = new BufferedReader(new FileReader(queryList));
+        ConcurrentLinkedQueue<Util.EvaluateCallback> evaluateCallbacks = new ConcurrentLinkedQueue<>();
+        BufferedReader trace = new BufferedReader(new FileReader(queryList));
         BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
 
         Integer count = 0;
-        String line = dir.readLine();
+        String line = trace.readLine();
         Long procstart = System.currentTimeMillis();
-        ArrayList<String> querylist = new ArrayList<>();
         do
         {
+            // Parse
             String[] chunks = line.split(",");
             String img = chunks[0];
             String imgpath = chunks[1];
-            querylist.add(img);
-            EvaluateCallback cb = new EvaluateCallback(System.currentTimeMillis(), img);
+            Long req_time = Long.valueOf(chunks[2]);
+
+            // Create callback
+            Util.EvaluateCallback cb = new Util.EvaluateCallback(System.currentTimeMillis(), img);
+
+            try
+            {
+                // Wait till assigned time
+                sleep(req_time - (System.currentTimeMillis() - procstart));
+            }
+            catch (IllegalArgumentException e)
+            {
+                // Thrown if argument is negative. If negative, don't sleep. Drop exception like its hot.
+            }
+
+            // Issue request
             objRecClient.recognize(imgpath, cb);
             evaluateCallbacks.add(cb);
-            sleep(100);
+
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).annotation + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
-            line = dir.readLine();
+            line = trace.readLine();
             count++;
         } while ((line != null));
-
-        for(EvaluateCallback callback: evaluateCallbacks)
-        {
-            // Ensure callback is processed
-            while(callback.isDone());
-            Result result = callback.getResult();
-            resultsfile.write(
-                    callback.getQuery() + "," +
-                            result.getAnnotation() + "," +
-                            (1 - (result.getTime().size() - 1)) + "," +
-                            String.valueOf(result.getEdgeLatency())+ "," +
-                            String.valueOf(result.getCacheSize()) + "\n");
-        }
 //        System.out.println("Results:\n" + resultMap.toString());
+
         Long procend = System.currentTimeMillis() - procstart;
         System.out.println("Time:" + procend + " Count:" + count);
+
+        // Write results to file
+        writeResultFile(evaluateCallbacks, resultsfile);
         resultsfile.flush();
         resultsfile.close();
+    }
+
+    /**
+     * Writes JSON file. Format
+     * [{REQUEST:"",
+     *   START:ms,
+     *   END:ms,
+     *   RESPONSE:"",
+     *   LATENCIES:{DEVICE:{QUEUE:ms, COMPUTE:ms, NEXT:ms}, ... }},
+     *   {REQUEST:"", ...}
+     *  ]
+     * @param evaluateCallbacks
+     * @param resultsfile
+     * @throws IOException
+     */
+    public static void writeResultFile(Collection<EvaluateCallback> evaluateCallbacks, BufferedWriter resultsfile) throws IOException
+    {
+        ObjectMapper mapper = new ObjectMapper();
+
+        List<Map<String, Object>> output_array = new ArrayList<>();
+        for(Util.EvaluateCallback callback: evaluateCallbacks)
+        {
+            // Ensure callback is processed
+            while(!callback.isDone());
+            Util.Result result = callback.getResult();
+            Map<String, Object> json = new HashMap<>();
+
+            Map<String, Map<String, Integer>> map = result.getLatencies();
+            json.put(REQUEST, callback.getQuery());
+            json.put(STARTTIME, callback.getStartime());
+            json.put(ENDTIME, callback.getEndtime());
+            json.put(RESPONSE, result.getAnnotation());
+            json.put(LATENCIES, map);
+
+            output_array.add(json);
+        }
+        mapper.writeValue(resultsfile, output_array);
     }
 
     public static class EvaluateCallback extends ObjRecCallback
@@ -234,14 +328,12 @@ public class Util
 
     public static class Result
     {
-        private static final String RESPONSE = "response";
         private static final String NEXT = "next";
         private static final String COMPUTE = "compute";
         private static final String QUEUE = "inqueue";
 
-
-        private String annotation;
-        private List<ObjRecServiceProto.Latency> time;
+        private final String annotation;
+        private final List<ObjRecServiceProto.Latency> time;
 
         public Result(String annotation,
                       List<ObjRecServiceProto.Latency> latenciesList)
