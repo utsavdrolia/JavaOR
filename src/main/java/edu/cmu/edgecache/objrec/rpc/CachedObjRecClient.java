@@ -59,7 +59,7 @@ public class CachedObjRecClient extends ObjRecClient
         if(isCacheEnabled)
             res = recogCache.get(kplist);
         long dur = System.currentTimeMillis() - start;
-        checkAndSend(dur, res, Utils.serialize(kplist).build(), cb);
+        checkAndSend(dur, 0l, res, Utils.serialize(kplist).build(), cb);
     }
 
     /**
@@ -67,7 +67,7 @@ public class CachedObjRecClient extends ObjRecClient
      * @param features
      * @param cb
      */
-    public void recognize(ObjRecServiceProto.Features features, ObjRecCallback cb)
+    public void recognize(ObjRecServiceProto.Features features, Long req_recv_ts, ObjRecCallback cb)
     {
         Long start = System.currentTimeMillis();
         KeypointDescList kplist = Utils.deserialize(features);
@@ -75,7 +75,7 @@ public class CachedObjRecClient extends ObjRecClient
         if(isCacheEnabled)
             res = recogCache.get(kplist);
         long dur = System.currentTimeMillis() - start;
-        checkAndSend(dur, res, features, cb);
+        checkAndSend(dur, start - req_recv_ts, res, features, cb);
     }
 
 
@@ -85,7 +85,7 @@ public class CachedObjRecClient extends ObjRecClient
      * @param cb
      * @throws IOException
      */
-    public void recognize(byte[] imagedata, ObjRecCallback cb)
+    public void recognize(byte[] imagedata, Long req_recv_ts, ObjRecCallback cb)
     {
         Long start = System.currentTimeMillis();
         // Extract Keypoints
@@ -95,21 +95,22 @@ public class CachedObjRecClient extends ObjRecClient
             // Recognize from local cache
             res = recogCache.get(kplist);
         long dur = System.currentTimeMillis() - start;
-        checkAndSend(dur, res, Utils.serialize(kplist).build(), cb);
+        checkAndSend(dur, start - req_recv_ts, res, Utils.serialize(kplist).build(), cb);
     }
 
     /**
      * Check if hit, if not send to server
-     * @param dur
+     * @param lookup_latency
      * @param res
      * @param features
      * @param cb
      */
-    private void checkAndSend(long dur, String res, ObjRecServiceProto.Features features, ObjRecCallback cb)
+    private void checkAndSend(long lookup_latency, long time_in_queue, String res, ObjRecServiceProto.Features features, ObjRecCallback cb)
     {
         // Calculate comp latency
         ObjRecServiceProto.Latency.Builder complatency = ObjRecServiceProto.Latency.newBuilder().
-                setComputation((int) dur).
+                setComputation((int) lookup_latency).
+                setInQueue((int) time_in_queue).
                 setName(name).
                 setSize(recogCache.getSize());
         // Check if Hit
@@ -161,7 +162,7 @@ public class CachedObjRecClient extends ObjRecClient
             int latency = (int) (System.currentTimeMillis() - start);
             // Add latencies to Annotation
             ObjRecServiceProto.Annotation.Builder ann = ObjRecServiceProto.Annotation.newBuilder(annotation);
-            ann.addLatencies(complatency.setNetwork(latency));
+            ann.addLatencies(complatency.setNextLevel(latency));
             // Run the client's callback
             cb.run(ann.build());
 

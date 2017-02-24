@@ -14,8 +14,9 @@ import java.nio.channels.FileChannel;
 public class ObjRecClient
 {
     protected ObjRecServiceProto.ObjRecService.Stub ObjRecServiceStub;
-    protected ByteBuffer buffer = ByteBuffer.allocate(80 * 1024);
+    protected ByteBuffer buffer = ByteBuffer.allocate(5 * 1000 * 1024);
     protected RPCClient rpc;
+
     public ObjRecClient(String server)
     {
         rpc = new RPCClient(server);
@@ -30,13 +31,39 @@ public class ObjRecClient
         fc.read(buffer);
         buffer.flip();
         fc.close();
-        recognize(buffer, cb);
+        recognize(buffer, new ObjRecClientCallback(cb));
     }
 
     public final void recognize(ByteBuffer image, ObjRecCallback cb) throws IOException
     {
         ObjRecServiceStub.recognize(rpc,
-                ObjRecServiceProto.Image.newBuilder().setImage(ByteString.copyFrom(image)).build(),
-                cb);
+                                    ObjRecServiceProto.Image.newBuilder().setImage(ByteString.copyFrom(image)).build(),
+                                    cb);
+    }
+
+    private class ObjRecClientCallback extends ObjRecCallback
+    {
+        private ObjRecCallback cb;
+        private long start;
+
+        ObjRecClientCallback(ObjRecCallback cb)
+        {
+            this.cb = cb;
+            this.start = System.currentTimeMillis();
+        }
+
+        @Override
+        public void run(ObjRecServiceProto.Annotation annotation)
+        {
+            int latency = (int) (System.currentTimeMillis() - start);
+            // Add latencies to Annotation
+            ObjRecServiceProto.Latency.Builder next_latency = ObjRecServiceProto.Latency.newBuilder().
+                    setNextLevel(latency).
+                    setName(Names.Device);
+            ObjRecServiceProto.Annotation.Builder ann = ObjRecServiceProto.Annotation.newBuilder(annotation);
+            ann.addLatencies(next_latency);
+            // Run the client's callback
+            cb.run(ann.build());
+        }
     }
 }

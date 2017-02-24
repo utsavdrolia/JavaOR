@@ -30,7 +30,10 @@ public class RunServer
             Matcher servermatcher = Util.createMatcher(matchertype_db, matcherpars_db, 3, 0.4);
             ObjRecServer objRecServer = new ObjRecServer(dbextractor, extractor, servermatcher, DBdirpath, serverAdd);
 
-            while(System.in.available() == 0);
+            while(System.in.available() == 0)
+            {
+                Thread.sleep(1000);
+            }
         }
         else
         {
