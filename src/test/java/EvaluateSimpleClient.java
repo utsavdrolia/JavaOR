@@ -20,7 +20,7 @@ public class EvaluateSimpleClient
 
             ObjRecClient objRecClient = new ObjRecClient(serverAdd);
 
-            Util.evaluate(objRecClient, queryList, resultspath);
+            Util.evaluateAsync(objRecClient, queryList, resultspath);
         }
         else
         {

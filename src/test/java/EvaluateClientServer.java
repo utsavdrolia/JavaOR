@@ -37,7 +37,7 @@ public class EvaluateClientServer
             Matcher servermatcher = Util.createMatcher(matchertype_db, matcherpars_db, 3, 0.6);
             ObjRecServer objRecServer = new ObjRecServer(dbextractor, extractor, servermatcher, DBdirpath, serverAdd);
 //            Matcher cloudletmatcher = edu.cmu.edgecache.objrec.opencv.Util.createMatcher(matchertype_db, matcherpars_db, matchercache_size*5, 6, 0.7);
-//            ObjRecCloudlet objRecCloudlet = new ObjRecCloudlet(extractor, cloudletmatcher, serverAdd, "192.168.25.145:10101");
+//            ObjRecEdge objRecCloudlet = new ObjRecEdge(extractor, cloudletmatcher, serverAdd, "192.168.25.145:10101");
 
             Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 5, 0.8);
             CachedObjRecClient objRecClient = new CachedObjRecClient(extractor, clientmatcher, serverAdd,

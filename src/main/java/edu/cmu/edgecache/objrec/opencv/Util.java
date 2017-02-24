@@ -206,7 +206,6 @@ public class Util
             String img = chunks[0];
             String imgpath = chunks[1];
             Long req_time = Long.valueOf(chunks[2]);
-
             // Create callback
             Util.EvaluateCallback cb = new Util.EvaluateCallback(System.currentTimeMillis(), img);
 
@@ -219,7 +218,7 @@ public class Util
             {
                 // Thrown if argument is negative. If negative, don't sleep. Drop exception like its hot.
             }
-
+            System.out.println("Issuing request:" + img);
             // Issue request
             objRecClient.recognize(imgpath, cb);
             evaluateCallbacks.add(cb);
@@ -227,6 +226,8 @@ public class Util
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).annotation + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = trace.readLine();
             count++;
+            if(count == 50)
+                break;
         } while ((line != null));
 //        System.out.println("Results:\n" + resultMap.toString());
 
@@ -235,7 +236,6 @@ public class Util
 
         // Write results to file
         writeResultFile(evaluateCallbacks, resultsfile);
-        resultsfile.flush();
         resultsfile.close();
     }
 
@@ -252,7 +252,7 @@ public class Util
      * @param resultsfile
      * @throws IOException
      */
-    public static void writeResultFile(Collection<EvaluateCallback> evaluateCallbacks, BufferedWriter resultsfile) throws IOException
+    public static void writeResultFile(Collection<EvaluateCallback> evaluateCallbacks, BufferedWriter resultsfile) throws IOException, InterruptedException
     {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -260,8 +260,12 @@ public class Util
         for(Util.EvaluateCallback callback: evaluateCallbacks)
         {
             // Ensure callback is processed
-            while(!callback.isDone());
+            while(!callback.isDone())
+            {
+                sleep(100);
+            }
             Util.Result result = callback.getResult();
+            System.out.println("Received response:" + result.getAnnotation());
             Map<String, Object> json = new HashMap<>();
 
             Map<String, Map<String, Integer>> map = result.getLatencies();

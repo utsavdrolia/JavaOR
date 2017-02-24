@@ -2,11 +2,10 @@ package edu.cmu.edgecache.objrec.rpc;
 
 import com.google.protobuf.RpcCallback;
 import com.google.protobuf.RpcController;
-import edu.cmu.edgecache.objrec.opencv.Matcher;
-import edu.cmu.edgecache.recog.CacheType;
-import org.crowd.rpc.RPCServer;
 import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.KeypointDescList;
+import edu.cmu.edgecache.objrec.opencv.Matcher;
+import org.crowd.rpc.RPCServer;
 
 import java.io.IOException;
 
@@ -14,17 +13,37 @@ import java.io.IOException;
  * Combines a {@link ObjRecServer} and {@link CachedObjRecClient} to create a cached proxy
  * Created by utsav on 6/20/16.
  */
-public class ObjRecCloudlet extends ObjRecServiceProto.ObjRecService
+public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
 {
     private RPCServer listeningrpc;
     private CachedObjRecClient objRecClient;
     private final String EDGE = Names.Edge;
 
 
-    public ObjRecCloudlet(FeatureExtractor extractor, Matcher matcher, String myaddress, String serveraddress, int cachesize, CacheType cachetype) throws IOException
+    /**
+     * Creates Edge with defaul cache (LFU)
+     * @param extractor
+     * @param matcher
+     * @param myaddress
+     * @param serveraddress
+     * @param cachesize
+     * @throws IOException
+     */
+    public ObjRecEdge(FeatureExtractor extractor, Matcher matcher, String myaddress, String serveraddress, int cachesize) throws IOException
     {
         listeningrpc = new RPCServer(myaddress, this);
         objRecClient = new CachedObjRecClient(extractor, matcher, serveraddress, EDGE, cachesize);
+    }
+
+    /**
+     * Creates the Edge cache with given type of cache
+     * @param cache
+     * @param myaddress
+     */
+    public ObjRecEdge(CachedObjRecClient cache, String myaddress)
+    {
+        listeningrpc = new RPCServer(myaddress, this);
+        objRecClient = cache;
     }
 
 
