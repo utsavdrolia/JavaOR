@@ -11,15 +11,8 @@ import java.io.*;
  */
 public class EvaluateOpenCV
 {
-    private static final int BIN_NN = 1;
-    private static final int BIN_NB = 2;
-    private static final int FLOAT_NB = 3;
-    private static final int LSH = 4;
-
-    private static final int ORB = 1;
-    private static final int SIFT = 2;
-
-    public static void main(String args[]) throws IOException, InterruptedException {
+    public static void main(String args[]) throws IOException, InterruptedException
+    {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         if (args.length >= 7)
         {
@@ -30,13 +23,11 @@ public class EvaluateOpenCV
             String pars_db = args[4];
             Integer matchertype = Integer.valueOf(args[5]);
             Integer featuretype = Integer.valueOf(args[6]);
-            String lshpars = "";
-            if(args.length == 8)
-                lshpars = args[7];
+            String matcher_pars = args[7];
 
             FeatureExtractor extractor = Util.createExtractor(featuretype, pars_db);
             FeatureExtractor dbextractor = Util.createExtractor(featuretype, pars_db);
-            Matcher matcher = Util.createMatcher(matchertype, lshpars, 3, 0.5);
+            Matcher matcher = Util.createMatcher(matchertype, matcher_pars, 3, 0.5);
 
             Recognizer recognizer = new Recognizer(dbextractor, extractor, matcher, DBdirpath);
 
@@ -52,6 +43,7 @@ public class EvaluateOpenCV
                 String img = chunks[0];
                 String imgpath = chunks[1];
                 Long start = System.currentTimeMillis();
+
                 String result = recognizer.recognize(imgpath);
                 Long end = System.currentTimeMillis();
                 if(result == null)
