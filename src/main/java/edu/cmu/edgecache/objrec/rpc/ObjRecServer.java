@@ -21,21 +21,22 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
     public ObjRecServer(FeatureExtractor dbextractor, FeatureExtractor extractor, Matcher matcher, String dblistpath, String myaddress) throws IOException
     {
         recognizer = new Recognizer(dbextractor, extractor, matcher, dblistpath);
-        rpc = new RPCServer(myaddress, this, 1);
+        rpc = new RPCServer(myaddress, this, 8);
     }
 
     @Override
     public void recognize(RpcController controller, ObjRecServiceProto.Image request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
         Long req_rx = rpc.getRequestRxTime(request.hashCode());
-        Long start = System.currentTimeMillis();
         byte[] img = request.getImage().toByteArray();
+        Long start = System.currentTimeMillis();
         String ret = recognizer.recognize(img);
+        long stop = System.currentTimeMillis() - start;
         done.run(ObjRecServiceProto.Annotation.newBuilder()
                 .setAnnotation(ret)
                 .addLatencies(ObjRecServiceProto.Latency.newBuilder()
                                   .setName(NAME)
-                                  .setComputation((int) (System.currentTimeMillis() - start))
+                                  .setComputation((int) (stop))
                                   .setInQueue((int) (start - req_rx)))
                 .build());
     }
