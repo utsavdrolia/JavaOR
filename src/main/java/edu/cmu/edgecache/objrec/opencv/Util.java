@@ -180,8 +180,6 @@ public class Util
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).annotation + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = dir.readLine();
             count++;
-            if(count == 10)
-                break;
         } while ((line != null));
 
         writeResultFile(evaluateCallbacks, resultsfile);
@@ -190,7 +188,7 @@ public class Util
         resultsfile.close();
     }
 
-    public static void evaluateAsync(ObjRecClient objRecClient, String queryList, String resultspath) throws IOException, InterruptedException
+    public static void evaluateAsync(ObjRecClient objRecClient, String queryList, String resultspath, AppCallBack app_cb) throws IOException, InterruptedException
     {
         ConcurrentLinkedQueue<Util.EvaluateCallback> evaluateCallbacks = new ConcurrentLinkedQueue<>();
         BufferedReader trace = new BufferedReader(new FileReader(queryList));
@@ -206,9 +204,6 @@ public class Util
             String img = chunks[0];
             String imgpath = chunks[1];
             Long req_time = Long.valueOf(chunks[2]);
-            // Create callback
-            Util.EvaluateCallback cb = new Util.EvaluateCallback(System.currentTimeMillis(), img);
-
             try
             {
                 // Wait till assigned time
@@ -218,6 +213,9 @@ public class Util
             {
                 // Thrown if argument is negative. If negative, don't sleep. Drop exception like its hot.
             }
+            // Create callback
+            Util.EvaluateCallback cb = new Util.EvaluateCallback(System.currentTimeMillis(), img, app_cb);
+
             System.out.println("Issuing request:" + img);
             // Issue request
             objRecClient.recognize(imgpath, cb);
@@ -226,8 +224,6 @@ public class Util
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).annotation + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = trace.readLine();
             count++;
-            if(count == 50)
-                break;
         } while ((line != null));
 //        System.out.println("Results:\n" + resultMap.toString());
 
@@ -287,6 +283,7 @@ public class Util
         private String query;
         private Result result;
         private boolean isDone = false;
+        private AppCallBack app_cb = null;
 
         public EvaluateCallback(long millis, String query)
         {
@@ -295,12 +292,22 @@ public class Util
             this.query = query;
         }
 
+        public EvaluateCallback(long millis, String query, AppCallBack cb)
+        {
+            super();
+            startime = millis;
+            this.query = query;
+            app_cb = cb;
+        }
+
         @Override
         public void run(ObjRecServiceProto.Annotation annotation)
         {
             endtime = System.currentTimeMillis();
             result = new Result(annotation.getAnnotation(), annotation.getLatenciesList());
             isDone = true;
+            if(app_cb != null)
+                app_cb.call(this.query, result.getAnnotation(), endtime - startime);
         }
 
         public long getStartime()
@@ -409,5 +416,15 @@ public class Util
             }
             return json;
         }
+    }
+
+    public abstract static class AppCallBack
+    {
+        /**
+         * Gets called on result
+         * @param annotation
+         * @param latency
+         */
+        public abstract void call(String req, String annotation, long latency);
     }
 }
