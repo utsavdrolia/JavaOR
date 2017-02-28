@@ -63,7 +63,9 @@ public class Recognizer
     public String recognize(byte[] data)
     {
         Mat image = Highgui.imdecode(new MatOfByte(data), Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-        return recognize(image);
+        Mat dst = new Mat();
+        CVUtil.resize(image, dst);
+        return recognize(dst);
     }
 
     /**
