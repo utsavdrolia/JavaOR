@@ -50,13 +50,16 @@ public class DBLoader
             for (String image: imagelist.getValue())
             {
                 final String imagepath = image;
-                Mat imagemat = Highgui.imread(imagepath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-                final Mat dst = new Mat();
-                CVUtil.resize(imagemat, dst);
                 File imagefile = new File(imagepath);
-                final String imgname = imagelist.getKey();
                 if (imagefile.exists())
                 {
+                    Mat imagemat = Highgui.imread(imagepath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+//                    System.out.println("Loading " + imagepath);
+//                    System.out.println("Input Image Shape : R " + imagemat.rows());
+                    final Mat dst = new Mat();
+                    CVUtil.resize(imagemat, dst);
+                    final String imgname = imagelist.getKey();
+
                     if(!futMap.containsKey(imgname))
                         futMap.put(imgname, new ArrayList<Future<KeypointDescList>>());
                     futMap.get(imgname).add(executorService.submit(new Callable<KeypointDescList>()
@@ -66,9 +69,8 @@ public class DBLoader
                             return extractor.extract(dst);
                         }
                     }));
-                    //System.out.println("Loading " + imagepath);
                 } else
-                    System.out.println("Could not find image");
+                    System.out.println("Could not find image: " + image);
             }
         }
 
