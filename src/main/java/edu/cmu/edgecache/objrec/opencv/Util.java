@@ -247,36 +247,45 @@ public class Util
      * @param resultspath
      * @throws IOException
      */
-    public static void writeResultFile(Collection<EvaluateCallback> evaluateCallbacks, String resultspath) throws IOException, InterruptedException
+    public static void writeResultFile(Collection<EvaluateCallback> evaluateCallbacks, String resultspath) throws IOException
     {
         BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
         ObjectMapper mapper = new ObjectMapper();
         List<Map<String, Object>> output_array = new ArrayList<>();
-        for(Util.EvaluateCallback callback: evaluateCallbacks)
+        try
         {
-            Map<String, Object> json = new HashMap<>();
-            json.put(REQUEST_ID, callback.getID());
-            json.put(REQUEST, callback.getQuery());
-            json.put(STARTTIME, callback.getStartime());
-            // Ensure callback is processed
-            if(callback.isDone(60000))
+            for (Util.EvaluateCallback callback : evaluateCallbacks)
             {
-                Util.Result result = callback.getResult();
-                Map<String, Map<String, Integer>> map = result.getLatencies();
-                json.put(ENDTIME, callback.getEndtime());
-                json.put(RESPONSE, result.getAnnotation());
-                json.put(LATENCIES, map);
-                System.out.println("Responses Received to Req:" + callback.getID());
+                Map<String, Object> json = new HashMap<>();
+                json.put(REQUEST_ID, callback.getID());
+                json.put(REQUEST, callback.getQuery());
+                json.put(STARTTIME, callback.getStartime());
+                // Ensure callback is processed
+                if (callback.isDone(60000))
+                {
+                    Util.Result result = callback.getResult();
+                    Map<String, Map<String, Integer>> map = result.getLatencies();
+                    json.put(ENDTIME, callback.getEndtime());
+                    json.put(RESPONSE, result.getAnnotation());
+                    json.put(LATENCIES, map);
+                    System.out.println("Responses Received to Req:" + callback.getID());
+                } else
+                {
+                    json.put(ENDTIME, -1);
+                    System.out.println("Responses *NOT* Received to Req:" + callback.getID());
+                }
+                output_array.add(json);
             }
-            else
-            {
-                json.put(ENDTIME, -1);
-                System.out.println("Responses *NOT* Received to Req:" + callback.getID());
-            }
-            output_array.add(json);
         }
-        mapper.writeValue(resultsfile, output_array);
-        resultsfile.close();
+        catch (InterruptedException e)
+        {
+
+        }
+        finally
+        {
+            mapper.writeValue(resultsfile, output_array);
+            resultsfile.close();
+        }
     }
 
 
