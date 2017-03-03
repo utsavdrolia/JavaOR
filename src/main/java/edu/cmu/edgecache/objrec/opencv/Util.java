@@ -9,6 +9,8 @@ import edu.cmu.edgecache.objrec.opencv.matchers.LSHMatcher_HAM;
 import edu.cmu.edgecache.objrec.rpc.*;
 import edu.cmu.edgecache.recog.AbstractRecogCache;
 import edu.cmu.edgecache.recog.OptRecogCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -37,6 +39,7 @@ public class Util
 
     public static final String LFU_cache = "LFU";
     public static final String Opt_cache = "OPT";
+    final static Logger logger = LoggerFactory.getLogger(Util.class);
 
 
     public static FeatureExtractor createExtractor(int featuretype, String pars)
@@ -47,11 +50,11 @@ public class Util
         {
             case ORB:
                 extractor = new ORB(pars);
-                System.out.println("Using ORB");
+                logger.debug("Using ORB");
                 break;
             case SIFT:
                 extractor = new SIFTFeatureExtractor(pars);
-                System.out.println("Using SIFT");
+                logger.debug("Using SIFT");
                 break;
             default:
                 extractor = new ORB(pars);
@@ -68,23 +71,23 @@ public class Util
         {
             case BIN_NN:
                 matcher = new BFMatcher_HAM_NB();
-                System.out.println("Using NN");
+                logger.debug("Using NN");
                 break;
             case BIN_NB:
                 matcher = new BFMatcher_HAM_NB(match_t, score_t);
-                System.out.println("Using HAM NB");
+                logger.debug("Using HAM NB");
                 break;
             case FLOAT_NB:
                 matcher = new BFMatcher_L2_NB();
-                System.out.println("Using L2 NB");
+                logger.debug("Using L2 NB");
                 break;
             case LSH:
                 matcher = new LSHMatcher_HAM(pars, match_t, score_t);
-                System.out.println("Using LSH");
+                logger.debug("Using LSH");
                 break;
             default:
                 matcher = new BFMatcher_HAM_NB();
-                System.out.println("Using Default HAM NB");
+                logger.warn("Using Default HAM NB");
                 break;
         }
 
@@ -177,7 +180,7 @@ public class Util
             }
             sleep(200);
             Result result = cb.getResult();
-            System.out.println(img + "," +
+            logger.debug(img + "," +
                                result.getAnnotation());
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).annotation + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = dir.readLine();
@@ -185,7 +188,7 @@ public class Util
 
         writeResultFile(evaluateCallbacks, resultspath);
         Long procend = System.currentTimeMillis() - procstart;
-        System.out.println("Time:" + procend + " Count:" + count);
+        logger.debug("Time:" + procend + " Count:" + count);
     }
 
     public static void evaluateAsync(ObjRecClient objRecClient, String queryList, String resultspath, AppCallBack app_cb) throws IOException, InterruptedException
@@ -216,7 +219,7 @@ public class Util
             // Create callback
             Util.EvaluateCallback cb = new Util.EvaluateCallback(System.currentTimeMillis(), img, count, app_cb);
 
-            System.out.println("Issuing request:" + img);
+            logger.debug("Issuing request:" + img);
             // Issue request
             objRecClient.recognize(imgpath, cb);
             evaluateCallbacks.add(cb);
@@ -227,11 +230,11 @@ public class Util
 //        System.out.println("Results:\n" + resultMap.toString());
 
         Long procend = System.currentTimeMillis() - procstart;
-        System.out.println("Time:" + procend + " Count:" + count);
+        logger.debug("Time:" + procend + " Count:" + count);
 
         // Write results to file
         writeResultFile(evaluateCallbacks, resultspath);
-        System.out.println("Wrote results file");
+        logger.debug("Wrote results file");
     }
 
     /**
@@ -268,11 +271,11 @@ public class Util
                     json.put(ENDTIME, callback.getEndtime());
                     json.put(RESPONSE, result.getAnnotation());
                     json.put(LATENCIES, map);
-                    System.out.println("Responses Received to Req:" + callback.getID());
+                    logger.debug("Responses Received to Req:" + callback.getID());
                 } else
                 {
                     json.put(ENDTIME, -1);
-                    System.out.println("Responses *NOT* Received to Req:" + callback.getID());
+                    logger.warn("Responses *NOT* Received to Req:" + callback.getID());
                 }
                 output_array.add(json);
             }
