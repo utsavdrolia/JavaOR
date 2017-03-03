@@ -41,7 +41,7 @@ public class EvaluateOPTCachedClient
             Util.evaluate(objRecClient, queryList, resultspath);
         } else
         {
-            System.out.println("10 Args required, provided " + args.length);
+            System.err.println("10 Args required, provided " + args.length);
         }
         System.exit(0);
     }

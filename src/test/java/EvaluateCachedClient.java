@@ -36,7 +36,7 @@ public class EvaluateCachedClient
         }
         else
         {
-            System.out.println("8 Args required, only provided " + args.length);
+            System.err.println("8 Args required, only provided " + args.length);
         }
         System.exit(0);
     }

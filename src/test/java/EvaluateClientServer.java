@@ -39,7 +39,7 @@ public class EvaluateClientServer
         }
         else
         {
-            System.out.println("NOT ENOUGH ARGS");
+            System.err.println("NOT ENOUGH ARGS");
         }
         System.exit(0);
     }

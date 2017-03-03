@@ -39,7 +39,7 @@ public class RunLFUEdgeCache
         }
         else
         {
-            System.out.println("7 Args required, only provided " + args.length);
+            System.err.println("7 Args required, only provided " + args.length);
         }
         System.out.println("Exiting");
         System.exit(0);
