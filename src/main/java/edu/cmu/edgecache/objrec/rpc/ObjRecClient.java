@@ -41,6 +41,10 @@ public class ObjRecClient
                                     cb);
     }
 
+    public void recognize(byte[] bytes, Long req_rx, ObjRecCallback cb)
+    {
+    }
+
     private class ObjRecClientCallback extends ObjRecCallback
     {
         private ObjRecCallback cb;

@@ -8,6 +8,7 @@ import org.opencv.core.MatOfByte;
 import org.opencv.highgui.Highgui;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by utsav on 2/5/16.
@@ -18,6 +19,8 @@ public class Recognizer
     public static final String INVALID = Matcher.INVALID;
     public FeatureExtractor extractor;
     public Matcher matcher;
+    private final AtomicLong recv_counter = new AtomicLong(0L);
+    private final AtomicLong send_counter = new AtomicLong(0L);
 
     /**
      * Loads the DB in memory so that it can be queried repeatedly using the recognize function
@@ -91,7 +94,10 @@ public class Recognizer
      */
     public String recognize(KeypointDescList inputKDlist)
     {
-        return matcher.matchAll(inputKDlist);
+        System.err.println("Recognizer: Received Request Number:" + recv_counter.incrementAndGet());
+        String ret = matcher.matchAll(inputKDlist);
+        System.err.println("Recognizer: Sending Request Number:" + send_counter.incrementAndGet());
+        return ret;
     }
 
     /**

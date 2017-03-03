@@ -277,10 +277,8 @@ public class Util
                 output_array.add(json);
             }
         }
-        catch (InterruptedException e)
-        {
-
-        }
+        catch (InterruptedException ignored)
+        {}
         finally
         {
             mapper.writeValue(resultsfile, output_array);
