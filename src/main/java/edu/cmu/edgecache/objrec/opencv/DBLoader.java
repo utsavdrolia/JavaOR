@@ -4,6 +4,8 @@ import edu.cmu.edgecache.objrec.opencv.extractors.SURFFeatureExtractor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,6 +37,8 @@ public class DBLoader
         BufferedReader dir = new BufferedReader(new FileReader(dblistpath));
         HashMap<String, List<String>> paths = new HashMap<>();
         Long total_KPs = 0l;
+        final Logger logger = LoggerFactory.getLogger(DBLoader.class);
+
         String line = dir.readLine();
         do
         {
@@ -50,13 +54,16 @@ public class DBLoader
             for (String image: imagelist.getValue())
             {
                 final String imagepath = image;
-                Mat imagemat = Highgui.imread(imagepath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-                final Mat dst = new Mat();
-                CVUtil.resize(imagemat, dst);
                 File imagefile = new File(imagepath);
-                final String imgname = imagelist.getKey();
                 if (imagefile.exists())
                 {
+                    Mat imagemat = Highgui.imread(imagepath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+//                    logger.debug("Loading " + imagepath);
+//                    logger.debug("Input Image Shape : R " + imagemat.rows());
+                    final Mat dst = new Mat();
+                    CVUtil.resize(imagemat, dst);
+                    final String imgname = imagelist.getKey();
+
                     if(!futMap.containsKey(imgname))
                         futMap.put(imgname, new ArrayList<Future<KeypointDescList>>());
                     futMap.get(imgname).add(executorService.submit(new Callable<KeypointDescList>()
@@ -66,9 +73,8 @@ public class DBLoader
                             return extractor.extract(dst);
                         }
                     }));
-                    //System.out.println("Loading " + imagepath);
                 } else
-                    System.out.println("Could not find image");
+                    logger.warn("Could not find image: " + image);
             }
         }
 
@@ -95,7 +101,7 @@ public class DBLoader
         executorService.shutdown();
         futMap = null;
         paths = null;
-        System.out.println("Total KPs:" + total_KPs);
+        logger.debug("Total KPs:" + total_KPs);
         return dbMap;
     }
 

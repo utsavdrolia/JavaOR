@@ -3,6 +3,8 @@ package edu.cmu.edgecache.objrec.rpc;
 import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
 import edu.cmu.edgecache.objrec.opencv.Recognizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -14,6 +16,8 @@ public class LocalObjRecClient extends ObjRecClient
 {
     private Recognizer recognizer;
     private String name;
+    final static Logger logger = LoggerFactory.getLogger(LocalObjRecClient.class);
+
 
     /**
      *
@@ -67,7 +71,7 @@ public class LocalObjRecClient extends ObjRecClient
                     addLatencies(complatency).
                     build();
             cb.run(annotation);
-            System.out.println(name + " : *!!!Cache Hit!!!*");
+            logger.debug(name + " : *!!!Cache Hit!!!*");
         }
     }
 }

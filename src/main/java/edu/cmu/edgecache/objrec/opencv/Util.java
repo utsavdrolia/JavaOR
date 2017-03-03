@@ -9,6 +9,8 @@ import edu.cmu.edgecache.objrec.opencv.matchers.LSHMatcher_HAM;
 import edu.cmu.edgecache.objrec.rpc.*;
 import edu.cmu.edgecache.recog.AbstractRecogCache;
 import edu.cmu.edgecache.recog.OptRecogCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -26,6 +28,7 @@ public class Util
     private static final String ENDTIME = "end";
     private static final String RESPONSE = "response";
     private static final String LATENCIES = "latencies";
+    private static final String REQUEST_ID = "ID";
     public static final int BIN_NN = 1;
     public static final int BIN_NB = 2;
     public static final int FLOAT_NB = 3;
@@ -36,6 +39,8 @@ public class Util
 
     public static final String LFU_cache = "LFU";
     public static final String Opt_cache = "OPT";
+    final static Logger logger = LoggerFactory.getLogger(Util.class);
+
 
     public static FeatureExtractor createExtractor(int featuretype, String pars)
     {
@@ -45,11 +50,11 @@ public class Util
         {
             case ORB:
                 extractor = new ORB(pars);
-                System.out.println("Using ORB");
+                logger.debug("Using ORB");
                 break;
             case SIFT:
                 extractor = new SIFTFeatureExtractor(pars);
-                System.out.println("Using SIFT");
+                logger.debug("Using SIFT");
                 break;
             default:
                 extractor = new ORB(pars);
@@ -66,23 +71,23 @@ public class Util
         {
             case BIN_NN:
                 matcher = new BFMatcher_HAM_NB();
-                System.out.println("Using NN");
+                logger.debug("Using NN");
                 break;
             case BIN_NB:
                 matcher = new BFMatcher_HAM_NB(match_t, score_t);
-                System.out.println("Using HAM NB");
+                logger.debug("Using HAM NB");
                 break;
             case FLOAT_NB:
                 matcher = new BFMatcher_L2_NB();
-                System.out.println("Using L2 NB");
+                logger.debug("Using L2 NB");
                 break;
             case LSH:
                 matcher = new LSHMatcher_HAM(pars, match_t, score_t);
-                System.out.println("Using LSH");
+                logger.debug("Using LSH");
                 break;
             default:
                 matcher = new BFMatcher_HAM_NB();
-                System.out.println("Using Default HAM NB");
+                logger.warn("Using Default HAM NB");
                 break;
         }
 
@@ -156,49 +161,47 @@ public class Util
     {
         ConcurrentLinkedQueue<EvaluateCallback> evaluateCallbacks = new ConcurrentLinkedQueue<>();
         BufferedReader dir = new BufferedReader(new FileReader(queryList));
-        BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
 
         Integer count = 0;
         String line = dir.readLine();
         Long procstart = System.currentTimeMillis();
         do
         {
+            count++;
             String[] chunks = line.split(",");
             String img = chunks[0];
             String imgpath = chunks[1];
-            EvaluateCallback cb = new EvaluateCallback(System.currentTimeMillis(), img);
+            EvaluateCallback cb = new EvaluateCallback(System.currentTimeMillis(), img, count, null);
             objRecClient.recognize(imgpath, cb);
             evaluateCallbacks.add(cb);
-            while(!cb.isDone())
+            while(!cb.isDone(60000))
             {
                 sleep(100);
             }
             sleep(200);
             Result result = cb.getResult();
-            System.out.println(img + "," +
+            logger.debug(img + "," +
                                result.getAnnotation());
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).annotation + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = dir.readLine();
-            count++;
         } while ((line != null));
 
-        writeResultFile(evaluateCallbacks, resultsfile);
+        writeResultFile(evaluateCallbacks, resultspath);
         Long procend = System.currentTimeMillis() - procstart;
-        System.out.println("Time:" + procend + " Count:" + count);
-        resultsfile.close();
+        logger.debug("Time:" + procend + " Count:" + count);
     }
 
     public static void evaluateAsync(ObjRecClient objRecClient, String queryList, String resultspath, AppCallBack app_cb) throws IOException, InterruptedException
     {
         ConcurrentLinkedQueue<Util.EvaluateCallback> evaluateCallbacks = new ConcurrentLinkedQueue<>();
         BufferedReader trace = new BufferedReader(new FileReader(queryList));
-        BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
 
         Integer count = 0;
         String line = trace.readLine();
         Long procstart = System.currentTimeMillis();
         do
         {
+            count++;
             // Parse
             String[] chunks = line.split(",");
             String img = chunks[0];
@@ -214,25 +217,24 @@ public class Util
                 // Thrown if argument is negative. If negative, don't sleep. Drop exception like its hot.
             }
             // Create callback
-            Util.EvaluateCallback cb = new Util.EvaluateCallback(System.currentTimeMillis(), img, app_cb);
+            Util.EvaluateCallback cb = new Util.EvaluateCallback(System.currentTimeMillis(), img, count, app_cb);
 
-            System.out.println("Issuing request:" + img);
+            logger.debug("Issuing request:" + img);
             // Issue request
             objRecClient.recognize(imgpath, cb);
             evaluateCallbacks.add(cb);
 
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).annotation + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
             line = trace.readLine();
-            count++;
         } while ((line != null));
 //        System.out.println("Results:\n" + resultMap.toString());
 
         Long procend = System.currentTimeMillis() - procstart;
-        System.out.println("Time:" + procend + " Count:" + count);
+        logger.debug("Time:" + procend + " Count:" + count);
 
         // Write results to file
-        writeResultFile(evaluateCallbacks, resultsfile);
-        resultsfile.close();
+        writeResultFile(evaluateCallbacks, resultspath);
+        logger.debug("Wrote results file");
     }
 
     /**
@@ -245,36 +247,48 @@ public class Util
      *   {REQUEST:"", ...}
      *  ]
      * @param evaluateCallbacks
-     * @param resultsfile
+     * @param resultspath
      * @throws IOException
      */
-    public static void writeResultFile(Collection<EvaluateCallback> evaluateCallbacks, BufferedWriter resultsfile) throws IOException, InterruptedException
+    public static void writeResultFile(Collection<EvaluateCallback> evaluateCallbacks, String resultspath) throws IOException
     {
+        BufferedWriter resultsfile = new BufferedWriter(new FileWriter(resultspath));
         ObjectMapper mapper = new ObjectMapper();
-
         List<Map<String, Object>> output_array = new ArrayList<>();
-        for(Util.EvaluateCallback callback: evaluateCallbacks)
+        try
         {
-            // Ensure callback is processed
-            while(!callback.isDone())
+            for (Util.EvaluateCallback callback : evaluateCallbacks)
             {
-                sleep(100);
+                Map<String, Object> json = new HashMap<>();
+                json.put(REQUEST_ID, callback.getID());
+                json.put(REQUEST, callback.getQuery());
+                json.put(STARTTIME, callback.getStartime());
+                // Ensure callback is processed
+                if (callback.isDone(60000))
+                {
+                    Util.Result result = callback.getResult();
+                    Map<String, Map<String, Integer>> map = result.getLatencies();
+                    json.put(ENDTIME, callback.getEndtime());
+                    json.put(RESPONSE, result.getAnnotation());
+                    json.put(LATENCIES, map);
+                    logger.debug("Responses Received to Req:" + callback.getID());
+                } else
+                {
+                    json.put(ENDTIME, -1);
+                    logger.warn("Responses *NOT* Received to Req:" + callback.getID());
+                }
+                output_array.add(json);
             }
-            Util.Result result = callback.getResult();
-            System.out.println("Received response:" + result.getAnnotation());
-            Map<String, Object> json = new HashMap<>();
-
-            Map<String, Map<String, Integer>> map = result.getLatencies();
-            json.put(REQUEST, callback.getQuery());
-            json.put(STARTTIME, callback.getStartime());
-            json.put(ENDTIME, callback.getEndtime());
-            json.put(RESPONSE, result.getAnnotation());
-            json.put(LATENCIES, map);
-
-            output_array.add(json);
         }
-        mapper.writeValue(resultsfile, output_array);
+        catch (InterruptedException ignored)
+        {}
+        finally
+        {
+            mapper.writeValue(resultsfile, output_array);
+            resultsfile.close();
+        }
     }
+
 
     public static class EvaluateCallback extends ObjRecCallback
     {
@@ -284,17 +298,12 @@ public class Util
         private Result result;
         private boolean isDone = false;
         private AppCallBack app_cb = null;
+        private Integer ID;
 
-        public EvaluateCallback(long millis, String query)
+        public EvaluateCallback(long millis, String query, Integer id, AppCallBack cb)
         {
             super();
-            startime = millis;
-            this.query = query;
-        }
-
-        public EvaluateCallback(long millis, String query, AppCallBack cb)
-        {
-            super();
+            ID = id;
             startime = millis;
             this.query = query;
             app_cb = cb;
@@ -315,8 +324,20 @@ public class Util
             return startime;
         }
 
-        public boolean isDone()
+        /**
+         * Wait for result till timeout, return accordingly
+         * @param timeout
+         * @return
+         */
+        public boolean isDone(long timeout) throws InterruptedException
         {
+            Long start = System.currentTimeMillis();
+            while(!isDone)
+            {
+                sleep(100);
+                if((System.currentTimeMillis() - start) > timeout)
+                    break;
+            }
             return isDone;
         }
 
@@ -333,6 +354,11 @@ public class Util
         public Result getResult()
         {
             return result;
+        }
+
+        public Integer getID()
+        {
+            return ID;
         }
     }
 

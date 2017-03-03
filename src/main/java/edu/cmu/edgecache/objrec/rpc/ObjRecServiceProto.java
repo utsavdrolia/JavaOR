@@ -18,6 +18,19 @@ public final class ObjRecServiceProto {
      * <code>required bytes image = 1;</code>
      */
     com.google.protobuf.ByteString getImage();
+
+    /**
+     * <code>required .RequestID req_id = 2;</code>
+     */
+    boolean hasReqId();
+    /**
+     * <code>required .RequestID req_id = 2;</code>
+     */
+    RequestID getReqId();
+    /**
+     * <code>required .RequestID req_id = 2;</code>
+     */
+    RequestIDOrBuilder getReqIdOrBuilder();
   }
   /**
    * Protobuf type {@code Image}
@@ -67,6 +80,19 @@ public final class ObjRecServiceProto {
               image_ = input.readBytes();
               break;
             }
+            case 18: {
+              RequestID.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = reqId_.toBuilder();
+              }
+              reqId_ = input.readMessage(RequestID.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(reqId_);
+                reqId_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -107,6 +133,27 @@ public final class ObjRecServiceProto {
       return image_;
     }
 
+    public static final int REQ_ID_FIELD_NUMBER = 2;
+    private RequestID reqId_;
+    /**
+     * <code>required .RequestID req_id = 2;</code>
+     */
+    public boolean hasReqId() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required .RequestID req_id = 2;</code>
+     */
+    public RequestID getReqId() {
+      return reqId_ == null ? RequestID.getDefaultInstance() : reqId_;
+    }
+    /**
+     * <code>required .RequestID req_id = 2;</code>
+     */
+    public RequestIDOrBuilder getReqIdOrBuilder() {
+      return reqId_ == null ? RequestID.getDefaultInstance() : reqId_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -114,6 +161,14 @@ public final class ObjRecServiceProto {
       if (isInitialized == 0) return false;
 
       if (!hasImage()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasReqId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getReqId().isInitialized()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -126,6 +181,9 @@ public final class ObjRecServiceProto {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBytes(1, image_);
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, getReqId());
+      }
       unknownFields.writeTo(output);
     }
 
@@ -137,6 +195,10 @@ public final class ObjRecServiceProto {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(1, image_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getReqId());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -252,12 +314,19 @@ public final class ObjRecServiceProto {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getReqIdFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
         image_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
+        if (reqIdBuilder_ == null) {
+          reqId_ = null;
+        } else {
+          reqIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -286,6 +355,14 @@ public final class ObjRecServiceProto {
           to_bitField0_ |= 0x00000001;
         }
         result.image_ = image_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (reqIdBuilder_ == null) {
+          result.reqId_ = reqId_;
+        } else {
+          result.reqId_ = reqIdBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -305,6 +382,9 @@ public final class ObjRecServiceProto {
         if (other.hasImage()) {
           setImage(other.getImage());
         }
+        if (other.hasReqId()) {
+          mergeReqId(other.getReqId());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -312,6 +392,12 @@ public final class ObjRecServiceProto {
 
       public final boolean isInitialized() {
         if (!hasImage()) {
+          return false;
+        }
+        if (!hasReqId()) {
+          return false;
+        }
+        if (!getReqId().isInitialized()) {
           return false;
         }
         return true;
@@ -369,6 +455,124 @@ public final class ObjRecServiceProto {
         image_ = getDefaultInstance().getImage();
         onChanged();
         return this;
+      }
+
+      private RequestID reqId_ = null;
+      private com.google.protobuf.SingleFieldBuilder<
+          RequestID, RequestID.Builder, RequestIDOrBuilder> reqIdBuilder_;
+      /**
+       * <code>required .RequestID req_id = 2;</code>
+       */
+      public boolean hasReqId() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required .RequestID req_id = 2;</code>
+       */
+      public RequestID getReqId() {
+        if (reqIdBuilder_ == null) {
+          return reqId_ == null ? RequestID.getDefaultInstance() : reqId_;
+        } else {
+          return reqIdBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .RequestID req_id = 2;</code>
+       */
+      public Builder setReqId(RequestID value) {
+        if (reqIdBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          reqId_ = value;
+          onChanged();
+        } else {
+          reqIdBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .RequestID req_id = 2;</code>
+       */
+      public Builder setReqId(
+          RequestID.Builder builderForValue) {
+        if (reqIdBuilder_ == null) {
+          reqId_ = builderForValue.build();
+          onChanged();
+        } else {
+          reqIdBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .RequestID req_id = 2;</code>
+       */
+      public Builder mergeReqId(RequestID value) {
+        if (reqIdBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              reqId_ != null &&
+              reqId_ != RequestID.getDefaultInstance()) {
+            reqId_ =
+              RequestID.newBuilder(reqId_).mergeFrom(value).buildPartial();
+          } else {
+            reqId_ = value;
+          }
+          onChanged();
+        } else {
+          reqIdBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .RequestID req_id = 2;</code>
+       */
+      public Builder clearReqId() {
+        if (reqIdBuilder_ == null) {
+          reqId_ = null;
+          onChanged();
+        } else {
+          reqIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      /**
+       * <code>required .RequestID req_id = 2;</code>
+       */
+      public RequestID.Builder getReqIdBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getReqIdFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .RequestID req_id = 2;</code>
+       */
+      public RequestIDOrBuilder getReqIdOrBuilder() {
+        if (reqIdBuilder_ != null) {
+          return reqIdBuilder_.getMessageOrBuilder();
+        } else {
+          return reqId_ == null ?
+              RequestID.getDefaultInstance() : reqId_;
+        }
+      }
+      /**
+       * <code>required .RequestID req_id = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          RequestID, RequestID.Builder, RequestIDOrBuilder>
+          getReqIdFieldBuilder() {
+        if (reqIdBuilder_ == null) {
+          reqIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              RequestID, RequestID.Builder, RequestIDOrBuilder>(
+                  getReqId(),
+                  getParentForChildren(),
+                  isClean());
+          reqId_ = null;
+        }
+        return reqIdBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:Image)
@@ -450,6 +654,19 @@ public final class ObjRecServiceProto {
      */
     LatencyOrBuilder getLatenciesOrBuilder(
             int index);
+
+    /**
+     * <code>optional .RequestID req_id = 3;</code>
+     */
+    boolean hasReqId();
+    /**
+     * <code>optional .RequestID req_id = 3;</code>
+     */
+    RequestID getReqId();
+    /**
+     * <code>optional .RequestID req_id = 3;</code>
+     */
+    RequestIDOrBuilder getReqIdOrBuilder();
   }
   /**
    * Protobuf type {@code Annotation}
@@ -507,6 +724,19 @@ public final class ObjRecServiceProto {
                 mutable_bitField0_ |= 0x00000002;
               }
               latencies_.add(input.readMessage(Latency.parser(), extensionRegistry));
+              break;
+            }
+            case 26: {
+              RequestID.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = reqId_.toBuilder();
+              }
+              reqId_ = input.readMessage(RequestID.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(reqId_);
+                reqId_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
               break;
             }
           }
@@ -614,6 +844,27 @@ public final class ObjRecServiceProto {
       return latencies_.get(index);
     }
 
+    public static final int REQ_ID_FIELD_NUMBER = 3;
+    private RequestID reqId_;
+    /**
+     * <code>optional .RequestID req_id = 3;</code>
+     */
+    public boolean hasReqId() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional .RequestID req_id = 3;</code>
+     */
+    public RequestID getReqId() {
+      return reqId_ == null ? RequestID.getDefaultInstance() : reqId_;
+    }
+    /**
+     * <code>optional .RequestID req_id = 3;</code>
+     */
+    public RequestIDOrBuilder getReqIdOrBuilder() {
+      return reqId_ == null ? RequestID.getDefaultInstance() : reqId_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -630,6 +881,12 @@ public final class ObjRecServiceProto {
           return false;
         }
       }
+      if (hasReqId()) {
+        if (!getReqId().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -641,6 +898,9 @@ public final class ObjRecServiceProto {
       }
       for (int i = 0; i < latencies_.size(); i++) {
         output.writeMessage(2, latencies_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(3, getReqId());
       }
       unknownFields.writeTo(output);
     }
@@ -656,6 +916,10 @@ public final class ObjRecServiceProto {
       for (int i = 0; i < latencies_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, latencies_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getReqId());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -772,6 +1036,7 @@ public final class ObjRecServiceProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getLatenciesFieldBuilder();
+          getReqIdFieldBuilder();
         }
       }
       public Builder clear() {
@@ -784,6 +1049,12 @@ public final class ObjRecServiceProto {
         } else {
           latenciesBuilder_.clear();
         }
+        if (reqIdBuilder_ == null) {
+          reqId_ = null;
+        } else {
+          reqIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -820,6 +1091,14 @@ public final class ObjRecServiceProto {
           result.latencies_ = latencies_;
         } else {
           result.latencies_ = latenciesBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (reqIdBuilder_ == null) {
+          result.reqId_ = reqId_;
+        } else {
+          result.reqId_ = reqIdBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -868,6 +1147,9 @@ public final class ObjRecServiceProto {
             }
           }
         }
+        if (other.hasReqId()) {
+          mergeReqId(other.getReqId());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -879,6 +1161,11 @@ public final class ObjRecServiceProto {
         }
         for (int i = 0; i < getLatenciesCount(); i++) {
           if (!getLatencies(i).isInitialized()) {
+            return false;
+          }
+        }
+        if (hasReqId()) {
+          if (!getReqId().isInitialized()) {
             return false;
           }
         }
@@ -1220,6 +1507,124 @@ public final class ObjRecServiceProto {
         return latenciesBuilder_;
       }
 
+      private RequestID reqId_ = null;
+      private com.google.protobuf.SingleFieldBuilder<
+          RequestID, RequestID.Builder, RequestIDOrBuilder> reqIdBuilder_;
+      /**
+       * <code>optional .RequestID req_id = 3;</code>
+       */
+      public boolean hasReqId() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional .RequestID req_id = 3;</code>
+       */
+      public RequestID getReqId() {
+        if (reqIdBuilder_ == null) {
+          return reqId_ == null ? RequestID.getDefaultInstance() : reqId_;
+        } else {
+          return reqIdBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .RequestID req_id = 3;</code>
+       */
+      public Builder setReqId(RequestID value) {
+        if (reqIdBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          reqId_ = value;
+          onChanged();
+        } else {
+          reqIdBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .RequestID req_id = 3;</code>
+       */
+      public Builder setReqId(
+          RequestID.Builder builderForValue) {
+        if (reqIdBuilder_ == null) {
+          reqId_ = builderForValue.build();
+          onChanged();
+        } else {
+          reqIdBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .RequestID req_id = 3;</code>
+       */
+      public Builder mergeReqId(RequestID value) {
+        if (reqIdBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              reqId_ != null &&
+              reqId_ != RequestID.getDefaultInstance()) {
+            reqId_ =
+              RequestID.newBuilder(reqId_).mergeFrom(value).buildPartial();
+          } else {
+            reqId_ = value;
+          }
+          onChanged();
+        } else {
+          reqIdBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .RequestID req_id = 3;</code>
+       */
+      public Builder clearReqId() {
+        if (reqIdBuilder_ == null) {
+          reqId_ = null;
+          onChanged();
+        } else {
+          reqIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>optional .RequestID req_id = 3;</code>
+       */
+      public RequestID.Builder getReqIdBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getReqIdFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .RequestID req_id = 3;</code>
+       */
+      public RequestIDOrBuilder getReqIdOrBuilder() {
+        if (reqIdBuilder_ != null) {
+          return reqIdBuilder_.getMessageOrBuilder();
+        } else {
+          return reqId_ == null ?
+              RequestID.getDefaultInstance() : reqId_;
+        }
+      }
+      /**
+       * <code>optional .RequestID req_id = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          RequestID, RequestID.Builder, RequestIDOrBuilder>
+          getReqIdFieldBuilder() {
+        if (reqIdBuilder_ == null) {
+          reqIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              RequestID, RequestID.Builder, RequestIDOrBuilder>(
+                  getReqId(),
+                  getParentForChildren(),
+                  isClean());
+          reqId_ = null;
+        }
+        return reqIdBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:Annotation)
     }
 
@@ -1322,6 +1727,19 @@ public final class ObjRecServiceProto {
      */
     LatencyOrBuilder getLatenciesOrBuilder(
             int index);
+
+    /**
+     * <code>required .RequestID req_id = 4;</code>
+     */
+    boolean hasReqId();
+    /**
+     * <code>required .RequestID req_id = 4;</code>
+     */
+    RequestID getReqId();
+    /**
+     * <code>required .RequestID req_id = 4;</code>
+     */
+    RequestIDOrBuilder getReqIdOrBuilder();
   }
   /**
    * Protobuf type {@code Features}
@@ -1394,6 +1812,19 @@ public final class ObjRecServiceProto {
                 mutable_bitField0_ |= 0x00000004;
               }
               latencies_.add(input.readMessage(Latency.parser(), extensionRegistry));
+              break;
+            }
+            case 34: {
+              RequestID.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = reqId_.toBuilder();
+              }
+              reqId_ = input.readMessage(RequestID.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(reqId_);
+                reqId_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
               break;
             }
           }
@@ -1518,6 +1949,27 @@ public final class ObjRecServiceProto {
       return latencies_.get(index);
     }
 
+    public static final int REQ_ID_FIELD_NUMBER = 4;
+    private RequestID reqId_;
+    /**
+     * <code>required .RequestID req_id = 4;</code>
+     */
+    public boolean hasReqId() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required .RequestID req_id = 4;</code>
+     */
+    public RequestID getReqId() {
+      return reqId_ == null ? RequestID.getDefaultInstance() : reqId_;
+    }
+    /**
+     * <code>required .RequestID req_id = 4;</code>
+     */
+    public RequestIDOrBuilder getReqIdOrBuilder() {
+      return reqId_ == null ? RequestID.getDefaultInstance() : reqId_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -1525,6 +1977,10 @@ public final class ObjRecServiceProto {
       if (isInitialized == 0) return false;
 
       if (!hasDescs()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasReqId()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1544,6 +2000,10 @@ public final class ObjRecServiceProto {
           return false;
         }
       }
+      if (!getReqId().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -1558,6 +2018,9 @@ public final class ObjRecServiceProto {
       }
       for (int i = 0; i < latencies_.size(); i++) {
         output.writeMessage(3, latencies_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(4, getReqId());
       }
       unknownFields.writeTo(output);
     }
@@ -1578,6 +2041,10 @@ public final class ObjRecServiceProto {
       for (int i = 0; i < latencies_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, latencies_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getReqId());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1696,6 +2163,7 @@ public final class ObjRecServiceProto {
           getDescsFieldBuilder();
           getKeypointsFieldBuilder();
           getLatenciesFieldBuilder();
+          getReqIdFieldBuilder();
         }
       }
       public Builder clear() {
@@ -1718,6 +2186,12 @@ public final class ObjRecServiceProto {
         } else {
           latenciesBuilder_.clear();
         }
+        if (reqIdBuilder_ == null) {
+          reqId_ = null;
+        } else {
+          reqIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -1767,6 +2241,14 @@ public final class ObjRecServiceProto {
           result.latencies_ = latencies_;
         } else {
           result.latencies_ = latenciesBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (reqIdBuilder_ == null) {
+          result.reqId_ = reqId_;
+        } else {
+          result.reqId_ = reqIdBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -1839,6 +2321,9 @@ public final class ObjRecServiceProto {
             }
           }
         }
+        if (other.hasReqId()) {
+          mergeReqId(other.getReqId());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -1846,6 +2331,9 @@ public final class ObjRecServiceProto {
 
       public final boolean isInitialized() {
         if (!hasDescs()) {
+          return false;
+        }
+        if (!hasReqId()) {
           return false;
         }
         if (!getDescs().isInitialized()) {
@@ -1860,6 +2348,9 @@ public final class ObjRecServiceProto {
           if (!getLatencies(i).isInitialized()) {
             return false;
           }
+        }
+        if (!getReqId().isInitialized()) {
+          return false;
         }
         return true;
       }
@@ -2479,6 +2970,124 @@ public final class ObjRecServiceProto {
           latencies_ = null;
         }
         return latenciesBuilder_;
+      }
+
+      private RequestID reqId_ = null;
+      private com.google.protobuf.SingleFieldBuilder<
+          RequestID, RequestID.Builder, RequestIDOrBuilder> reqIdBuilder_;
+      /**
+       * <code>required .RequestID req_id = 4;</code>
+       */
+      public boolean hasReqId() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required .RequestID req_id = 4;</code>
+       */
+      public RequestID getReqId() {
+        if (reqIdBuilder_ == null) {
+          return reqId_ == null ? RequestID.getDefaultInstance() : reqId_;
+        } else {
+          return reqIdBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .RequestID req_id = 4;</code>
+       */
+      public Builder setReqId(RequestID value) {
+        if (reqIdBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          reqId_ = value;
+          onChanged();
+        } else {
+          reqIdBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>required .RequestID req_id = 4;</code>
+       */
+      public Builder setReqId(
+          RequestID.Builder builderForValue) {
+        if (reqIdBuilder_ == null) {
+          reqId_ = builderForValue.build();
+          onChanged();
+        } else {
+          reqIdBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>required .RequestID req_id = 4;</code>
+       */
+      public Builder mergeReqId(RequestID value) {
+        if (reqIdBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              reqId_ != null &&
+              reqId_ != RequestID.getDefaultInstance()) {
+            reqId_ =
+              RequestID.newBuilder(reqId_).mergeFrom(value).buildPartial();
+          } else {
+            reqId_ = value;
+          }
+          onChanged();
+        } else {
+          reqIdBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>required .RequestID req_id = 4;</code>
+       */
+      public Builder clearReqId() {
+        if (reqIdBuilder_ == null) {
+          reqId_ = null;
+          onChanged();
+        } else {
+          reqIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      /**
+       * <code>required .RequestID req_id = 4;</code>
+       */
+      public RequestID.Builder getReqIdBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getReqIdFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .RequestID req_id = 4;</code>
+       */
+      public RequestIDOrBuilder getReqIdOrBuilder() {
+        if (reqIdBuilder_ != null) {
+          return reqIdBuilder_.getMessageOrBuilder();
+        } else {
+          return reqId_ == null ?
+              RequestID.getDefaultInstance() : reqId_;
+        }
+      }
+      /**
+       * <code>required .RequestID req_id = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          RequestID, RequestID.Builder, RequestIDOrBuilder>
+          getReqIdFieldBuilder() {
+        if (reqIdBuilder_ == null) {
+          reqIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              RequestID, RequestID.Builder, RequestIDOrBuilder>(
+                  getReqId(),
+                  getParentForChildren(),
+                  isClean());
+          reqId_ = null;
+        }
+        return reqIdBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:Features)
@@ -4452,6 +5061,569 @@ public final class ObjRecServiceProto {
 
   }
 
+  public interface RequestIDOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:RequestID)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required string name = 1;</code>
+     */
+    boolean hasName();
+    /**
+     * <code>required string name = 1;</code>
+     */
+    String getName();
+    /**
+     * <code>required string name = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>required int32 req_id = 2;</code>
+     */
+    boolean hasReqId();
+    /**
+     * <code>required int32 req_id = 2;</code>
+     */
+    int getReqId();
+  }
+  /**
+   * Protobuf type {@code RequestID}
+   */
+  public  static final class RequestID extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:RequestID)
+      RequestIDOrBuilder {
+    // Use RequestID.newBuilder() to construct.
+    private RequestID(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private RequestID() {
+      name_ = "";
+      reqId_ = 0;
+    }
+
+    @Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private RequestID(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              name_ = bs;
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              reqId_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return ObjRecServiceProto.internal_static_RequestID_descriptor;
+    }
+
+    protected FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return ObjRecServiceProto.internal_static_RequestID_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              RequestID.class, Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int NAME_FIELD_NUMBER = 1;
+    private volatile Object name_;
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public boolean hasName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public String getName() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          name_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int REQ_ID_FIELD_NUMBER = 2;
+    private int reqId_;
+    /**
+     * <code>required int32 req_id = 2;</code>
+     */
+    public boolean hasReqId() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required int32 req_id = 2;</code>
+     */
+    public int getReqId() {
+      return reqId_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasReqId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, reqId_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, reqId_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    public static RequestID parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static RequestID parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static RequestID parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static RequestID parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static RequestID parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static RequestID parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static RequestID parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static RequestID parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static RequestID parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static RequestID parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(RequestID prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @Override
+    protected Builder newBuilderForType(
+        BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code RequestID}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:RequestID)
+        RequestIDOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return ObjRecServiceProto.internal_static_RequestID_descriptor;
+      }
+
+      protected FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return ObjRecServiceProto.internal_static_RequestID_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                RequestID.class, Builder.class);
+      }
+
+      // Construct using ObjRecServiceProto.RequestID.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        name_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        reqId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return ObjRecServiceProto.internal_static_RequestID_descriptor;
+      }
+
+      public RequestID getDefaultInstanceForType() {
+        return RequestID.getDefaultInstance();
+      }
+
+      public RequestID build() {
+        RequestID result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public RequestID buildPartial() {
+        RequestID result = new RequestID(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.name_ = name_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.reqId_ = reqId_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof RequestID) {
+          return mergeFrom((RequestID)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(RequestID other) {
+        if (other == RequestID.getDefaultInstance()) return this;
+        if (other.hasName()) {
+          bitField0_ |= 0x00000001;
+          name_ = other.name_;
+          onChanged();
+        }
+        if (other.hasReqId()) {
+          setReqId(other.getReqId());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasName()) {
+          return false;
+        }
+        if (!hasReqId()) {
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        RequestID parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (RequestID) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private Object name_ = "";
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public boolean hasName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public String getName() {
+        Object ref = name_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            name_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder setName(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder clearName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int reqId_ ;
+      /**
+       * <code>required int32 req_id = 2;</code>
+       */
+      public boolean hasReqId() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required int32 req_id = 2;</code>
+       */
+      public int getReqId() {
+        return reqId_;
+      }
+      /**
+       * <code>required int32 req_id = 2;</code>
+       */
+      public Builder setReqId(int value) {
+        bitField0_ |= 0x00000002;
+        reqId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 req_id = 2;</code>
+       */
+      public Builder clearReqId() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        reqId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:RequestID)
+    }
+
+    // @@protoc_insertion_point(class_scope:RequestID)
+    private static final RequestID DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new RequestID();
+    }
+
+    public static RequestID getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @Deprecated public static final com.google.protobuf.Parser<RequestID>
+        PARSER = new com.google.protobuf.AbstractParser<RequestID>() {
+      public RequestID parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new RequestID(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<RequestID> parser() {
+      return PARSER;
+    }
+
+    @Override
+    public com.google.protobuf.Parser<RequestID> getParserForType() {
+      return PARSER;
+    }
+
+    public RequestID getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   /**
    * Protobuf service {@code ObjRecService}
    */
@@ -4927,6 +6099,11 @@ public final class ObjRecServiceProto {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Latency_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_RequestID_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_RequestID_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -4936,21 +6113,24 @@ public final class ObjRecServiceProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\014objrec.proto\"\026\n\005Image\022\r\n\005image\030\001 \002(\014\"=" +
-      "\n\nAnnotation\022\022\n\nannotation\030\001 \002(\t\022\033\n\tlate" +
-      "ncies\030\002 \003(\0132\010.Latency\"^\n\010Features\022\027\n\005des" +
-      "cs\030\001 \002(\0132\010.DescMat\022\034\n\tkeypoints\030\002 \003(\0132\t." +
-      "KeyPoint\022\033\n\tlatencies\030\003 \003(\0132\010.Latency\"A\n" +
-      "\007DescMat\022\014\n\004rows\030\001 \002(\005\022\014\n\004cols\030\002 \002(\005\022\014\n\004" +
-      "type\030\003 \002(\005\022\014\n\004data\030\004 \002(\014\" \n\010KeyPoint\022\t\n\001" +
-      "x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001\"`\n\007Latency\022\014\n\004name\030\001 " +
-      "\002(\t\022\020\n\010in_queue\030\002 \001(\005\022\023\n\013computation\030\003 \001" +
-      "(\005\022\022\n\nnext_level\030\004 \001(\005\022\014\n\004size\030\005 \001(\0052\246\001\n",
-      "\rObjRecService\022 \n\tRecognize\022\006.Image\032\013.An" +
-      "notation\022+\n\021RecognizeFeatures\022\t.Features" +
-      "\032\013.Annotation\022\037\n\010GetImage\022\013.Annotation\032\006" +
-      ".Image\022%\n\013GetFeatures\022\013.Annotation\032\t.Fea" +
-      "turesB\031B\022ObjRecServiceProtoH\001\210\001\001"
+      "\n\014objrec.proto\"2\n\005Image\022\r\n\005image\030\001 \002(\014\022\032" +
+      "\n\006req_id\030\002 \002(\0132\n.RequestID\"Y\n\nAnnotation" +
+      "\022\022\n\nannotation\030\001 \002(\t\022\033\n\tlatencies\030\002 \003(\0132" +
+      "\010.Latency\022\032\n\006req_id\030\003 \001(\0132\n.RequestID\"z\n" +
+      "\010Features\022\027\n\005descs\030\001 \002(\0132\010.DescMat\022\034\n\tke" +
+      "ypoints\030\002 \003(\0132\t.KeyPoint\022\033\n\tlatencies\030\003 " +
+      "\003(\0132\010.Latency\022\032\n\006req_id\030\004 \002(\0132\n.RequestI" +
+      "D\"A\n\007DescMat\022\014\n\004rows\030\001 \002(\005\022\014\n\004cols\030\002 \002(\005" +
+      "\022\014\n\004type\030\003 \002(\005\022\014\n\004data\030\004 \002(\014\" \n\010KeyPoint" +
+      "\022\t\n\001x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001\"`\n\007Latency\022\014\n\004nam",
+      "e\030\001 \002(\t\022\020\n\010in_queue\030\002 \001(\005\022\023\n\013computation" +
+      "\030\003 \001(\005\022\022\n\nnext_level\030\004 \001(\005\022\014\n\004size\030\005 \001(\005" +
+      "\")\n\tRequestID\022\014\n\004name\030\001 \002(\t\022\016\n\006req_id\030\002 " +
+      "\002(\0052\246\001\n\rObjRecService\022 \n\tRecognize\022\006.Ima" +
+      "ge\032\013.Annotation\022+\n\021RecognizeFeatures\022\t.F" +
+      "eatures\032\013.Annotation\022\037\n\010GetImage\022\013.Annot" +
+      "ation\032\006.Image\022%\n\013GetFeatures\022\013.Annotatio" +
+      "n\032\t.FeaturesB\031B\022ObjRecServiceProtoH\001\210\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -4969,19 +6149,19 @@ public final class ObjRecServiceProto {
     internal_static_Image_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Image_descriptor,
-        new String[] { "Image", });
+        new String[] { "Image", "ReqId", });
     internal_static_Annotation_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Annotation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Annotation_descriptor,
-        new String[] { "Annotation", "Latencies", });
+        new String[] { "Annotation", "Latencies", "ReqId", });
     internal_static_Features_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_Features_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Features_descriptor,
-        new String[] { "Descs", "Keypoints", "Latencies", });
+        new String[] { "Descs", "Keypoints", "Latencies", "ReqId", });
     internal_static_DescMat_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_DescMat_fieldAccessorTable = new
@@ -5000,6 +6180,12 @@ public final class ObjRecServiceProto {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Latency_descriptor,
         new String[] { "Name", "InQueue", "Computation", "NextLevel", "Size", });
+    internal_static_RequestID_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_RequestID_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_RequestID_descriptor,
+        new String[] { "Name", "ReqId", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

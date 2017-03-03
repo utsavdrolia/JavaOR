@@ -14,12 +14,14 @@ service ObjRecService
 message Image
 {
     required bytes image = 1;
+    required RequestID req_id = 2;
 }
 
 message Annotation
 {
     required string annotation = 1;
     repeated Latency latencies = 2;
+    optional RequestID req_id = 3;
 }
 
 message Features
@@ -27,6 +29,7 @@ message Features
     required DescMat descs = 1;
     repeated KeyPoint keypoints = 2;
     repeated Latency latencies = 3;
+    required RequestID req_id = 4;
 }
 
 message DescMat
@@ -50,4 +53,10 @@ message Latency
     optional int32 computation = 3;
     optional int32 next_level = 4;
     optional int32 size = 5;
+}
+
+message RequestID
+{
+    required string name = 1;
+    required int32 req_id = 2;
 }

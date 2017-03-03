@@ -4,6 +4,8 @@ import com.google.protobuf.RpcCallback;
 import edu.cmu.edgecache.objrec.opencv.*;
 import edu.cmu.edgecache.recog.AbstractRecogCache;
 import edu.cmu.edgecache.recog.LFURecogCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -20,6 +22,9 @@ public class CachedObjRecClient extends ObjRecClient
     private String name;
     private boolean isCacheEnabled = false;
 
+    final static Logger logger = LoggerFactory.getLogger(CachedObjRecClient.class);
+
+
     /**
      *
      * @param extractor {@link FeatureExtractor} To use in the Recognizer
@@ -34,7 +39,7 @@ public class CachedObjRecClient extends ObjRecClient
         this.name = name;
         if(cache_size > 0)
             isCacheEnabled = true;
-        System.out.println("Cache enabled:" + isCacheEnabled);
+        logger.debug("Cache enabled:" + isCacheEnabled);
     }
 
     public CachedObjRecClient(Recognizer recognizer, AbstractRecogCache<String, KeypointDescList> recogCache, String serverAdd, String name, boolean enableCache)
@@ -44,7 +49,7 @@ public class CachedObjRecClient extends ObjRecClient
         this.recogCache = recogCache;
         this.name = name;
         isCacheEnabled = enableCache;
-        System.out.println("Cache enabled:" + isCacheEnabled);
+        logger.debug("Cache enabled:" + isCacheEnabled);
 
     }
 
@@ -121,7 +126,7 @@ public class CachedObjRecClient extends ObjRecClient
                     addLatencies(complatency).
                     build();
             cb.run(annotation);
-            System.out.println(name+ " : *!!!Cache Hit!!!*");
+            logger.debug(name+ " : *!!!Cache Hit!!!*");
         }
         else
             // If not, send upwards
@@ -184,7 +189,7 @@ public class CachedObjRecClient extends ObjRecClient
                     } else
                     {
                         recogCache.put(annotationstring, null);
-                        System.out.println(name + " : Present in Cache but not matched");
+                        logger.debug(name + " : Present in Cache but not matched");
                     }
 
             }
@@ -209,7 +214,7 @@ public class CachedObjRecClient extends ObjRecClient
         public void run(ObjRecServiceProto.Features features)
         {
             long compstart = System.currentTimeMillis();
-            System.out.println(name+ " : Received Features from Server");
+            logger.debug(name+ " : Received Features from Server");
             KeypointDescList kdlist = Utils.deserialize(features);
             recogCache.put(annotation, kdlist);
             long compdur = System.currentTimeMillis() - compstart;

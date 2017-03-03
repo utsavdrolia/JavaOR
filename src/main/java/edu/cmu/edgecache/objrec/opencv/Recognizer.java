@@ -6,8 +6,11 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.highgui.Highgui;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by utsav on 2/5/16.
@@ -18,6 +21,9 @@ public class Recognizer
     public static final String INVALID = Matcher.INVALID;
     public FeatureExtractor extractor;
     public Matcher matcher;
+    private final AtomicLong recv_counter = new AtomicLong(0L);
+    private final AtomicLong send_counter = new AtomicLong(0L);
+    final static Logger logger = LoggerFactory.getLogger(Recognizer.class);
 
     /**
      * Loads the DB in memory so that it can be queried repeatedly using the recognize function
@@ -91,7 +97,10 @@ public class Recognizer
      */
     public String recognize(KeypointDescList inputKDlist)
     {
-        return matcher.matchAll(inputKDlist);
+        logger.debug("Recognizer: Received Request Number:" + recv_counter.incrementAndGet());
+        String ret = matcher.matchAll(inputKDlist);
+        logger.debug("Recognizer: Sending Request Number:" + send_counter.incrementAndGet());
+        return ret;
     }
 
     /**
