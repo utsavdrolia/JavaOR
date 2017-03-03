@@ -7,10 +7,11 @@ import edu.cmu.edgecache.objrec.opencv.KeypointDescList;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
 import edu.cmu.edgecache.objrec.opencv.Recognizer;
 import org.crowd.rpc.RPCServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
-
 /**
  * Created by utsav on 6/14/16.
  */
@@ -19,9 +20,11 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
     private Recognizer recognizer;
     private RPCServer rpc;
     private final String NAME = Names.Cloud;
+
     private final AtomicLong recv_counter = new AtomicLong(0L);
     private final AtomicLong send_counter = new AtomicLong(0L);
     private final AtomicLong proc_counter = new AtomicLong(0L);
+    final static Logger logger = LoggerFactory.getLogger(ObjRecServer.class);
 
     public ObjRecServer(FeatureExtractor dbextractor, FeatureExtractor extractor, Matcher matcher, String dblistpath, String myaddress) throws IOException
     {
@@ -32,42 +35,42 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
     @Override
     public void recognize(RpcController controller, ObjRecServiceProto.Image request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
-        try
-        {
-            System.err.println("ObjRecServer: Received Request Number:" + recv_counter.incrementAndGet());
-            int hash = request.toByteString().hashCode();
-            System.err.println("ObjRecServer: Received Hash:" + hash);
-            Long req_rx = rpc.getRequestRxTime(hash);
-            byte[] img = request.getImage().toByteArray();
-            Long start = System.currentTimeMillis();
-            String ret = recognizer.recognize(img);
-            long stop = System.currentTimeMillis() - start;
-            System.err.println("In Queue " + Long.toString(start - req_rx));
-            System.err.println("Processed in " + Long.toString(stop));
+        logger.debug("ObjRecServer: Received Request: Client="  + request.getReqId().getName()
+                                                                + " ReqID=" + request.getReqId().getReqId()
+                                                                + " RecvCounter=" + recv_counter.incrementAndGet());
+        int hash = request.hashCode();
+        logger.debug("ObjRecServer: Received Hash:" + hash);
+        Long req_rx = rpc.getRequestRxTime(hash);
+        byte[] img = request.getImage().toByteArray();
+        Long start = System.currentTimeMillis();
+        String ret = recognizer.recognize(img);
+        long stop = System.currentTimeMillis() - start;
+        logger.debug("In Queue " + Long.toString(start - req_rx));
+        logger.debug("Processed in " + Long.toString(stop));
 
-            System.err.println("ObjRecServer: Process Request Number:" + proc_counter.incrementAndGet());
+        logger.debug("ObjRecServer: Processed Request: Client=" + request.getReqId().getName() + " ReqID=" + request.getReqId().getReqId());
 
-            done.run(ObjRecServiceProto.Annotation.newBuilder()
-                             .setAnnotation(ret)
-                             .addLatencies(ObjRecServiceProto.Latency.newBuilder()
-                                                   .setName(NAME)
-                                                   .setComputation((int) (stop))
-                                                   .setInQueue((int) (start - req_rx)))
-                             .build());
-            System.err.println("ObjRecServer: Sending Request Number:" + send_counter.incrementAndGet());
-        }
-        catch (RuntimeException e)
-        {
-            e.printStackTrace();
-        }
+        done.run(ObjRecServiceProto.Annotation.newBuilder()
+                         .setAnnotation(ret)
+                         .addLatencies(ObjRecServiceProto.Latency.newBuilder()
+                                               .setName(NAME)
+                                               .setComputation((int) (stop))
+                                               .setInQueue((int) (start - req_rx)))
+                         .build());
+        logger.debug("ObjRecServer: Replied to Request: Client="    + request.getReqId().getName()
+                                                                    + " ReqID=" + request.getReqId().getReqId()
+                                                                    + " SendCounter=" + send_counter.incrementAndGet());
+
     }
 
     @Override
     public void recognizeFeatures(RpcController controller, ObjRecServiceProto.Features request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
-        System.err.println("ObjRecServer: Received Request Number:" + recv_counter.incrementAndGet());
-        int hash = request.toByteString().hashCode();
-        System.err.println("ObjRecServer: Received Hash:" + hash);
+        logger.debug("ObjRecServer: Received Request: Client="  + request.getReqId().getName()
+                             + " ReqID=" + request.getReqId().getReqId()
+                             + " RecvCounter=" + recv_counter.incrementAndGet());
+        int hash = request.hashCode();
+        logger.debug("ObjRecServer: Received Hash:" + hash);
         Long req_rx = rpc.getRequestRxTime(hash);
         Long start = System.currentTimeMillis();
 //        try
@@ -81,10 +84,10 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
         KeypointDescList kplist = Utils.deserialize(request);
         String ret = recognizer.recognize(kplist);
         long stop = System.currentTimeMillis() - start;
-        System.err.println("In Queue " + Long.toString(start - req_rx));
-        System.err.println("Processed in " + Long.toString(stop));
+        logger.debug("In Queue " + Long.toString(start - req_rx));
+        logger.debug("Processed in " + Long.toString(stop));
 
-        System.err.println("ObjRecServer: Process Request Number:" + proc_counter.incrementAndGet());
+        logger.debug("ObjRecServer: Processed Request: Client=" +  request.getReqId().getName() + " ReqID=" + request.getReqId().getReqId());
 
         done.run(ObjRecServiceProto.Annotation.newBuilder()
                 .setAnnotation(ret)
@@ -93,7 +96,9 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
                                       .setComputation((int) (stop))
                                       .setInQueue((int) (start - req_rx)))
                 .build());
-        System.err.println("ObjRecServer: Sending Request Number:" + send_counter.incrementAndGet());
+        logger.debug("ObjRecServer: Replied to Request: Client="    + request.getReqId().getName()
+                             + " ReqID=" + request.getReqId().getReqId()
+                             + " SendCounter=" + send_counter.incrementAndGet());
     }
 
     @Override
