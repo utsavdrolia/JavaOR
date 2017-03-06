@@ -1,18 +1,62 @@
 syntax = "proto2";
 option java_outer_classname = "ObjRecServiceProto";
 option java_generic_services = true;
+option optimize_for = SPEED;
 
 service ObjRecService
 {
     rpc Recognize(Image) returns (Annotation);
+    rpc RecognizeFeatures(Features) returns (Annotation);
+    rpc GetImage(Annotation) returns (Image);
+    rpc GetFeatures(Annotation) returns (Features);
 }
 
 message Image
 {
     required bytes image = 1;
+    required RequestID req_id = 2;
 }
 
 message Annotation
 {
     required string annotation = 1;
+    repeated Latency latencies = 2;
+    optional RequestID req_id = 3;
+}
+
+message Features
+{
+    required DescMat descs = 1;
+    repeated KeyPoint keypoints = 2;
+    repeated Latency latencies = 3;
+    required RequestID req_id = 4;
+}
+
+message DescMat
+{
+    required int32 rows = 1;
+    required int32 cols = 2;
+    required int32 type = 3;
+    required bytes data = 4;
+}
+
+message KeyPoint
+{
+    required double x = 1;
+    required double y = 2;
+}
+
+message Latency
+{
+    required string name = 1;
+    optional int32 in_queue = 2;
+    optional int32 computation = 3;
+    optional int32 next_level = 4;
+    optional int32 size = 5;
+}
+
+message RequestID
+{
+    required string name = 1;
+    required int32 req_id = 2;
 }
