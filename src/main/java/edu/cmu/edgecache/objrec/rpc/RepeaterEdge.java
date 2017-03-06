@@ -4,6 +4,8 @@ import com.google.protobuf.RpcCallback;
 import com.google.protobuf.RpcController;
 import org.crowd.rpc.RPCClient;
 import org.crowd.rpc.RPCServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RepeaterEdge simply forwards requests and replies, but helps in measuring latencies in the different parts of the network
@@ -15,6 +17,7 @@ public class RepeaterEdge extends ObjRecServiceProto.ObjRecService
     private final Stub ObjRecServiceStub;
     private RPCServer listeningrpc;
     private final String EDGE = Names.Edge;
+    final static Logger logger = LoggerFactory.getLogger(RepeaterEdge.class);
 
 
     /**
@@ -34,7 +37,7 @@ public class RepeaterEdge extends ObjRecServiceProto.ObjRecService
     {
         Long req_rx = listeningrpc.getRequestRxTime(request.hashCode());
         Long start = System.currentTimeMillis();
-        this.ObjRecServiceStub.recognize(rpc, request, new RepeaterCallback(done, req_rx, System.currentTimeMillis()));
+        this.ObjRecServiceStub.recognize(rpc, request, new RepeaterCallback(done, start - req_rx, start));
     }
 
     @Override
@@ -42,7 +45,7 @@ public class RepeaterEdge extends ObjRecServiceProto.ObjRecService
     {
         Long req_rx = listeningrpc.getRequestRxTime(request.hashCode());
         Long start = System.currentTimeMillis();
-        this.ObjRecServiceStub.recognizeFeatures(rpc, request, new RepeaterCallback(done, req_rx, System.currentTimeMillis()));
+        this.ObjRecServiceStub.recognizeFeatures(rpc, request, new RepeaterCallback(done, start - req_rx, start));
     }
 
     @Override
@@ -78,6 +81,7 @@ public class RepeaterEdge extends ObjRecServiceProto.ObjRecService
         @Override
         public void run(ObjRecServiceProto.Annotation annotation)
         {
+            logger.debug("Received Reply from Cloud");
             int latency = (int) (System.currentTimeMillis() - this.start_time);
             ObjRecServiceProto.Latency.Builder edge_latencies = ObjRecServiceProto.Latency.newBuilder().
                     setInQueue((int) this.q_time).
@@ -85,7 +89,8 @@ public class RepeaterEdge extends ObjRecServiceProto.ObjRecService
                     setName(Names.Edge);
             ObjRecServiceProto.Annotation.Builder edge_annotation = ObjRecServiceProto.Annotation.newBuilder(annotation);
             edge_annotation.addLatencies(edge_latencies);
-            done.run(annotation);
+            done.run(edge_annotation.build());
+            logger.debug("Sent message back to device:" + edge_annotation.build().toString());
         }
     }
 }
