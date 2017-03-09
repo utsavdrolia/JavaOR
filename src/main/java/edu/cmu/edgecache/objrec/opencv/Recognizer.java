@@ -108,9 +108,9 @@ public class Recognizer
      * @param result
      * @return
      */
-    public boolean isValid(String result)
+    public static boolean isValid(String result)
     {
-        return !result.equals(INVALID);
+        return !result.equals(Recognizer.INVALID);
     }
 
     public static void main(String args[]) throws IOException

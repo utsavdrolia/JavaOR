@@ -7,6 +7,7 @@ import org.opencv.core.Point;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by utsav on 6/17/16.
@@ -61,5 +62,24 @@ public class Utils
         }
         return new KeypointDescList(kplist, desc);
     }
+
+    public static ObjRecServiceProto.ObjectProbability.Builder serialize(String object, Double prob)
+    {
+        ObjRecServiceProto.ObjectProbability.Builder builder = ObjRecServiceProto.ObjectProbability.newBuilder();
+        builder.setName(object).setProbability(prob);
+        return builder;
+    }
+
+    public static List<ObjRecServiceProto.ObjectProbability> serialize(Map<String, Double> pdf)
+    {
+        List<ObjRecServiceProto.ObjectProbability> probabilities = new ArrayList<>();
+        for (Map.Entry<String, Double> entry :
+                pdf.entrySet())
+        {
+            probabilities.add(serialize(entry.getKey(), entry.getValue()).build());
+        }
+        return probabilities;
+    }
+
 
 }

@@ -122,4 +122,12 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
                                       .setInQueue((int) (start - req_rx)))
                 .build());
     }
+
+    @Override
+    public void getNextPDF(RpcController controller,
+                           ObjRecServiceProto.Annotation request,
+                           RpcCallback<ObjRecServiceProto.PDF> done)
+    {
+
+    }
 }

@@ -5,9 +5,11 @@ import com.google.protobuf.RpcController;
 import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.KeypointDescList;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
+import edu.cmu.edgecache.objrec.opencv.Recognizer;
 import org.crowd.rpc.RPCServer;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Combines a {@link ObjRecServer} and {@link CachedObjRecClient} to create a cached proxy
@@ -18,7 +20,7 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
     private RPCServer listeningrpc;
     private CachedObjRecClient objRecClient;
     private final String EDGE = Names.Edge;
-
+    private PredictionManager<String> predictionManager = null;
 
     /**
      * Creates Edge with defaul cache (LFU)
@@ -45,6 +47,14 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
         listeningrpc = new RPCServer(myaddress, this);
         objRecClient = cache;
     }
+
+    public ObjRecEdge(CachedObjRecClient cache, String myaddress, PredictionManager<String> prefetchService)
+    {
+        predictionManager = prefetchService;
+        listeningrpc = new RPCServer(myaddress, this);
+        objRecClient = cache;
+    }
+
 
 
     @Override
@@ -89,6 +99,18 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
                 .build());
     }
 
+
+    @Override
+    public void getNextPDF(RpcController controller,
+                           ObjRecServiceProto.Annotation annotation,
+                           RpcCallback<ObjRecServiceProto.PDF> done)
+    {
+        Map<String, Double> pdf = predictionManager.getNextPDF(annotation.getReqId().getName(), annotation.getAnnotation());
+        done.run(ObjRecServiceProto.PDF.newBuilder()
+                         .addAllPdf(Utils.serialize(pdf))
+                         .build());
+    }
+
     private class CloudletObjRecCallback extends ObjRecCallback
     {
         RpcCallback<ObjRecServiceProto.Annotation> done;
@@ -101,6 +123,17 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
         @Override
         public void run(ObjRecServiceProto.Annotation annotation)
         {
+            if(predictionManager != null)
+            {
+                if(Recognizer.isValid(annotation.getAnnotation()))
+                {
+                    Map<String, Double> pdf = predictionManager.getNextPDF(annotation.getReqId().getName(), annotation.getAnnotation());
+                    ObjRecServiceProto.Annotation.Builder builder = ObjRecServiceProto.Annotation.newBuilder(annotation);
+                    builder.setPdf(ObjRecServiceProto.PDF.newBuilder()
+                                       .addAllPdf(Utils.serialize(pdf)));
+                    done.run(builder.build());
+                }
+            }
             done.run(annotation);
         }
     }

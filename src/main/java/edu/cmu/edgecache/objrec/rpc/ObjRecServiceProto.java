@@ -667,6 +667,19 @@ public final class ObjRecServiceProto {
      * <code>optional .RequestID req_id = 3;</code>
      */
     RequestIDOrBuilder getReqIdOrBuilder();
+
+    /**
+     * <code>optional .PDF pdf = 4;</code>
+     */
+    boolean hasPdf();
+    /**
+     * <code>optional .PDF pdf = 4;</code>
+     */
+    PDF getPdf();
+    /**
+     * <code>optional .PDF pdf = 4;</code>
+     */
+    PDFOrBuilder getPdfOrBuilder();
   }
   /**
    * Protobuf type {@code Annotation}
@@ -737,6 +750,19 @@ public final class ObjRecServiceProto {
                 reqId_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000002;
+              break;
+            }
+            case 34: {
+              PDF.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                subBuilder = pdf_.toBuilder();
+              }
+              pdf_ = input.readMessage(PDF.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(pdf_);
+                pdf_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000004;
               break;
             }
           }
@@ -865,6 +891,27 @@ public final class ObjRecServiceProto {
       return reqId_ == null ? RequestID.getDefaultInstance() : reqId_;
     }
 
+    public static final int PDF_FIELD_NUMBER = 4;
+    private PDF pdf_;
+    /**
+     * <code>optional .PDF pdf = 4;</code>
+     */
+    public boolean hasPdf() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional .PDF pdf = 4;</code>
+     */
+    public PDF getPdf() {
+      return pdf_ == null ? PDF.getDefaultInstance() : pdf_;
+    }
+    /**
+     * <code>optional .PDF pdf = 4;</code>
+     */
+    public PDFOrBuilder getPdfOrBuilder() {
+      return pdf_ == null ? PDF.getDefaultInstance() : pdf_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -887,6 +934,12 @@ public final class ObjRecServiceProto {
           return false;
         }
       }
+      if (hasPdf()) {
+        if (!getPdf().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -901,6 +954,9 @@ public final class ObjRecServiceProto {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeMessage(3, getReqId());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeMessage(4, getPdf());
       }
       unknownFields.writeTo(output);
     }
@@ -920,6 +976,10 @@ public final class ObjRecServiceProto {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getReqId());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getPdf());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1037,6 +1097,7 @@ public final class ObjRecServiceProto {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getLatenciesFieldBuilder();
           getReqIdFieldBuilder();
+          getPdfFieldBuilder();
         }
       }
       public Builder clear() {
@@ -1055,6 +1116,12 @@ public final class ObjRecServiceProto {
           reqIdBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
+        if (pdfBuilder_ == null) {
+          pdf_ = null;
+        } else {
+          pdfBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -1099,6 +1166,14 @@ public final class ObjRecServiceProto {
           result.reqId_ = reqId_;
         } else {
           result.reqId_ = reqIdBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        if (pdfBuilder_ == null) {
+          result.pdf_ = pdf_;
+        } else {
+          result.pdf_ = pdfBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -1150,6 +1225,9 @@ public final class ObjRecServiceProto {
         if (other.hasReqId()) {
           mergeReqId(other.getReqId());
         }
+        if (other.hasPdf()) {
+          mergePdf(other.getPdf());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -1166,6 +1244,11 @@ public final class ObjRecServiceProto {
         }
         if (hasReqId()) {
           if (!getReqId().isInitialized()) {
+            return false;
+          }
+        }
+        if (hasPdf()) {
+          if (!getPdf().isInitialized()) {
             return false;
           }
         }
@@ -1623,6 +1706,124 @@ public final class ObjRecServiceProto {
           reqId_ = null;
         }
         return reqIdBuilder_;
+      }
+
+      private PDF pdf_ = null;
+      private com.google.protobuf.SingleFieldBuilder<
+          PDF, PDF.Builder, PDFOrBuilder> pdfBuilder_;
+      /**
+       * <code>optional .PDF pdf = 4;</code>
+       */
+      public boolean hasPdf() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional .PDF pdf = 4;</code>
+       */
+      public PDF getPdf() {
+        if (pdfBuilder_ == null) {
+          return pdf_ == null ? PDF.getDefaultInstance() : pdf_;
+        } else {
+          return pdfBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .PDF pdf = 4;</code>
+       */
+      public Builder setPdf(PDF value) {
+        if (pdfBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          pdf_ = value;
+          onChanged();
+        } else {
+          pdfBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .PDF pdf = 4;</code>
+       */
+      public Builder setPdf(
+          PDF.Builder builderForValue) {
+        if (pdfBuilder_ == null) {
+          pdf_ = builderForValue.build();
+          onChanged();
+        } else {
+          pdfBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .PDF pdf = 4;</code>
+       */
+      public Builder mergePdf(PDF value) {
+        if (pdfBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              pdf_ != null &&
+              pdf_ != PDF.getDefaultInstance()) {
+            pdf_ =
+              PDF.newBuilder(pdf_).mergeFrom(value).buildPartial();
+          } else {
+            pdf_ = value;
+          }
+          onChanged();
+        } else {
+          pdfBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .PDF pdf = 4;</code>
+       */
+      public Builder clearPdf() {
+        if (pdfBuilder_ == null) {
+          pdf_ = null;
+          onChanged();
+        } else {
+          pdfBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      /**
+       * <code>optional .PDF pdf = 4;</code>
+       */
+      public PDF.Builder getPdfBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getPdfFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .PDF pdf = 4;</code>
+       */
+      public PDFOrBuilder getPdfOrBuilder() {
+        if (pdfBuilder_ != null) {
+          return pdfBuilder_.getMessageOrBuilder();
+        } else {
+          return pdf_ == null ?
+              PDF.getDefaultInstance() : pdf_;
+        }
+      }
+      /**
+       * <code>optional .PDF pdf = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          PDF, PDF.Builder, PDFOrBuilder>
+          getPdfFieldBuilder() {
+        if (pdfBuilder_ == null) {
+          pdfBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              PDF, PDF.Builder, PDFOrBuilder>(
+                  getPdf(),
+                  getParentForChildren(),
+                  isClean());
+          pdf_ = null;
+        }
+        return pdfBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:Annotation)
@@ -5624,7 +5825,1257 @@ public final class ObjRecServiceProto {
 
   }
 
+  public interface ObjectProbabilityOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:ObjectProbability)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required string name = 1;</code>
+     */
+    boolean hasName();
+    /**
+     * <code>required string name = 1;</code>
+     */
+    String getName();
+    /**
+     * <code>required string name = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>required double probability = 2;</code>
+     */
+    boolean hasProbability();
+    /**
+     * <code>required double probability = 2;</code>
+     */
+    double getProbability();
+  }
   /**
+   * Protobuf type {@code ObjectProbability}
+   */
+  public  static final class ObjectProbability extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:ObjectProbability)
+      ObjectProbabilityOrBuilder {
+    // Use ObjectProbability.newBuilder() to construct.
+    private ObjectProbability(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private ObjectProbability() {
+      name_ = "";
+      probability_ = 0D;
+    }
+
+    @Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ObjectProbability(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              name_ = bs;
+              break;
+            }
+            case 17: {
+              bitField0_ |= 0x00000002;
+              probability_ = input.readDouble();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return ObjRecServiceProto.internal_static_ObjectProbability_descriptor;
+    }
+
+    protected FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return ObjRecServiceProto.internal_static_ObjectProbability_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              ObjectProbability.class, Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int NAME_FIELD_NUMBER = 1;
+    private volatile Object name_;
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public boolean hasName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public String getName() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          name_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PROBABILITY_FIELD_NUMBER = 2;
+    private double probability_;
+    /**
+     * <code>required double probability = 2;</code>
+     */
+    public boolean hasProbability() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required double probability = 2;</code>
+     */
+    public double getProbability() {
+      return probability_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasProbability()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeDouble(2, probability_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(2, probability_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    public static ObjectProbability parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static ObjectProbability parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static ObjectProbability parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static ObjectProbability parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static ObjectProbability parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static ObjectProbability parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static ObjectProbability parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static ObjectProbability parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static ObjectProbability parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static ObjectProbability parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(ObjectProbability prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @Override
+    protected Builder newBuilderForType(
+        BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code ObjectProbability}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:ObjectProbability)
+        ObjectProbabilityOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return ObjRecServiceProto.internal_static_ObjectProbability_descriptor;
+      }
+
+      protected FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return ObjRecServiceProto.internal_static_ObjectProbability_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                ObjectProbability.class, Builder.class);
+      }
+
+      // Construct using ObjRecServiceProto.ObjectProbability.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        name_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        probability_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return ObjRecServiceProto.internal_static_ObjectProbability_descriptor;
+      }
+
+      public ObjectProbability getDefaultInstanceForType() {
+        return ObjectProbability.getDefaultInstance();
+      }
+
+      public ObjectProbability build() {
+        ObjectProbability result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public ObjectProbability buildPartial() {
+        ObjectProbability result = new ObjectProbability(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.name_ = name_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.probability_ = probability_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof ObjectProbability) {
+          return mergeFrom((ObjectProbability)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(ObjectProbability other) {
+        if (other == ObjectProbability.getDefaultInstance()) return this;
+        if (other.hasName()) {
+          bitField0_ |= 0x00000001;
+          name_ = other.name_;
+          onChanged();
+        }
+        if (other.hasProbability()) {
+          setProbability(other.getProbability());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasName()) {
+          return false;
+        }
+        if (!hasProbability()) {
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        ObjectProbability parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (ObjectProbability) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private Object name_ = "";
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public boolean hasName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public String getName() {
+        Object ref = name_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            name_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder setName(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder clearName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private double probability_ ;
+      /**
+       * <code>required double probability = 2;</code>
+       */
+      public boolean hasProbability() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required double probability = 2;</code>
+       */
+      public double getProbability() {
+        return probability_;
+      }
+      /**
+       * <code>required double probability = 2;</code>
+       */
+      public Builder setProbability(double value) {
+        bitField0_ |= 0x00000002;
+        probability_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required double probability = 2;</code>
+       */
+      public Builder clearProbability() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        probability_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:ObjectProbability)
+    }
+
+    // @@protoc_insertion_point(class_scope:ObjectProbability)
+    private static final ObjectProbability DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new ObjectProbability();
+    }
+
+    public static ObjectProbability getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @Deprecated public static final com.google.protobuf.Parser<ObjectProbability>
+        PARSER = new com.google.protobuf.AbstractParser<ObjectProbability>() {
+      public ObjectProbability parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new ObjectProbability(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ObjectProbability> parser() {
+      return PARSER;
+    }
+
+    @Override
+    public com.google.protobuf.Parser<ObjectProbability> getParserForType() {
+      return PARSER;
+    }
+
+    public ObjectProbability getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PDFOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:PDF)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .ObjectProbability pdf = 1;</code>
+     */
+    java.util.List<ObjectProbability>
+        getPdfList();
+    /**
+     * <code>repeated .ObjectProbability pdf = 1;</code>
+     */
+    ObjectProbability getPdf(int index);
+    /**
+     * <code>repeated .ObjectProbability pdf = 1;</code>
+     */
+    int getPdfCount();
+    /**
+     * <code>repeated .ObjectProbability pdf = 1;</code>
+     */
+    java.util.List<? extends ObjectProbabilityOrBuilder>
+        getPdfOrBuilderList();
+    /**
+     * <code>repeated .ObjectProbability pdf = 1;</code>
+     */
+    ObjectProbabilityOrBuilder getPdfOrBuilder(
+            int index);
+  }
+  /**
+   * Protobuf type {@code PDF}
+   */
+  public  static final class PDF extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:PDF)
+      PDFOrBuilder {
+    // Use PDF.newBuilder() to construct.
+    private PDF(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private PDF() {
+      pdf_ = java.util.Collections.emptyList();
+    }
+
+    @Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PDF(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                pdf_ = new java.util.ArrayList<ObjectProbability>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              pdf_.add(input.readMessage(ObjectProbability.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          pdf_ = java.util.Collections.unmodifiableList(pdf_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return ObjRecServiceProto.internal_static_PDF_descriptor;
+    }
+
+    protected FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return ObjRecServiceProto.internal_static_PDF_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              PDF.class, Builder.class);
+    }
+
+    public static final int PDF_FIELD_NUMBER = 1;
+    private java.util.List<ObjectProbability> pdf_;
+    /**
+     * <code>repeated .ObjectProbability pdf = 1;</code>
+     */
+    public java.util.List<ObjectProbability> getPdfList() {
+      return pdf_;
+    }
+    /**
+     * <code>repeated .ObjectProbability pdf = 1;</code>
+     */
+    public java.util.List<? extends ObjectProbabilityOrBuilder>
+        getPdfOrBuilderList() {
+      return pdf_;
+    }
+    /**
+     * <code>repeated .ObjectProbability pdf = 1;</code>
+     */
+    public int getPdfCount() {
+      return pdf_.size();
+    }
+    /**
+     * <code>repeated .ObjectProbability pdf = 1;</code>
+     */
+    public ObjectProbability getPdf(int index) {
+      return pdf_.get(index);
+    }
+    /**
+     * <code>repeated .ObjectProbability pdf = 1;</code>
+     */
+    public ObjectProbabilityOrBuilder getPdfOrBuilder(
+        int index) {
+      return pdf_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      for (int i = 0; i < getPdfCount(); i++) {
+        if (!getPdf(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < pdf_.size(); i++) {
+        output.writeMessage(1, pdf_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < pdf_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, pdf_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    public static PDF parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static PDF parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static PDF parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static PDF parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static PDF parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static PDF parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static PDF parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static PDF parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static PDF parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static PDF parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(PDF prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @Override
+    protected Builder newBuilderForType(
+        BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code PDF}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:PDF)
+        PDFOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return ObjRecServiceProto.internal_static_PDF_descriptor;
+      }
+
+      protected FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return ObjRecServiceProto.internal_static_PDF_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                PDF.class, Builder.class);
+      }
+
+      // Construct using ObjRecServiceProto.PDF.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getPdfFieldBuilder();
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (pdfBuilder_ == null) {
+          pdf_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          pdfBuilder_.clear();
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return ObjRecServiceProto.internal_static_PDF_descriptor;
+      }
+
+      public PDF getDefaultInstanceForType() {
+        return PDF.getDefaultInstance();
+      }
+
+      public PDF build() {
+        PDF result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public PDF buildPartial() {
+        PDF result = new PDF(this);
+        int from_bitField0_ = bitField0_;
+        if (pdfBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            pdf_ = java.util.Collections.unmodifiableList(pdf_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.pdf_ = pdf_;
+        } else {
+          result.pdf_ = pdfBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof PDF) {
+          return mergeFrom((PDF)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(PDF other) {
+        if (other == PDF.getDefaultInstance()) return this;
+        if (pdfBuilder_ == null) {
+          if (!other.pdf_.isEmpty()) {
+            if (pdf_.isEmpty()) {
+              pdf_ = other.pdf_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensurePdfIsMutable();
+              pdf_.addAll(other.pdf_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.pdf_.isEmpty()) {
+            if (pdfBuilder_.isEmpty()) {
+              pdfBuilder_.dispose();
+              pdfBuilder_ = null;
+              pdf_ = other.pdf_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              pdfBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getPdfFieldBuilder() : null;
+            } else {
+              pdfBuilder_.addAllMessages(other.pdf_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        for (int i = 0; i < getPdfCount(); i++) {
+          if (!getPdf(i).isInitialized()) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        PDF parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (PDF) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<ObjectProbability> pdf_ =
+        java.util.Collections.emptyList();
+      private void ensurePdfIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          pdf_ = new java.util.ArrayList<ObjectProbability>(pdf_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          ObjectProbability, ObjectProbability.Builder, ObjectProbabilityOrBuilder> pdfBuilder_;
+
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public java.util.List<ObjectProbability> getPdfList() {
+        if (pdfBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(pdf_);
+        } else {
+          return pdfBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public int getPdfCount() {
+        if (pdfBuilder_ == null) {
+          return pdf_.size();
+        } else {
+          return pdfBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public ObjectProbability getPdf(int index) {
+        if (pdfBuilder_ == null) {
+          return pdf_.get(index);
+        } else {
+          return pdfBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public Builder setPdf(
+          int index, ObjectProbability value) {
+        if (pdfBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePdfIsMutable();
+          pdf_.set(index, value);
+          onChanged();
+        } else {
+          pdfBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public Builder setPdf(
+          int index, ObjectProbability.Builder builderForValue) {
+        if (pdfBuilder_ == null) {
+          ensurePdfIsMutable();
+          pdf_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          pdfBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public Builder addPdf(ObjectProbability value) {
+        if (pdfBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePdfIsMutable();
+          pdf_.add(value);
+          onChanged();
+        } else {
+          pdfBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public Builder addPdf(
+          int index, ObjectProbability value) {
+        if (pdfBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePdfIsMutable();
+          pdf_.add(index, value);
+          onChanged();
+        } else {
+          pdfBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public Builder addPdf(
+          ObjectProbability.Builder builderForValue) {
+        if (pdfBuilder_ == null) {
+          ensurePdfIsMutable();
+          pdf_.add(builderForValue.build());
+          onChanged();
+        } else {
+          pdfBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public Builder addPdf(
+          int index, ObjectProbability.Builder builderForValue) {
+        if (pdfBuilder_ == null) {
+          ensurePdfIsMutable();
+          pdf_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          pdfBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public Builder addAllPdf(
+          Iterable<? extends ObjectProbability> values) {
+        if (pdfBuilder_ == null) {
+          ensurePdfIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, pdf_);
+          onChanged();
+        } else {
+          pdfBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public Builder clearPdf() {
+        if (pdfBuilder_ == null) {
+          pdf_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          pdfBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public Builder removePdf(int index) {
+        if (pdfBuilder_ == null) {
+          ensurePdfIsMutable();
+          pdf_.remove(index);
+          onChanged();
+        } else {
+          pdfBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public ObjectProbability.Builder getPdfBuilder(
+          int index) {
+        return getPdfFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public ObjectProbabilityOrBuilder getPdfOrBuilder(
+          int index) {
+        if (pdfBuilder_ == null) {
+          return pdf_.get(index);  } else {
+          return pdfBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public java.util.List<? extends ObjectProbabilityOrBuilder>
+           getPdfOrBuilderList() {
+        if (pdfBuilder_ != null) {
+          return pdfBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(pdf_);
+        }
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public ObjectProbability.Builder addPdfBuilder() {
+        return getPdfFieldBuilder().addBuilder(
+            ObjectProbability.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public ObjectProbability.Builder addPdfBuilder(
+          int index) {
+        return getPdfFieldBuilder().addBuilder(
+            index, ObjectProbability.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .ObjectProbability pdf = 1;</code>
+       */
+      public java.util.List<ObjectProbability.Builder>
+           getPdfBuilderList() {
+        return getPdfFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          ObjectProbability, ObjectProbability.Builder, ObjectProbabilityOrBuilder>
+          getPdfFieldBuilder() {
+        if (pdfBuilder_ == null) {
+          pdfBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              ObjectProbability, ObjectProbability.Builder, ObjectProbabilityOrBuilder>(
+                  pdf_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          pdf_ = null;
+        }
+        return pdfBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:PDF)
+    }
+
+    // @@protoc_insertion_point(class_scope:PDF)
+    private static final PDF DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new PDF();
+    }
+
+    public static PDF getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @Deprecated public static final com.google.protobuf.Parser<PDF>
+        PARSER = new com.google.protobuf.AbstractParser<PDF>() {
+      public PDF parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new PDF(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PDF> parser() {
+      return PARSER;
+    }
+
+    @Override
+    public com.google.protobuf.Parser<PDF> getParserForType() {
+      return PARSER;
+    }
+
+    public PDF getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  /**
+   * <pre>
+   * Object recognition service
+   * </pre>
+   *
    * Protobuf service {@code ObjRecService}
    */
   public static abstract class ObjRecService
@@ -5664,6 +7115,18 @@ public final class ObjRecServiceProto {
               Annotation request,
               com.google.protobuf.RpcCallback<Features> done);
 
+      /**
+       * <pre>
+       * Get the PDF of upcoming objects given this object
+       * </pre>
+       *
+       * <code>rpc GetNextPDF(.Annotation) returns (.PDF);</code>
+       */
+      public abstract void getNextPDF(
+              com.google.protobuf.RpcController controller,
+              Annotation request,
+              com.google.protobuf.RpcCallback<PDF> done);
+
     }
 
     public static com.google.protobuf.Service newReflectiveService(
@@ -5701,6 +7164,14 @@ public final class ObjRecServiceProto {
           impl.getFeatures(controller, request, done);
         }
 
+        @Override
+        public  void getNextPDF(
+            com.google.protobuf.RpcController controller,
+            Annotation request,
+            com.google.protobuf.RpcCallback<PDF> done) {
+          impl.getNextPDF(controller, request, done);
+        }
+
       };
     }
 
@@ -5731,6 +7202,8 @@ public final class ObjRecServiceProto {
               return impl.getImage(controller, (Annotation)request);
             case 3:
               return impl.getFeatures(controller, (Annotation)request);
+            case 4:
+              return impl.getNextPDF(controller, (Annotation)request);
             default:
               throw new AssertionError("Can't get here.");
           }
@@ -5752,6 +7225,8 @@ public final class ObjRecServiceProto {
             case 2:
               return Annotation.getDefaultInstance();
             case 3:
+              return Annotation.getDefaultInstance();
+            case 4:
               return Annotation.getDefaultInstance();
             default:
               throw new AssertionError("Can't get here.");
@@ -5775,6 +7250,8 @@ public final class ObjRecServiceProto {
               return Image.getDefaultInstance();
             case 3:
               return Features.getDefaultInstance();
+            case 4:
+              return PDF.getDefaultInstance();
             default:
               throw new AssertionError("Can't get here.");
           }
@@ -5814,6 +7291,18 @@ public final class ObjRecServiceProto {
         com.google.protobuf.RpcController controller,
         Annotation request,
         com.google.protobuf.RpcCallback<Features> done);
+
+    /**
+     * <pre>
+     * Get the PDF of upcoming objects given this object
+     * </pre>
+     *
+     * <code>rpc GetNextPDF(.Annotation) returns (.PDF);</code>
+     */
+    public abstract void getNextPDF(
+        com.google.protobuf.RpcController controller,
+        Annotation request,
+        com.google.protobuf.RpcCallback<PDF> done);
 
     public static final
         com.google.protobuf.Descriptors.ServiceDescriptor
@@ -5857,6 +7346,11 @@ public final class ObjRecServiceProto {
             com.google.protobuf.RpcUtil.<Features>specializeCallback(
               done));
           return;
+        case 4:
+          this.getNextPDF(controller, (Annotation)request,
+            com.google.protobuf.RpcUtil.<PDF>specializeCallback(
+              done));
+          return;
         default:
           throw new AssertionError("Can't get here.");
       }
@@ -5878,6 +7372,8 @@ public final class ObjRecServiceProto {
         case 2:
           return Annotation.getDefaultInstance();
         case 3:
+          return Annotation.getDefaultInstance();
+        case 4:
           return Annotation.getDefaultInstance();
         default:
           throw new AssertionError("Can't get here.");
@@ -5901,6 +7397,8 @@ public final class ObjRecServiceProto {
           return Image.getDefaultInstance();
         case 3:
           return Features.getDefaultInstance();
+        case 4:
+          return PDF.getDefaultInstance();
         default:
           throw new AssertionError("Can't get here.");
       }
@@ -5981,6 +7479,21 @@ public final class ObjRecServiceProto {
             Features.class,
             Features.getDefaultInstance()));
       }
+
+      public  void getNextPDF(
+          com.google.protobuf.RpcController controller,
+          Annotation request,
+          com.google.protobuf.RpcCallback<PDF> done) {
+        channel.callMethod(
+          getDescriptor().getMethods().get(4),
+          controller,
+          request,
+          PDF.getDefaultInstance(),
+          com.google.protobuf.RpcUtil.generalizeCallback(
+            done,
+            PDF.class,
+            PDF.getDefaultInstance()));
+      }
     }
 
     public static BlockingInterface newBlockingStub(
@@ -6005,6 +7518,11 @@ public final class ObjRecServiceProto {
           throws com.google.protobuf.ServiceException;
 
       public Features getFeatures(
+              com.google.protobuf.RpcController controller,
+              Annotation request)
+          throws com.google.protobuf.ServiceException;
+
+      public PDF getNextPDF(
               com.google.protobuf.RpcController controller,
               Annotation request)
           throws com.google.protobuf.ServiceException;
@@ -6064,6 +7582,18 @@ public final class ObjRecServiceProto {
           Features.getDefaultInstance());
       }
 
+
+      public PDF getNextPDF(
+          com.google.protobuf.RpcController controller,
+          Annotation request)
+          throws com.google.protobuf.ServiceException {
+        return (PDF) channel.callBlockingMethod(
+          getDescriptor().getMethods().get(4),
+          controller,
+          request,
+          PDF.getDefaultInstance());
+      }
+
     }
 
     // @@protoc_insertion_point(class_scope:ObjRecService)
@@ -6104,6 +7634,16 @@ public final class ObjRecServiceProto {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_RequestID_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ObjectProbability_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_ObjectProbability_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_PDF_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_PDF_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -6114,23 +7654,27 @@ public final class ObjRecServiceProto {
   static {
     String[] descriptorData = {
       "\n\014objrec.proto\"2\n\005Image\022\r\n\005image\030\001 \002(\014\022\032" +
-      "\n\006req_id\030\002 \002(\0132\n.RequestID\"Y\n\nAnnotation" +
+      "\n\006req_id\030\002 \002(\0132\n.RequestID\"l\n\nAnnotation" +
       "\022\022\n\nannotation\030\001 \002(\t\022\033\n\tlatencies\030\002 \003(\0132" +
-      "\010.Latency\022\032\n\006req_id\030\003 \001(\0132\n.RequestID\"z\n" +
-      "\010Features\022\027\n\005descs\030\001 \002(\0132\010.DescMat\022\034\n\tke" +
-      "ypoints\030\002 \003(\0132\t.KeyPoint\022\033\n\tlatencies\030\003 " +
-      "\003(\0132\010.Latency\022\032\n\006req_id\030\004 \002(\0132\n.RequestI" +
-      "D\"A\n\007DescMat\022\014\n\004rows\030\001 \002(\005\022\014\n\004cols\030\002 \002(\005" +
-      "\022\014\n\004type\030\003 \002(\005\022\014\n\004data\030\004 \002(\014\" \n\010KeyPoint" +
-      "\022\t\n\001x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001\"`\n\007Latency\022\014\n\004nam",
-      "e\030\001 \002(\t\022\020\n\010in_queue\030\002 \001(\005\022\023\n\013computation" +
-      "\030\003 \001(\005\022\022\n\nnext_level\030\004 \001(\005\022\014\n\004size\030\005 \001(\005" +
-      "\")\n\tRequestID\022\014\n\004name\030\001 \002(\t\022\016\n\006req_id\030\002 " +
-      "\002(\0052\246\001\n\rObjRecService\022 \n\tRecognize\022\006.Ima" +
-      "ge\032\013.Annotation\022+\n\021RecognizeFeatures\022\t.F" +
-      "eatures\032\013.Annotation\022\037\n\010GetImage\022\013.Annot" +
-      "ation\032\006.Image\022%\n\013GetFeatures\022\013.Annotatio" +
-      "n\032\t.FeaturesB\031B\022ObjRecServiceProtoH\001\210\001\001"
+      "\010.Latency\022\032\n\006req_id\030\003 \001(\0132\n.RequestID\022\021\n" +
+      "\003pdf\030\004 \001(\0132\004.PDF\"z\n\010Features\022\027\n\005descs\030\001 " +
+      "\002(\0132\010.DescMat\022\034\n\tkeypoints\030\002 \003(\0132\t.KeyPo" +
+      "int\022\033\n\tlatencies\030\003 \003(\0132\010.Latency\022\032\n\006req_" +
+      "id\030\004 \002(\0132\n.RequestID\"A\n\007DescMat\022\014\n\004rows\030" +
+      "\001 \002(\005\022\014\n\004cols\030\002 \002(\005\022\014\n\004type\030\003 \002(\005\022\014\n\004dat" +
+      "a\030\004 \002(\014\" \n\010KeyPoint\022\t\n\001x\030\001 \002(\001\022\t\n\001y\030\002 \002(",
+      "\001\"`\n\007Latency\022\014\n\004name\030\001 \002(\t\022\020\n\010in_queue\030\002" +
+      " \001(\005\022\023\n\013computation\030\003 \001(\005\022\022\n\nnext_level\030" +
+      "\004 \001(\005\022\014\n\004size\030\005 \001(\005\")\n\tRequestID\022\014\n\004name" +
+      "\030\001 \002(\t\022\016\n\006req_id\030\002 \002(\005\"6\n\021ObjectProbabil" +
+      "ity\022\014\n\004name\030\001 \002(\t\022\023\n\013probability\030\002 \002(\001\"&" +
+      "\n\003PDF\022\037\n\003pdf\030\001 \003(\0132\022.ObjectProbability2\307" +
+      "\001\n\rObjRecService\022 \n\tRecognize\022\006.Image\032\013." +
+      "Annotation\022+\n\021RecognizeFeatures\022\t.Featur" +
+      "es\032\013.Annotation\022\037\n\010GetImage\022\013.Annotation" +
+      "\032\006.Image\022%\n\013GetFeatures\022\013.Annotation\032\t.F",
+      "eatures\022\037\n\nGetNextPDF\022\013.Annotation\032\004.PDF" +
+      "B\031B\022ObjRecServiceProtoH\001\210\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -6155,7 +7699,7 @@ public final class ObjRecServiceProto {
     internal_static_Annotation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Annotation_descriptor,
-        new String[] { "Annotation", "Latencies", "ReqId", });
+        new String[] { "Annotation", "Latencies", "ReqId", "Pdf", });
     internal_static_Features_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_Features_fieldAccessorTable = new
@@ -6186,6 +7730,18 @@ public final class ObjRecServiceProto {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_RequestID_descriptor,
         new String[] { "Name", "ReqId", });
+    internal_static_ObjectProbability_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_ObjectProbability_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_ObjectProbability_descriptor,
+        new String[] { "Name", "Probability", });
+    internal_static_PDF_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_PDF_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_PDF_descriptor,
+        new String[] { "Pdf", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

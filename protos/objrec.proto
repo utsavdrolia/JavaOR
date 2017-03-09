@@ -3,12 +3,17 @@ option java_outer_classname = "ObjRecServiceProto";
 option java_generic_services = true;
 option optimize_for = SPEED;
 
+// Object recognition service
 service ObjRecService
 {
     rpc Recognize(Image) returns (Annotation);
     rpc RecognizeFeatures(Features) returns (Annotation);
     rpc GetImage(Annotation) returns (Image);
     rpc GetFeatures(Annotation) returns (Features);
+
+    // Get the PDF of upcoming objects given this object
+    rpc GetNextPDF(Annotation) returns (PDF);
+
 }
 
 message Image
@@ -22,6 +27,7 @@ message Annotation
     required string annotation = 1;
     repeated Latency latencies = 2;
     optional RequestID req_id = 3;
+    optional PDF pdf = 4;
 }
 
 message Features
@@ -59,4 +65,15 @@ message RequestID
 {
     required string name = 1;
     required int32 req_id = 2;
+}
+
+message ObjectProbability
+{
+    required string name = 1;
+    required double probability = 2;
+}
+
+message PDF
+{
+    repeated ObjectProbability pdf = 1;
 }

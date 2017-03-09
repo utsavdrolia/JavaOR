@@ -66,6 +66,13 @@ public class RepeaterEdge extends ObjRecServiceProto.ObjRecService
 
     }
 
+    @Override
+    public void getNextPDF(RpcController controller,
+                           ObjRecServiceProto.Annotation request,
+                           RpcCallback<ObjRecServiceProto.PDF> done)
+    {
+    }
+
     private class RepeaterCallback extends ObjRecCallback
     {
         RpcCallback<ObjRecServiceProto.Annotation> done;
