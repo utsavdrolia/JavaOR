@@ -126,7 +126,7 @@ public class CachedObjRecClient extends ObjRecClient
                     addLatencies(complatency).
                     build();
             cb.run(annotation);
-            logger.debug(name+ " : *!!!Cache Hit!!!*");
+            logger.debug("*!!!Cache Hit!!!*");
         }
         else
             // If not, send upwards
@@ -176,7 +176,7 @@ public class CachedObjRecClient extends ObjRecClient
                 String annotationstring = annotation.getAnnotation();
 
                 // Update cache about latency
-                recogCache.setMissLatency(latency);
+                recogCache.updateMissLatency(latency);
 
                 // Check if you have this image in your knownItems
                 if (recogCache.isValid(annotationstring))

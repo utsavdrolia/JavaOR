@@ -1,6 +1,6 @@
 package edu.cmu.edgecache.objrec.rpc;
 
-import edu.cmu.edgecache.recog.predictors.MarkovPredictor;
+import edu.cmu.edgecache.predictors.MarkovPredictor;
 
 import java.util.HashMap;
 import java.util.List;

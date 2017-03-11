@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Combines a {@link ObjRecServer} and {@link CachedObjRecClient} to create a cached proxy
+ * Combines a {@link RPCServer} and {@link CachedObjRecClient} to create a cached proxy
  * Created by utsav on 6/20/16.
  */
 public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
