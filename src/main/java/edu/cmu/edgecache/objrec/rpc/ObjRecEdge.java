@@ -61,7 +61,7 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
     public void recognize(RpcController controller, ObjRecServiceProto.Image request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
         Long req_rx = listeningrpc.getRequestRxTime(request.hashCode());
-        objRecClient.recognize(request.getImage().toByteArray(), req_rx, new CloudletObjRecCallback(done));
+        objRecClient.recognize(request, req_rx, new CloudletObjRecCallback(done));
     }
 
     @Override
@@ -103,12 +103,10 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
     @Override
     public void getNextPDF(RpcController controller,
                            ObjRecServiceProto.Annotation annotation,
-                           RpcCallback<ObjRecServiceProto.PDF> done)
+                           RpcCallback<ObjRecServiceProto.Annotation> done)
     {
         Map<String, Double> pdf = predictionManager.getNextPDF(annotation.getReqId().getName(), annotation.getAnnotation());
-        done.run(ObjRecServiceProto.PDF.newBuilder()
-                         .addAllPdf(Utils.serialize(pdf))
-                         .build());
+        done.run(ObjRecServiceProto.Annotation.newBuilder(annotation).setPdf(ObjRecServiceProto.PDF.newBuilder().addAllPdf(Utils.serialize(pdf))).build());
     }
 
     private class CloudletObjRecCallback extends ObjRecCallback

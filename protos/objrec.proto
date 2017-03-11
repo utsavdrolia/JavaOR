@@ -12,7 +12,7 @@ service ObjRecService
     rpc GetFeatures(Annotation) returns (Features);
 
     // Get the PDF of upcoming objects given this object
-    rpc GetNextPDF(Annotation) returns (PDF);
+    rpc GetNextPDF(Annotation) returns (Annotation);
 
 }
 

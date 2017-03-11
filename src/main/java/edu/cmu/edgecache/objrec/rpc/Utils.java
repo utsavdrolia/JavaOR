@@ -6,6 +6,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -82,4 +83,14 @@ public class Utils
     }
 
 
+    public static Map<String, Double> deserialize(List<ObjRecServiceProto.ObjectProbability> pdfList)
+    {
+        Map<String, Double> pdf = new HashMap<>();
+        for (ObjRecServiceProto.ObjectProbability probability:
+             pdfList)
+        {
+            pdf.put(probability.getName(), probability.getProbability());
+        }
+        return pdf;
+    }
 }

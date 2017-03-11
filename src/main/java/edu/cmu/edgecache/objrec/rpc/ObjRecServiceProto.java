@@ -7120,12 +7120,12 @@ public final class ObjRecServiceProto {
        * Get the PDF of upcoming objects given this object
        * </pre>
        *
-       * <code>rpc GetNextPDF(.Annotation) returns (.PDF);</code>
+       * <code>rpc GetNextPDF(.Annotation) returns (.Annotation);</code>
        */
       public abstract void getNextPDF(
               com.google.protobuf.RpcController controller,
               Annotation request,
-              com.google.protobuf.RpcCallback<PDF> done);
+              com.google.protobuf.RpcCallback<Annotation> done);
 
     }
 
@@ -7168,7 +7168,7 @@ public final class ObjRecServiceProto {
         public  void getNextPDF(
             com.google.protobuf.RpcController controller,
             Annotation request,
-            com.google.protobuf.RpcCallback<PDF> done) {
+            com.google.protobuf.RpcCallback<Annotation> done) {
           impl.getNextPDF(controller, request, done);
         }
 
@@ -7251,7 +7251,7 @@ public final class ObjRecServiceProto {
             case 3:
               return Features.getDefaultInstance();
             case 4:
-              return PDF.getDefaultInstance();
+              return Annotation.getDefaultInstance();
             default:
               throw new AssertionError("Can't get here.");
           }
@@ -7297,12 +7297,12 @@ public final class ObjRecServiceProto {
      * Get the PDF of upcoming objects given this object
      * </pre>
      *
-     * <code>rpc GetNextPDF(.Annotation) returns (.PDF);</code>
+     * <code>rpc GetNextPDF(.Annotation) returns (.Annotation);</code>
      */
     public abstract void getNextPDF(
         com.google.protobuf.RpcController controller,
         Annotation request,
-        com.google.protobuf.RpcCallback<PDF> done);
+        com.google.protobuf.RpcCallback<Annotation> done);
 
     public static final
         com.google.protobuf.Descriptors.ServiceDescriptor
@@ -7348,7 +7348,7 @@ public final class ObjRecServiceProto {
           return;
         case 4:
           this.getNextPDF(controller, (Annotation)request,
-            com.google.protobuf.RpcUtil.<PDF>specializeCallback(
+            com.google.protobuf.RpcUtil.<Annotation>specializeCallback(
               done));
           return;
         default:
@@ -7398,7 +7398,7 @@ public final class ObjRecServiceProto {
         case 3:
           return Features.getDefaultInstance();
         case 4:
-          return PDF.getDefaultInstance();
+          return Annotation.getDefaultInstance();
         default:
           throw new AssertionError("Can't get here.");
       }
@@ -7483,16 +7483,16 @@ public final class ObjRecServiceProto {
       public  void getNextPDF(
           com.google.protobuf.RpcController controller,
           Annotation request,
-          com.google.protobuf.RpcCallback<PDF> done) {
+          com.google.protobuf.RpcCallback<Annotation> done) {
         channel.callMethod(
           getDescriptor().getMethods().get(4),
           controller,
           request,
-          PDF.getDefaultInstance(),
+          Annotation.getDefaultInstance(),
           com.google.protobuf.RpcUtil.generalizeCallback(
             done,
-            PDF.class,
-            PDF.getDefaultInstance()));
+            Annotation.class,
+            Annotation.getDefaultInstance()));
       }
     }
 
@@ -7522,7 +7522,7 @@ public final class ObjRecServiceProto {
               Annotation request)
           throws com.google.protobuf.ServiceException;
 
-      public PDF getNextPDF(
+      public Annotation getNextPDF(
               com.google.protobuf.RpcController controller,
               Annotation request)
           throws com.google.protobuf.ServiceException;
@@ -7583,15 +7583,15 @@ public final class ObjRecServiceProto {
       }
 
 
-      public PDF getNextPDF(
+      public Annotation getNextPDF(
           com.google.protobuf.RpcController controller,
           Annotation request)
           throws com.google.protobuf.ServiceException {
-        return (PDF) channel.callBlockingMethod(
+        return (Annotation) channel.callBlockingMethod(
           getDescriptor().getMethods().get(4),
           controller,
           request,
-          PDF.getDefaultInstance());
+          Annotation.getDefaultInstance());
       }
 
     }
@@ -7668,13 +7668,13 @@ public final class ObjRecServiceProto {
       "\004 \001(\005\022\014\n\004size\030\005 \001(\005\")\n\tRequestID\022\014\n\004name" +
       "\030\001 \002(\t\022\016\n\006req_id\030\002 \002(\005\"6\n\021ObjectProbabil" +
       "ity\022\014\n\004name\030\001 \002(\t\022\023\n\013probability\030\002 \002(\001\"&" +
-      "\n\003PDF\022\037\n\003pdf\030\001 \003(\0132\022.ObjectProbability2\307" +
+      "\n\003PDF\022\037\n\003pdf\030\001 \003(\0132\022.ObjectProbability2\316" +
       "\001\n\rObjRecService\022 \n\tRecognize\022\006.Image\032\013." +
       "Annotation\022+\n\021RecognizeFeatures\022\t.Featur" +
       "es\032\013.Annotation\022\037\n\010GetImage\022\013.Annotation" +
       "\032\006.Image\022%\n\013GetFeatures\022\013.Annotation\032\t.F",
-      "eatures\022\037\n\nGetNextPDF\022\013.Annotation\032\004.PDF" +
-      "B\031B\022ObjRecServiceProtoH\001\210\001\001"
+      "eatures\022&\n\nGetNextPDF\022\013.Annotation\032\013.Ann" +
+      "otationB\031B\022ObjRecServiceProtoH\001\210\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

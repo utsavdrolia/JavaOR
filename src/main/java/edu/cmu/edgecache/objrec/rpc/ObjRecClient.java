@@ -18,8 +18,8 @@ public class ObjRecClient
     protected ObjRecServiceProto.ObjRecService.Stub ObjRecServiceStub;
     protected ByteBuffer buffer = ByteBuffer.allocate(5 * 1000 * 1024);
     protected RPCClient rpc;
-    private String client_name = "ObjRecClient_" + Long.toString(new Random().nextLong());
-    private final AtomicInteger req_counter = new AtomicInteger();
+    protected String client_name = "ObjRecClient_" + Long.toString(new Random().nextLong());
+    protected final AtomicInteger req_counter = new AtomicInteger();
 
     public ObjRecClient(String server)
     {
@@ -48,10 +48,6 @@ public class ObjRecClient
         ObjRecServiceStub.recognize(rpc,
                                     request_builder.build(),
                                     cb);
-    }
-
-    public void recognize(byte[] bytes, Long req_rx, ObjRecCallback cb)
-    {
     }
 
     private class ObjRecClientCallback extends ObjRecCallback

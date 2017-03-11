@@ -53,6 +53,12 @@ public class CachedObjRecClient extends ObjRecClient
 
     }
 
+    /**
+     * Check in local knownItems if we have image and if not send request to cloud. Only called when in device
+     * @param imagePath
+     * @param cb
+     * @throws IOException
+     */
     @Override
     public void recognize(String imagePath, ObjRecCallback cb) throws IOException
     {
@@ -64,15 +70,41 @@ public class CachedObjRecClient extends ObjRecClient
         if(isCacheEnabled)
             res = recogCache.get(kplist);
         long dur = System.currentTimeMillis() - start;
-        checkAndSend(dur, 0l, res, Utils.serialize(kplist).build(), cb);
+        ObjRecServiceProto.Features features = Utils.serialize(kplist)
+                .setReqId(ObjRecServiceProto.RequestID.newBuilder()
+                        .setName(this.client_name)
+                        .setReqId(this.req_counter.incrementAndGet()))
+                .build();
+        postRecognition(dur, 0l, res, features, cb);
     }
 
     /**
-     * Check in local knownItems if we have image and if not send request to cloud
-     * @param features
+     * Check in local knownItems if we have image and if not send request to cloud. Only called when in edge
+     * @param request
      * @param cb
      */
-    public void recognize(ObjRecServiceProto.Features features, Long req_recv_ts, ObjRecCallback cb)
+    public void recognize(ObjRecServiceProto.Image request, Long req_recv_ts, ObjRecCallback cb)
+    {
+        Long start = System.currentTimeMillis();
+        // Extract Keypoints
+        KeypointDescList kplist = recognizer.extractor.extract(request.toByteArray());
+        String res = recogCache.invalid();
+        if(isCacheEnabled)
+            // Recognize from local cache
+            res = recogCache.get(kplist);
+        long dur = System.currentTimeMillis() - start;
+        ObjRecServiceProto.Features features = Utils.serialize(kplist)
+                .setReqId(request.getReqId())
+                .build();
+        postRecognition(dur, start - req_recv_ts, res, features, cb);
+    }
+
+    /**
+     * Check in local knownItems if we have image and if not send request to cloud. Only called when in edge
+     * @param features
+     * @param client_cb
+     */
+    public void recognize(ObjRecServiceProto.Features features, Long req_recv_ts, ObjRecCallback client_cb)
     {
         Long start = System.currentTimeMillis();
         KeypointDescList kplist = Utils.deserialize(features);
@@ -80,27 +112,7 @@ public class CachedObjRecClient extends ObjRecClient
         if(isCacheEnabled)
             res = recogCache.get(kplist);
         long dur = System.currentTimeMillis() - start;
-        checkAndSend(dur, start - req_recv_ts, res, features, cb);
-    }
-
-
-    /**
-     * Check in local knownItems if we have image and if not send request to cloud
-     * @param imagedata
-     * @param cb
-     * @throws IOException
-     */
-    public void recognize(byte[] imagedata, Long req_recv_ts, ObjRecCallback cb)
-    {
-        Long start = System.currentTimeMillis();
-        // Extract Keypoints
-        KeypointDescList kplist = recognizer.extractor.extract(imagedata);
-        String res = recogCache.invalid();
-        if(isCacheEnabled)
-            // Recognize from local cache
-            res = recogCache.get(kplist);
-        long dur = System.currentTimeMillis() - start;
-        checkAndSend(dur, start - req_recv_ts, res, Utils.serialize(kplist).build(), cb);
+        postRecognition(dur, start - req_recv_ts, res, features, client_cb);
     }
 
     /**
@@ -108,9 +120,9 @@ public class CachedObjRecClient extends ObjRecClient
      * @param lookup_latency
      * @param res
      * @param features
-     * @param cb
+     * @param client_cb
      */
-    private void checkAndSend(long lookup_latency, long time_in_queue, String res, ObjRecServiceProto.Features features, ObjRecCallback cb)
+    protected void postRecognition(long lookup_latency, long time_in_queue, String res, ObjRecServiceProto.Features features, ObjRecCallback client_cb)
     {
         // Calculate comp latency
         ObjRecServiceProto.Latency.Builder complatency = ObjRecServiceProto.Latency.newBuilder().
@@ -119,18 +131,42 @@ public class CachedObjRecClient extends ObjRecClient
                 setName(name).
                 setSize(recogCache.getSize());
         // Check if Hit
-        if(recogCache.isValid(res))
-        {
-            ObjRecServiceProto.Annotation annotation = ObjRecServiceProto.Annotation.newBuilder().
-                    setAnnotation(res).
-                    addLatencies(complatency).
-                    build();
-            cb.run(annotation);
-            logger.debug("*!!!Cache Hit!!!*");
-        }
+        if (recogCache.isValid(res))
+            onHit(features, res, complatency, client_cb);
         else
-            // If not, send upwards
-            ObjRecServiceStub.recognizeFeatures(rpc, features, new CachedObjRecCallback(cb, complatency));
+            onMiss(features, complatency, client_cb);
+    }
+
+    /**
+     * Calls the client callback with successful recognition result
+     * @param features
+     * @param res
+     * @param complatency
+     * @param client_cb
+     */
+    protected void onHit(ObjRecServiceProto.Features features,
+                         String res,
+                         ObjRecServiceProto.Latency.Builder complatency,
+                         ObjRecCallback client_cb)
+    {
+        ObjRecServiceProto.Annotation annotation = ObjRecServiceProto.Annotation.newBuilder().
+                setAnnotation(res).
+                addLatencies(complatency)
+                .setReqId(features.getReqId())
+                .build();
+        client_cb.run(annotation);
+        logger.debug("*!!!Cache Hit!!!*");
+    }
+
+    /**
+     * Calls server with features for recognition
+     * @param features
+     * @param client_cb
+     * @param complatency
+     */
+    protected void onMiss(ObjRecServiceProto.Features features, ObjRecServiceProto.Latency.Builder complatency, ObjRecCallback client_cb)
+    {
+        ObjRecServiceStub.recognizeFeatures(rpc, features, new CachedObjRecCallback(client_cb, complatency));
     }
 
     /**
@@ -148,15 +184,15 @@ public class CachedObjRecClient extends ObjRecClient
      * and then checks cache to see if it knows about this image. If not, it will fetch the
      * features of the given image from the server.
      */
-    private class CachedObjRecCallback extends ObjRecCallback
+    protected class CachedObjRecCallback extends ObjRecCallback
     {
-        private ObjRecCallback cb;
-        private long start;
-        ObjRecServiceProto.Latency.Builder complatency;
+        protected ObjRecCallback app_cb;
+        protected long start;
+        protected ObjRecServiceProto.Latency.Builder complatency;
 
         CachedObjRecCallback(ObjRecCallback cb, ObjRecServiceProto.Latency.Builder complatency)
         {
-            this.cb = cb;
+            this.app_cb = cb;
             this.complatency = complatency;
             this.start = System.currentTimeMillis();
         }
@@ -169,7 +205,7 @@ public class CachedObjRecClient extends ObjRecClient
             ObjRecServiceProto.Annotation.Builder ann = ObjRecServiceProto.Annotation.newBuilder(annotation);
             ann.addLatencies(complatency.setNextLevel(latency));
             // Run the client's callback
-            cb.run(ann.build());
+            app_cb.run(ann.build());
 
             if (isCacheEnabled)
             {
@@ -191,7 +227,6 @@ public class CachedObjRecClient extends ObjRecClient
                         recogCache.put(annotationstring, null);
                         logger.debug(name + " : Present in Cache but not matched");
                     }
-
             }
         }
     }
