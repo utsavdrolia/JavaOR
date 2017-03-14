@@ -32,7 +32,7 @@ message Annotation
 
 message Features
 {
-    required DescMat descs = 1;
+    optional DescMat descs = 1;
     repeated KeyPoint keypoints = 2;
     repeated Latency latencies = 3;
     required RequestID req_id = 4;
