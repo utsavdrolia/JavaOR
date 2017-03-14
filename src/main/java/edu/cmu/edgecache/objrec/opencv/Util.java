@@ -8,7 +8,9 @@ import edu.cmu.edgecache.objrec.opencv.matchers.BFMatcher_L2_NB;
 import edu.cmu.edgecache.objrec.opencv.matchers.LSHMatcher_HAM;
 import edu.cmu.edgecache.objrec.rpc.*;
 import edu.cmu.edgecache.recog.AbstractRecogCache;
+import edu.cmu.edgecache.recog.LFURecogCache;
 import edu.cmu.edgecache.recog.OptRecogCache;
+import edu.cmu.edgecache.recog.PrefetchedCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,21 +142,68 @@ public class Util
         Matcher clientmatcher = Util.createMatcher(matcherType, matcherPars, match_thresh, score_thresh);
         Recognizer recognizer = new Recognizer(extractor, clientmatcher);
 
-        BufferedReader all_objects_file = new BufferedReader(new FileReader(all_objects_path));
+        AbstractRecogCache<String, KeypointDescList> recogCache = new OptRecogCache<>(new ImageRecognizerInterface(recognizer),
+                                                                                      getCoefs(F_K_PARS),
+                                                                                      getCoefs(RECALL_PARS),
+                                                                                      get_all_objects(all_objects_path));
+        return new CachedObjRecClient(recognizer, recogCache, nextLevelAddress, name, true);
+    }
+
+
+    public static PrefetchedObjRecClient createPrefetchedObjRecClient(int featureType,
+                                                                      String featurePars,
+                                                                      int matcherType,
+                                                                      String matcherPars,
+                                                                      int match_thresh,
+                                                                      double score_thresh,
+                                                                      String nextLevelAddress,
+                                                                      String name,
+                                                                      String F_K_PARS,
+                                                                      String RECALL_PARS) throws IOException
+    {
+
+        FeatureExtractor extractor = Util.createExtractor(featureType, featurePars);
+        Matcher clientmatcher = Util.createMatcher(matcherType, matcherPars, match_thresh, score_thresh);
+        Recognizer recognizer = new Recognizer(extractor, clientmatcher);
+
+        PrefetchedCache<String, KeypointDescList> recogCache = new PrefetchedCache<>(new ImageRecognizerInterface(recognizer),
+                                                                                      getCoefs(F_K_PARS),
+                                                                                      getCoefs(RECALL_PARS));
+        return new PrefetchedObjRecClient(recognizer, recogCache, nextLevelAddress, name, true);
+    }
+
+
+    public static CachedObjRecClient createLFUCacheObjRecClient(int featureType,
+                                                                String featurePars,
+                                                                int matcherType,
+                                                                String matcherPars,
+                                                                int match_thresh,
+                                                                double score_thresh,
+                                                                String nextLevelAddress,
+                                                                String name,
+                                                                Integer cache_size) throws IOException
+    {
+
+        FeatureExtractor extractor = Util.createExtractor(featureType, featurePars);
+        Matcher clientmatcher = Util.createMatcher(matcherType, matcherPars, match_thresh, score_thresh);
+        Recognizer recognizer = new Recognizer(extractor, clientmatcher);
+
+        AbstractRecogCache<String, KeypointDescList> recogCache = new LFURecogCache<>(new ImageRecognizerInterface(recognizer), cache_size);
+        return new CachedObjRecClient(recognizer, recogCache, nextLevelAddress, name, true);
+    }
+
+    public static List<String> get_all_objects(String path) throws IOException
+    {
+        BufferedReader all_objects_file = new BufferedReader(new FileReader(path));
 
         String line = all_objects_file.readLine();
         ArrayList<String> all_objects = new ArrayList<>();
         do
         {
-            all_objects.add(line);
+            all_objects.add(line.split(",")[1]);
             line = all_objects_file.readLine();
         } while ((line != null));
-
-        AbstractRecogCache<String, KeypointDescList> recogCache = new OptRecogCache<>(new ImageRecognizerInterface(recognizer),
-                                                                                      getCoefs(F_K_PARS),
-                                                                                      getCoefs(RECALL_PARS),
-                                                                                      all_objects);
-        return new CachedObjRecClient(recognizer, recogCache, nextLevelAddress, name, true);
+        return all_objects;
     }
 
     public static void evaluate(ObjRecClient objRecClient, String queryList, String resultspath) throws IOException, InterruptedException
