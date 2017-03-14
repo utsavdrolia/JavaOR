@@ -24,7 +24,7 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
     private final AtomicLong recv_counter = new AtomicLong(0L);
     private final AtomicLong send_counter = new AtomicLong(0L);
     private final AtomicLong proc_counter = new AtomicLong(0L);
-    final static Logger logger = LoggerFactory.getLogger(ObjRecServer.class);
+    private final static Logger logger = LoggerFactory.getLogger(ObjRecServer.class);
 
     public ObjRecServer(FeatureExtractor dbextractor, FeatureExtractor extractor, Matcher matcher, String dblistpath, String myaddress) throws IOException
     {
@@ -52,6 +52,7 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
 
         done.run(ObjRecServiceProto.Annotation.newBuilder()
                          .setAnnotation(ret)
+                         .setReqId(request.getReqId())
                          .addLatencies(ObjRecServiceProto.Latency.newBuilder()
                                                .setName(NAME)
                                                .setComputation((int) (stop))
@@ -90,8 +91,9 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
         logger.debug("ObjRecServer: Processed Request: Client=" +  request.getReqId().getName() + " ReqID=" + request.getReqId().getReqId());
 
         done.run(ObjRecServiceProto.Annotation.newBuilder()
-                .setAnnotation(ret)
-                .addLatencies(ObjRecServiceProto.Latency.newBuilder()
+                         .setAnnotation(ret)
+                         .setReqId(request.getReqId())
+                         .addLatencies(ObjRecServiceProto.Latency.newBuilder()
                                       .setName(NAME)
                                       .setComputation((int) (stop))
                                       .setInQueue((int) (start - req_rx)))
@@ -110,9 +112,11 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
     @Override
     public void getFeatures(RpcController controller, ObjRecServiceProto.Annotation request, RpcCallback<ObjRecServiceProto.Features> done)
     {
+        logger.debug("getFeatures Request RECV for:" + request.getAnnotation());
         Long req_rx = rpc.getRequestRxTime(request.hashCode());
         Long start = System.currentTimeMillis();
         KeypointDescList kp = recognizer.matcher.get(request.getAnnotation());
+        logger.debug("Fetched KPList for:" + request.getAnnotation() + " Size:" + kp.points.size());
         ObjRecServiceProto.Features.Builder features = Utils.serialize(kp);
         // Return
         done.run(features
@@ -120,7 +124,9 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
                                       .setName(NAME)
                                       .setComputation((int) (System.currentTimeMillis() - start))
                                       .setInQueue((int) (start - req_rx)))
+                .setReqId(request.getReqId())
                 .build());
+        logger.debug("getFeatures Request SENT");
     }
 
     @Override
