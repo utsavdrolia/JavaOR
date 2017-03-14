@@ -1,6 +1,8 @@
 package edu.cmu.edgecache.objrec.rpc;
 
 import edu.cmu.edgecache.predictors.MarkovPredictor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ public class PredictionManager<T>
 {
     private HashMap<String, T> previous_tracker;
     private MarkovPredictor<T> predictor;
+    private final static Logger logger = LoggerFactory.getLogger(PredictionManager.class);
 
     /**
      * @param states All possible states
@@ -44,12 +47,22 @@ public class PredictionManager<T>
      */
     public Map<T, Double> getNextPDF(String id, T from_state)
     {
+        logger.debug("getNextPDF: " + id + " " + from_state);
         Map<T, Double> ret = predictor.getNextPDF(from_state);
-        // Update transitions only if from_state is different from the previous recorded state
-        if(!previous_tracker.get(id).equals(from_state))
+        logger.debug("Got PDF for: " + from_state);
+        // if this ID is seen first time
+        if(!previous_tracker.containsKey(id))
         {
+            previous_tracker.put(id, from_state);
+            logger.debug("Added ID to previous tracker: " + id);
+        }
+        // Update transitions only if from_state is different from the previous recorded state
+        else if(!previous_tracker.get(id).equals(from_state))
+        {
+
             predictor.incrementTransition(previous_tracker.get(id), from_state);
             this.previous_tracker.put(id, from_state);
+            logger.debug("Updated previous tracker for: " + id);
         }
         return ret;
     }
