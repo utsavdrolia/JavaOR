@@ -7,6 +7,8 @@ import edu.cmu.edgecache.objrec.opencv.KeypointDescList;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
 import edu.cmu.edgecache.objrec.opencv.Recognizer;
 import org.crowd.rpc.RPCServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -21,6 +23,7 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
     private CachedObjRecClient objRecClient;
     private final String EDGE = Names.Edge;
     private PredictionManager<String> predictionManager = null;
+    private final static Logger logger = LoggerFactory.getLogger(ObjRecEdge.class);
 
     /**
      * Creates Edge with defaul cache (LFU)
@@ -86,17 +89,28 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
     @Override
     public void getFeatures(RpcController controller, ObjRecServiceProto.Annotation request, RpcCallback<ObjRecServiceProto.Features> done)
     {
+        logger.debug("getFeatures Request RECV for:" + request.getAnnotation());
         Long req_rx = listeningrpc.getRequestRxTime(request.hashCode());
         Long start = System.currentTimeMillis();
         KeypointDescList kp = objRecClient.getFeatures(request.getAnnotation());
-        ObjRecServiceProto.Features.Builder features = Utils.serialize(kp);
-        // Return
-        done.run(features
-                .addLatencies(ObjRecServiceProto.Latency.newBuilder()
-                                      .setName(EDGE)
-                                      .setComputation((int) (System.currentTimeMillis() - start))
-                                      .setInQueue((int) (start - req_rx)))
-                .build());
+        if(kp != null)
+        {
+            logger.debug("Fetched KPList for:" + request.getAnnotation() + " Size:" + kp.points.size());
+            ObjRecServiceProto.Features.Builder features = Utils.serialize(kp);
+            // Return
+            done.run(features
+                             .addLatencies(ObjRecServiceProto.Latency.newBuilder()
+                                                   .setName(EDGE)
+                                                   .setComputation((int) (System.currentTimeMillis() - start))
+                                                   .setInQueue((int) (start - req_rx)))
+                             .setReqId(request.getReqId())
+                             .build());
+        }
+        else
+        {
+            done.run(ObjRecServiceProto.Features.newBuilder().setReqId(request.getReqId()).build());
+        }
+        logger.debug("getFeatures Request SENT");
     }
 
 
@@ -105,8 +119,18 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
                            ObjRecServiceProto.Annotation annotation,
                            RpcCallback<ObjRecServiceProto.Annotation> done)
     {
-        Map<String, Double> pdf = predictionManager.getNextPDF(annotation.getReqId().getName(), annotation.getAnnotation());
-        done.run(ObjRecServiceProto.Annotation.newBuilder(annotation).setPdf(ObjRecServiceProto.PDF.newBuilder().addAllPdf(Utils.serialize(pdf))).build());
+        try
+        {
+            Map<String, Double> pdf = predictionManager.getNextPDF(annotation.getReqId().getName(),
+                                                                   annotation.getAnnotation());
+            pdf.keySet().retainAll(objRecClient.getCachedItems());
+            done.run(ObjRecServiceProto.Annotation.newBuilder(annotation).setPdf(ObjRecServiceProto.PDF.newBuilder().addAllPdf(
+                    Utils.serialize(pdf))).build());
+        }
+        catch (RuntimeException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private class CloudletObjRecCallback extends ObjRecCallback
@@ -121,18 +145,23 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
         @Override
         public void run(ObjRecServiceProto.Annotation annotation)
         {
-            if(predictionManager != null)
+            ObjRecServiceProto.Annotation.Builder builder = ObjRecServiceProto.Annotation.newBuilder(
+                    annotation);
+            if (predictionManager != null)
             {
-                if(Recognizer.isValid(annotation.getAnnotation()))
+                if (Recognizer.isValid(annotation.getAnnotation()))
                 {
-                    Map<String, Double> pdf = predictionManager.getNextPDF(annotation.getReqId().getName(), annotation.getAnnotation());
-                    ObjRecServiceProto.Annotation.Builder builder = ObjRecServiceProto.Annotation.newBuilder(annotation);
-                    builder.setPdf(ObjRecServiceProto.PDF.newBuilder()
-                                       .addAllPdf(Utils.serialize(pdf)));
-                    done.run(builder.build());
+                    logger.debug("Fetching nextPDF");
+
+                    Map<String, Double> pdf = predictionManager.getNextPDF(annotation.getReqId().getName(),
+                                                                           annotation.getAnnotation());
+                    pdf.keySet().retainAll(objRecClient.getCachedItems());
+                    logger.debug("Added PDF to Callback");
+                    builder.setPdf(ObjRecServiceProto.PDF.newBuilder().addAllPdf(Utils.serialize(pdf)));
                 }
             }
-            done.run(annotation);
+            logger.debug("Return Annotation");
+            done.run(builder.build());
         }
     }
 }
