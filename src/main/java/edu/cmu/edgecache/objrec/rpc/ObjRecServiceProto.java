@@ -1869,15 +1869,15 @@ public final class ObjRecServiceProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required .DescMat descs = 1;</code>
+     * <code>optional .DescMat descs = 1;</code>
      */
     boolean hasDescs();
     /**
-     * <code>required .DescMat descs = 1;</code>
+     * <code>optional .DescMat descs = 1;</code>
      */
     DescMat getDescs();
     /**
-     * <code>required .DescMat descs = 1;</code>
+     * <code>optional .DescMat descs = 1;</code>
      */
     DescMatOrBuilder getDescsOrBuilder();
 
@@ -2062,19 +2062,19 @@ public final class ObjRecServiceProto {
     public static final int DESCS_FIELD_NUMBER = 1;
     private DescMat descs_;
     /**
-     * <code>required .DescMat descs = 1;</code>
+     * <code>optional .DescMat descs = 1;</code>
      */
     public boolean hasDescs() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .DescMat descs = 1;</code>
+     * <code>optional .DescMat descs = 1;</code>
      */
     public DescMat getDescs() {
       return descs_ == null ? DescMat.getDefaultInstance() : descs_;
     }
     /**
-     * <code>required .DescMat descs = 1;</code>
+     * <code>optional .DescMat descs = 1;</code>
      */
     public DescMatOrBuilder getDescsOrBuilder() {
       return descs_ == null ? DescMat.getDefaultInstance() : descs_;
@@ -2177,17 +2177,15 @@ public final class ObjRecServiceProto {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasDescs()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       if (!hasReqId()) {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!getDescs().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
+      if (hasDescs()) {
+        if (!getDescs().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
       for (int i = 0; i < getKeypointsCount(); i++) {
         if (!getKeypoints(i).isInitialized()) {
@@ -2531,14 +2529,13 @@ public final class ObjRecServiceProto {
       }
 
       public final boolean isInitialized() {
-        if (!hasDescs()) {
-          return false;
-        }
         if (!hasReqId()) {
           return false;
         }
-        if (!getDescs().isInitialized()) {
-          return false;
+        if (hasDescs()) {
+          if (!getDescs().isInitialized()) {
+            return false;
+          }
         }
         for (int i = 0; i < getKeypointsCount(); i++) {
           if (!getKeypoints(i).isInitialized()) {
@@ -2579,13 +2576,13 @@ public final class ObjRecServiceProto {
       private com.google.protobuf.SingleFieldBuilder<
           DescMat, DescMat.Builder, DescMatOrBuilder> descsBuilder_;
       /**
-       * <code>required .DescMat descs = 1;</code>
+       * <code>optional .DescMat descs = 1;</code>
        */
       public boolean hasDescs() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required .DescMat descs = 1;</code>
+       * <code>optional .DescMat descs = 1;</code>
        */
       public DescMat getDescs() {
         if (descsBuilder_ == null) {
@@ -2595,7 +2592,7 @@ public final class ObjRecServiceProto {
         }
       }
       /**
-       * <code>required .DescMat descs = 1;</code>
+       * <code>optional .DescMat descs = 1;</code>
        */
       public Builder setDescs(DescMat value) {
         if (descsBuilder_ == null) {
@@ -2611,7 +2608,7 @@ public final class ObjRecServiceProto {
         return this;
       }
       /**
-       * <code>required .DescMat descs = 1;</code>
+       * <code>optional .DescMat descs = 1;</code>
        */
       public Builder setDescs(
           DescMat.Builder builderForValue) {
@@ -2625,7 +2622,7 @@ public final class ObjRecServiceProto {
         return this;
       }
       /**
-       * <code>required .DescMat descs = 1;</code>
+       * <code>optional .DescMat descs = 1;</code>
        */
       public Builder mergeDescs(DescMat value) {
         if (descsBuilder_ == null) {
@@ -2645,7 +2642,7 @@ public final class ObjRecServiceProto {
         return this;
       }
       /**
-       * <code>required .DescMat descs = 1;</code>
+       * <code>optional .DescMat descs = 1;</code>
        */
       public Builder clearDescs() {
         if (descsBuilder_ == null) {
@@ -2658,7 +2655,7 @@ public final class ObjRecServiceProto {
         return this;
       }
       /**
-       * <code>required .DescMat descs = 1;</code>
+       * <code>optional .DescMat descs = 1;</code>
        */
       public DescMat.Builder getDescsBuilder() {
         bitField0_ |= 0x00000001;
@@ -2666,7 +2663,7 @@ public final class ObjRecServiceProto {
         return getDescsFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .DescMat descs = 1;</code>
+       * <code>optional .DescMat descs = 1;</code>
        */
       public DescMatOrBuilder getDescsOrBuilder() {
         if (descsBuilder_ != null) {
@@ -2677,7 +2674,7 @@ public final class ObjRecServiceProto {
         }
       }
       /**
-       * <code>required .DescMat descs = 1;</code>
+       * <code>optional .DescMat descs = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           DescMat, DescMat.Builder, DescMatOrBuilder>
@@ -7658,7 +7655,7 @@ public final class ObjRecServiceProto {
       "\022\022\n\nannotation\030\001 \002(\t\022\033\n\tlatencies\030\002 \003(\0132" +
       "\010.Latency\022\032\n\006req_id\030\003 \001(\0132\n.RequestID\022\021\n" +
       "\003pdf\030\004 \001(\0132\004.PDF\"z\n\010Features\022\027\n\005descs\030\001 " +
-      "\002(\0132\010.DescMat\022\034\n\tkeypoints\030\002 \003(\0132\t.KeyPo" +
+      "\001(\0132\010.DescMat\022\034\n\tkeypoints\030\002 \003(\0132\t.KeyPo" +
       "int\022\033\n\tlatencies\030\003 \003(\0132\010.Latency\022\032\n\006req_" +
       "id\030\004 \002(\0132\n.RequestID\"A\n\007DescMat\022\014\n\004rows\030" +
       "\001 \002(\005\022\014\n\004cols\030\002 \002(\005\022\014\n\004type\030\003 \002(\005\022\014\n\004dat" +
