@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Created by utsav on 6/16/16.
@@ -62,6 +63,7 @@ public class CachedObjRecClient extends ObjRecClient
     @Override
     public void recognize(String imagePath, ObjRecCallback cb) throws IOException
     {
+        logger.debug("Received image path");
         Long start = System.currentTimeMillis();
         // Extract Keypoints
         KeypointDescList kplist = recognizer.extractor.extract(imagePath);
@@ -166,6 +168,7 @@ public class CachedObjRecClient extends ObjRecClient
      */
     protected void onMiss(ObjRecServiceProto.Features features, ObjRecServiceProto.Latency.Builder complatency, ObjRecCallback client_cb)
     {
+        logger.debug("Miss");
         ObjRecServiceStub.recognizeFeatures(rpc, features, new CachedObjRecCallback(client_cb, complatency));
     }
 
@@ -177,6 +180,11 @@ public class CachedObjRecClient extends ObjRecClient
     public KeypointDescList getFeatures(String annotation)
     {
         return recogCache.getValue(annotation);
+    }
+
+    public Collection<String> getCachedItems()
+    {
+        return recogCache.getAllKeys();
     }
 
     /**
@@ -200,12 +208,14 @@ public class CachedObjRecClient extends ObjRecClient
         @Override
         public void run(ObjRecServiceProto.Annotation annotation)
         {
+            logger.debug("Received results from next:" + annotation.getAnnotation());
             int latency = (int) (System.currentTimeMillis() - start);
             // Add latencies to Annotation
             ObjRecServiceProto.Annotation.Builder ann = ObjRecServiceProto.Annotation.newBuilder(annotation);
             ann.addLatencies(complatency.setNextLevel(latency));
             // Run the client's callback
             app_cb.run(ann.build());
+            logger.debug("Ran Client callback");
 
             if (isCacheEnabled)
             {
@@ -218,6 +228,7 @@ public class CachedObjRecClient extends ObjRecClient
                 if (recogCache.isValid(annotationstring))
                     if (!recogCache.contains(annotationstring))
                     {
+                        logger.debug("Requesting for missed item features:" + annotationstring);
                         // If not, fetch from server
                         ObjRecServiceStub.getFeatures(rpc,
                                                       annotation,
@@ -235,7 +246,7 @@ public class CachedObjRecClient extends ObjRecClient
      * Callback that is called when features are received from server.
      * Inserts the features into the cache
      */
-    private class FeaturesRecvCallback implements RpcCallback<ObjRecServiceProto.Features>
+    protected class FeaturesRecvCallback implements RpcCallback<ObjRecServiceProto.Features>
     {
         private String annotation;
         private long start;
@@ -249,7 +260,12 @@ public class CachedObjRecClient extends ObjRecClient
         public void run(ObjRecServiceProto.Features features)
         {
             long compstart = System.currentTimeMillis();
-            logger.debug(name+ " : Received Features from Server");
+            logger.debug("Received **Features** from Server");
+            if(!features.hasDescs())
+            {
+                logger.debug("Features empty");
+                return;
+            }
             KeypointDescList kdlist = Utils.deserialize(features);
             recogCache.put(annotation, kdlist);
             long compdur = System.currentTimeMillis() - compstart;
