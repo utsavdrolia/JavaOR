@@ -2,6 +2,7 @@ import edu.cmu.edgecache.objrec.opencv.Util;
 import edu.cmu.edgecache.objrec.rpc.CachedObjRecClient;
 import edu.cmu.edgecache.objrec.rpc.Names;
 import edu.cmu.edgecache.objrec.rpc.ObjRecEdge;
+import edu.cmu.edgecache.objrec.rpc.PredictionManager;
 import org.opencv.core.Core;
 
 import java.io.IOException;
@@ -9,12 +10,12 @@ import java.io.IOException;
 /**
  * Created by utsav on 2/5/16.
  */
-public class RunLFUEdgeCache
+public class RunMarkovLFUEdgeCache
 {
     public static void main(String args[]) throws IOException, InterruptedException
     {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        if (args.length == 7)
+        if (args.length == 8)
         {
             // For all caches
             String feature_pars = args[0];
@@ -27,6 +28,9 @@ public class RunLFUEdgeCache
             // For LFU Cache
             Integer cache_size = Integer.valueOf(args[6]);
 
+            // For Predictor
+            String all_objects_path = args[7];
+
             CachedObjRecClient lfuCacheObjRecClient = Util.createLFUCacheObjRecClient(featuretype,
                                                                                       feature_pars,
                                                                                       matchertype_cache,
@@ -36,7 +40,8 @@ public class RunLFUEdgeCache
                                                                                       serverAdd,
                                                                                       Names.Edge,
                                                                                       cache_size);
-            new ObjRecEdge(lfuCacheObjRecClient, myaddress);
+
+            new ObjRecEdge(lfuCacheObjRecClient, myaddress, new PredictionManager<>(Util.get_all_objects(all_objects_path), 1));
 
             while(System.in.available() == 0)
             {
@@ -45,7 +50,7 @@ public class RunLFUEdgeCache
         }
         else
         {
-            System.err.println("7 Args required, only provided " + args.length);
+            System.err.println("8 Args required, only provided " + args.length);
         }
         System.out.println("Exiting");
         System.exit(0);
