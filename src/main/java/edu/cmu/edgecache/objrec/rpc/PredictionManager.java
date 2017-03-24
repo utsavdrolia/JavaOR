@@ -1,9 +1,13 @@
 package edu.cmu.edgecache.objrec.rpc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.cmu.edgecache.predictors.MarkovPredictor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +42,31 @@ public class PredictionManager<T>
         predictor = new MarkovPredictor<>(states, prior);
         this.previous_tracker = new HashMap<>();
     }
+
+
+    /**
+     * Read the from the JSON file at given path an initialize predictor
+     * @param path
+     * @throws IOException
+     */
+    public PredictionManager(String path) throws IOException
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        HashMap<T, HashMap<T, Integer>> priors = new HashMap<>();
+        priors = mapper.readValue(new File(path), priors.getClass());
+        List<T> states = new ArrayList<>(priors.keySet());
+        this.predictor = new MarkovPredictor<>(states);
+        for (T fromState : states)
+        {
+            HashMap<T, Integer> toStates = priors.get(fromState);
+            for (T toState: toStates.keySet())
+            {
+                predictor.addToTransition(fromState, toState, toStates.get(toState).doubleValue());
+                logger.debug("Adding " + fromState + ":" + toState + ":" + toStates.get(toState));
+            }
+        }
+    }
+
 
     /**
      * Get PDF for next possible states. Also updates predictor
