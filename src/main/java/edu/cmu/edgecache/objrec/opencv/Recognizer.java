@@ -53,8 +53,16 @@ public class Recognizer
      */
     public String recognize(Mat image)
     {
-        //-- Extract input image KP and Desc --
+        if(!(image.rows() == 640 || image.cols() == 640))
+        {
+            logger.debug("Resizing");
+            Mat dst = new Mat();
+            CVUtil.resize(image, dst);
+            image = dst;
+        }
+            //-- Extract input image KP and Desc --
         KeypointDescList inputKDlist = this.extractor.extract(image);
+        logger.debug("Extracted KPs:" + inputKDlist.points.size());
         //System.out.println("KPs in Input:" + inputKDlist.points.size());
         //--
         String ret = recognize(inputKDlist);
@@ -69,9 +77,9 @@ public class Recognizer
     public String recognize(byte[] data)
     {
         Mat image = Highgui.imdecode(new MatOfByte(data), Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-        Mat dst = new Mat();
-        CVUtil.resize(image, dst);
-        return recognize(dst);
+        String ret = recognize(image);
+        image.release();
+        return ret;
     }
 
     /**
@@ -80,12 +88,11 @@ public class Recognizer
      */
     public String recognize(String imagePath)
     {
+        logger.debug("Started with image path");
         Mat image = Highgui.imread(imagePath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-        Mat dst = new Mat();
-        CVUtil.resize(image, dst);
-        String ret = recognize(dst);
+        logger.debug("Loaded image");
+        String ret = recognize(image);
         image.release();
-        dst.release();
         return ret;
     }
 
