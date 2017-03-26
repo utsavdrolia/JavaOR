@@ -206,7 +206,10 @@ public class Util
         return all_objects;
     }
 
-    public static void evaluate(ObjRecClient objRecClient, String queryList, String resultspath) throws IOException, InterruptedException
+    public static void evaluate(ObjRecClient objRecClient,
+                                String queryList,
+                                String resultspath,
+                                AppCallBack appCallBack) throws IOException, InterruptedException
     {
         ConcurrentLinkedQueue<EvaluateCallback> evaluateCallbacks = new ConcurrentLinkedQueue<>();
         BufferedReader dir = new BufferedReader(new FileReader(queryList));
@@ -220,7 +223,8 @@ public class Util
             String[] chunks = line.split(",");
             String img = chunks[0];
             String imgpath = chunks[1];
-            EvaluateCallback cb = new EvaluateCallback(System.currentTimeMillis(), img, count, null);
+            EvaluateCallback cb = new EvaluateCallback(System.currentTimeMillis(), img, count, appCallBack);
+            logger.debug("Issuing request:" + img + " @ " + imgpath);
             objRecClient.recognize(imgpath, cb);
             evaluateCallbacks.add(cb);
             while(!cb.isDone(60000))
@@ -338,6 +342,21 @@ public class Util
         }
     }
 
+    public static ObjRecClient createLocalObjRecClient(int featureType,
+                                                       String featurePars,
+                                                       String db_featurePars,
+                                                       int matcherType,
+                                                       String matcherPars,
+                                                       int match_thresh, double score_thresh,
+                                                       String dblistpath,
+                                                       String name) throws IOException
+    {
+        FeatureExtractor extractor = Util.createExtractor(featureType, featurePars);
+        FeatureExtractor dbextractor = Util.createExtractor(featureType, db_featurePars);
+        Matcher clientmatcher = Util.createMatcher(matcherType, matcherPars, match_thresh, score_thresh);
+        return new LocalObjRecClient(dbextractor, extractor, clientmatcher, dblistpath, name);
+    }
+
 
     public static class EvaluateCallback extends ObjRecCallback
     {
@@ -362,6 +381,7 @@ public class Util
         public void run(ObjRecServiceProto.Annotation annotation)
         {
             endtime = System.currentTimeMillis();
+            logger.debug("Received Response");
             result = new Result(annotation.getAnnotation(), annotation.getLatenciesList());
             isDone = true;
             if(app_cb != null)
