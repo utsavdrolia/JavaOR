@@ -32,7 +32,7 @@ public class EvaluateCachedClient
             AbstractRecogCache<String, KeypointDescList> recogCache = new LFURecogCache<>(new ImageRecognizerInterface(recognizer), cache_size);
             CachedObjRecClient objRecClient = new CachedObjRecClient(recognizer, recogCache, serverAdd, Names.Edge, cache_size>0);
 
-            Util.evaluate(objRecClient, queryList, resultspath);
+            Util.evaluate(objRecClient, queryList, resultspath, null);
         }
         else
         {

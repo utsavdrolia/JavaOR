@@ -36,7 +36,7 @@ public class EvaluatePrefetcherClient
                                                                                     f_k_coeffs_path,
                                                                                     recall_k_coeffs_path);
 
-            Util.evaluate(objRecClient, queryList, resultspath);
+            Util.evaluate(objRecClient, queryList, resultspath, null);
         } else
         {
             System.err.println("10 Args required, provided " + args.length);

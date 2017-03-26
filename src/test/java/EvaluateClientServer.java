@@ -34,7 +34,7 @@ public class EvaluateClientServer
 
             ObjRecClient objRecClient = new ObjRecClient(serverAdd);
 
-            Util.evaluate(objRecClient, queryList, resultspath);
+            Util.evaluate(objRecClient, queryList, resultspath, null);
 
         }
         else
