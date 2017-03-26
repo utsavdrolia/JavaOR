@@ -27,7 +27,7 @@ public class LocalObjRecClient extends ObjRecClient
     public LocalObjRecClient(FeatureExtractor dbextractor, FeatureExtractor extractor, Matcher matcher, String dblistpath, String name) throws IOException
     {
         // No server, only local recognition
-        super("");
+        super(null);
         recognizer = new Recognizer(dbextractor, extractor, matcher, dblistpath);
         this.name = name;
     }
@@ -64,14 +64,14 @@ public class LocalObjRecClient extends ObjRecClient
                 setComputation((int) dur).
                 setName(name);
         // Check if Hit
-        if (recognizer.isValid(res))
-        {
-            ObjRecServiceProto.Annotation annotation = ObjRecServiceProto.Annotation.newBuilder().
+        ObjRecServiceProto.Annotation annotation = ObjRecServiceProto.Annotation.newBuilder().
                     setAnnotation(res).
                     addLatencies(complatency).
                     build();
-            cb.run(annotation);
-            logger.debug(name + " : *!!!Cache Hit!!!*");
+        cb.run(annotation);
+        if (Recognizer.isValid(res))
+        {
+            logger.debug("*!!!Cache Hit!!!*");
         }
     }
 }

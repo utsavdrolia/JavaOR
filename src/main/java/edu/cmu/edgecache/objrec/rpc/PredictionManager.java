@@ -51,6 +51,7 @@ public class PredictionManager<T>
      */
     public PredictionManager(String path) throws IOException
     {
+        this.previous_tracker = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
         HashMap<T, HashMap<T, Integer>> priors = new HashMap<>();
         priors = mapper.readValue(new File(path), priors.getClass());

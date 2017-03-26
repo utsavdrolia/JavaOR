@@ -23,8 +23,11 @@ public class ObjRecClient
 
     public ObjRecClient(String server)
     {
-        rpc = new RPCClient(server);
-        ObjRecServiceStub = ObjRecServiceProto.ObjRecService.Stub.newStub(rpc);
+        if(server != null)
+        {
+            rpc = new RPCClient(server);
+            ObjRecServiceStub = ObjRecServiceProto.ObjRecService.Stub.newStub(rpc);
+        }
     }
 
     public void recognize(String imagePath, ObjRecCallback cb) throws IOException
