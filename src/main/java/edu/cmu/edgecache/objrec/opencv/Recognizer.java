@@ -62,7 +62,7 @@ public class Recognizer
         }
             //-- Extract input image KP and Desc --
         KeypointDescList inputKDlist = this.extractor.extract(image);
-        logger.debug("Extracted KPs:" + inputKDlist.points.size());
+        logger.debug("Extracted KPs from Mat:" + inputKDlist.points.size());
         //System.out.println("KPs in Input:" + inputKDlist.points.size());
         //--
         String ret = recognize(inputKDlist);

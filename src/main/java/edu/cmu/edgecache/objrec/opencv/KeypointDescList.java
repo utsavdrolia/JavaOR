@@ -10,6 +10,7 @@ import org.opencv.core.Point;
 import org.opencv.features2d.KeyPoint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Container for Image Keypoints and Descriptors
@@ -30,9 +31,9 @@ public class KeypointDescList
         this.descriptions = descriptions;
     }
 
-    public KeypointDescList(ArrayList<Point> kp, Mat descriptions)
+    public KeypointDescList(List<Point> kp, Mat descriptions)
     {
-        points = kp;
+        points = new ArrayList<>(kp);
         this.descriptions = descriptions;
     }
 
