@@ -146,7 +146,7 @@ public class Util
                                                                                       getCoefs(F_K_PARS),
                                                                                       getCoefs(RECALL_PARS),
                                                                                       get_all_objects(all_objects_path));
-        return new CachedObjRecClient(recognizer, recogCache, nextLevelAddress, name, true);
+        return new CachedObjRecClient(recognizer, recogCache, nextLevelAddress, null, name, true);
     }
 
 
@@ -159,7 +159,8 @@ public class Util
                                                                       String nextLevelAddress,
                                                                       String name,
                                                                       String F_K_PARS,
-                                                                      String RECALL_PARS) throws IOException
+                                                                      String RECALL_PARS,
+                                                                      int num_prefetch_features) throws IOException
     {
 
         FeatureExtractor extractor = Util.createExtractor(featureType, featurePars);
@@ -169,7 +170,7 @@ public class Util
         PrefetchedCache<String, KeypointDescList> recogCache = new PrefetchedCache<>(new ImageRecognizerInterface(recognizer),
                                                                                       getCoefs(F_K_PARS),
                                                                                       getCoefs(RECALL_PARS));
-        return new PrefetchedObjRecClient(recognizer, recogCache, nextLevelAddress, name, true);
+        return new PrefetchedObjRecClient(recognizer, recogCache, nextLevelAddress, name, num_prefetch_features);
     }
 
 
@@ -189,7 +190,7 @@ public class Util
         Recognizer recognizer = new Recognizer(extractor, clientmatcher);
 
         AbstractRecogCache<String, KeypointDescList> recogCache = new LFURecogCache<>(new ImageRecognizerInterface(recognizer), cache_size);
-        return new CachedObjRecClient(recognizer, recogCache, nextLevelAddress, name, true);
+        return new CachedObjRecClient(recognizer, recogCache, nextLevelAddress, null, name, true);
     }
 
     public static List<String> get_all_objects(String path) throws IOException

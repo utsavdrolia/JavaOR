@@ -25,6 +25,8 @@ public class EvaluatePrefetcherClient
             String recall_k_coeffs_path = args[7];
             String serverAdd = args[8];
 
+            int num_prefetch_features = 800;
+
             PrefetchedObjRecClient objRecClient = Util.createPrefetchedObjRecClient(featuretype,
                                                                                     pars,
                                                                                     matchertype_cache,
@@ -34,7 +36,8 @@ public class EvaluatePrefetcherClient
                                                                                     serverAdd,
                                                                                     Names.Edge,
                                                                                     f_k_coeffs_path,
-                                                                                    recall_k_coeffs_path);
+                                                                                    recall_k_coeffs_path,
+                                                                                    num_prefetch_features);
 
             Util.evaluate(objRecClient, queryList, resultspath, null);
         } else

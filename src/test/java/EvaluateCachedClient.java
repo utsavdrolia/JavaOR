@@ -30,7 +30,9 @@ public class EvaluateCachedClient
             Matcher clientmatcher = Util.createMatcher(matchertype_cache, matcherpars_cache, 3, 0.5);
             Recognizer recognizer = new Recognizer(extractor, clientmatcher);
             AbstractRecogCache<String, KeypointDescList> recogCache = new LFURecogCache<>(new ImageRecognizerInterface(recognizer), cache_size);
-            CachedObjRecClient objRecClient = new CachedObjRecClient(recognizer, recogCache, serverAdd, Names.Edge, cache_size>0);
+            CachedObjRecClient objRecClient = new CachedObjRecClient(recognizer, recogCache, serverAdd,
+                                                                     800,
+                                                                     Names.Edge, cache_size>0);
 
             Util.evaluate(objRecClient, queryList, resultspath, null);
         }
