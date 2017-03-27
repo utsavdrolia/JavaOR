@@ -37,7 +37,7 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
     public ObjRecEdge(FeatureExtractor extractor, Matcher matcher, String myaddress, String serveraddress, int cachesize) throws IOException
     {
         listeningrpc = new RPCServer(myaddress, this);
-        objRecClient = new CachedObjRecClient(extractor, matcher, serveraddress, EDGE, cachesize);
+        objRecClient = new CachedObjRecClient(extractor, matcher, serveraddress, EDGE, cachesize, null);
     }
 
     /**
@@ -96,7 +96,13 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
         if(kp != null)
         {
             logger.debug("Fetched KPList for:" + request.getAnnotation() + " Size:" + kp.points.size());
-            ObjRecServiceProto.Features.Builder features = Utils.serialize(kp);
+            int num_features = kp.points.size();
+            if(request.hasNumFeatures())
+                num_features = request.getNumFeatures();
+            // Choose requested number of features
+            KeypointDescList sub_kp = new KeypointDescList(kp.points.subList(0, num_features), kp.descriptions.rowRange(0, num_features));
+            logger.debug("Requested #featuers:" + num_features + "--> Shortened KPList to:" + sub_kp.points.size());
+            ObjRecServiceProto.Features.Builder features = Utils.serialize(sub_kp);
             // Return
             done.run(features
                              .addLatencies(ObjRecServiceProto.Latency.newBuilder()
@@ -147,7 +153,7 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
         {
             ObjRecServiceProto.Annotation.Builder builder = ObjRecServiceProto.Annotation.newBuilder(
                     annotation);
-            if (predictionManager != null)
+            if (predictionManager != null) // If this supports prefetching
             {
                 if (Recognizer.isValid(annotation.getAnnotation()))
                 {

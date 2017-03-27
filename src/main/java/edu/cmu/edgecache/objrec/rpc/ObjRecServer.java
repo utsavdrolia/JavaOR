@@ -48,7 +48,7 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
         logger.debug("In Queue " + Long.toString(start - req_rx));
         logger.debug("Processed in " + Long.toString(stop));
 
-        logger.debug("ObjRecServer: Processed Request: Client=" + request.getReqId().getName() + " ReqID=" + request.getReqId().getReqId());
+        logger.debug("Processed Request: Client=" + request.getReqId().getName() + " ReqID=" + request.getReqId().getReqId());
 
         done.run(ObjRecServiceProto.Annotation.newBuilder()
                          .setAnnotation(ret)
@@ -58,20 +58,21 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
                                                .setComputation((int) (stop))
                                                .setInQueue((int) (start - req_rx)))
                          .build());
-        logger.debug("ObjRecServer: Replied to Request: Client="    + request.getReqId().getName()
+        logger.debug("Replied to Request: Client="    + request.getReqId().getName()
                                                                     + " ReqID=" + request.getReqId().getReqId()
-                                                                    + " SendCounter=" + send_counter.incrementAndGet());
+                                                                    + " SendCounter=" + send_counter.incrementAndGet()
+                                                                    + " Annotation=" + ret);
 
     }
 
     @Override
     public void recognizeFeatures(RpcController controller, ObjRecServiceProto.Features request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
-        logger.debug("ObjRecServer: Received Request: Client="  + request.getReqId().getName()
+        logger.debug("Received Request: Client="  + request.getReqId().getName()
                              + " ReqID=" + request.getReqId().getReqId()
                              + " RecvCounter=" + recv_counter.incrementAndGet());
         int hash = request.hashCode();
-        logger.debug("ObjRecServer: Received Hash:" + hash);
+        logger.debug("Received Hash:" + hash);
         Long req_rx = rpc.getRequestRxTime(hash);
         Long start = System.currentTimeMillis();
 //        try
@@ -83,12 +84,13 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
 //        }
 
         KeypointDescList kplist = Utils.deserialize(request);
+        logger.debug("Received Request List size:" + kplist.points.size());
         String ret = recognizer.recognize(kplist);
         long stop = System.currentTimeMillis() - start;
         logger.debug("In Queue " + Long.toString(start - req_rx));
         logger.debug("Processed in " + Long.toString(stop));
 
-        logger.debug("ObjRecServer: Processed Request: Client=" +  request.getReqId().getName() + " ReqID=" + request.getReqId().getReqId());
+        logger.debug("Processed Request: Client=" +  request.getReqId().getName() + " ReqID=" + request.getReqId().getReqId());
 
         done.run(ObjRecServiceProto.Annotation.newBuilder()
                          .setAnnotation(ret)
@@ -98,9 +100,10 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
                                       .setComputation((int) (stop))
                                       .setInQueue((int) (start - req_rx)))
                 .build());
-        logger.debug("ObjRecServer: Replied to Request: Client="    + request.getReqId().getName()
+        logger.debug("Replied to Request: Client="    + request.getReqId().getName()
                              + " ReqID=" + request.getReqId().getReqId()
-                             + " SendCounter=" + send_counter.incrementAndGet());
+                             + " SendCounter=" + send_counter.incrementAndGet()
+                             + " Annotation=" + ret);
     }
 
     @Override

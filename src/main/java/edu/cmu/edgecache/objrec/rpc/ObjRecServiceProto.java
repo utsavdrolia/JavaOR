@@ -680,6 +680,15 @@ public final class ObjRecServiceProto {
      * <code>optional .PDF pdf = 4;</code>
      */
     PDFOrBuilder getPdfOrBuilder();
+
+    /**
+     * <code>optional int32 num_features = 5;</code>
+     */
+    boolean hasNumFeatures();
+    /**
+     * <code>optional int32 num_features = 5;</code>
+     */
+    int getNumFeatures();
   }
   /**
    * Protobuf type {@code Annotation}
@@ -695,6 +704,7 @@ public final class ObjRecServiceProto {
     private Annotation() {
       annotation_ = "";
       latencies_ = java.util.Collections.emptyList();
+      numFeatures_ = 0;
     }
 
     @Override
@@ -763,6 +773,11 @@ public final class ObjRecServiceProto {
                 pdf_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000004;
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000008;
+              numFeatures_ = input.readInt32();
               break;
             }
           }
@@ -912,6 +927,21 @@ public final class ObjRecServiceProto {
       return pdf_ == null ? PDF.getDefaultInstance() : pdf_;
     }
 
+    public static final int NUM_FEATURES_FIELD_NUMBER = 5;
+    private int numFeatures_;
+    /**
+     * <code>optional int32 num_features = 5;</code>
+     */
+    public boolean hasNumFeatures() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional int32 num_features = 5;</code>
+     */
+    public int getNumFeatures() {
+      return numFeatures_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -958,6 +988,9 @@ public final class ObjRecServiceProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeMessage(4, getPdf());
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeInt32(5, numFeatures_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -980,6 +1013,10 @@ public final class ObjRecServiceProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, getPdf());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, numFeatures_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1122,6 +1159,8 @@ public final class ObjRecServiceProto {
           pdfBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000008);
+        numFeatures_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -1175,6 +1214,10 @@ public final class ObjRecServiceProto {
         } else {
           result.pdf_ = pdfBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.numFeatures_ = numFeatures_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1227,6 +1270,9 @@ public final class ObjRecServiceProto {
         }
         if (other.hasPdf()) {
           mergePdf(other.getPdf());
+        }
+        if (other.hasNumFeatures()) {
+          setNumFeatures(other.getNumFeatures());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1824,6 +1870,38 @@ public final class ObjRecServiceProto {
           pdf_ = null;
         }
         return pdfBuilder_;
+      }
+
+      private int numFeatures_ ;
+      /**
+       * <code>optional int32 num_features = 5;</code>
+       */
+      public boolean hasNumFeatures() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional int32 num_features = 5;</code>
+       */
+      public int getNumFeatures() {
+        return numFeatures_;
+      }
+      /**
+       * <code>optional int32 num_features = 5;</code>
+       */
+      public Builder setNumFeatures(int value) {
+        bitField0_ |= 0x00000010;
+        numFeatures_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 num_features = 5;</code>
+       */
+      public Builder clearNumFeatures() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        numFeatures_ = 0;
+        onChanged();
+        return this;
       }
 
       // @@protoc_insertion_point(builder_scope:Annotation)
@@ -7651,27 +7729,28 @@ public final class ObjRecServiceProto {
   static {
     String[] descriptorData = {
       "\n\014objrec.proto\"2\n\005Image\022\r\n\005image\030\001 \002(\014\022\032" +
-      "\n\006req_id\030\002 \002(\0132\n.RequestID\"l\n\nAnnotation" +
-      "\022\022\n\nannotation\030\001 \002(\t\022\033\n\tlatencies\030\002 \003(\0132" +
-      "\010.Latency\022\032\n\006req_id\030\003 \001(\0132\n.RequestID\022\021\n" +
-      "\003pdf\030\004 \001(\0132\004.PDF\"z\n\010Features\022\027\n\005descs\030\001 " +
-      "\001(\0132\010.DescMat\022\034\n\tkeypoints\030\002 \003(\0132\t.KeyPo" +
-      "int\022\033\n\tlatencies\030\003 \003(\0132\010.Latency\022\032\n\006req_" +
-      "id\030\004 \002(\0132\n.RequestID\"A\n\007DescMat\022\014\n\004rows\030" +
-      "\001 \002(\005\022\014\n\004cols\030\002 \002(\005\022\014\n\004type\030\003 \002(\005\022\014\n\004dat" +
-      "a\030\004 \002(\014\" \n\010KeyPoint\022\t\n\001x\030\001 \002(\001\022\t\n\001y\030\002 \002(",
-      "\001\"`\n\007Latency\022\014\n\004name\030\001 \002(\t\022\020\n\010in_queue\030\002" +
-      " \001(\005\022\023\n\013computation\030\003 \001(\005\022\022\n\nnext_level\030" +
-      "\004 \001(\005\022\014\n\004size\030\005 \001(\005\")\n\tRequestID\022\014\n\004name" +
-      "\030\001 \002(\t\022\016\n\006req_id\030\002 \002(\005\"6\n\021ObjectProbabil" +
-      "ity\022\014\n\004name\030\001 \002(\t\022\023\n\013probability\030\002 \002(\001\"&" +
-      "\n\003PDF\022\037\n\003pdf\030\001 \003(\0132\022.ObjectProbability2\316" +
-      "\001\n\rObjRecService\022 \n\tRecognize\022\006.Image\032\013." +
-      "Annotation\022+\n\021RecognizeFeatures\022\t.Featur" +
-      "es\032\013.Annotation\022\037\n\010GetImage\022\013.Annotation" +
-      "\032\006.Image\022%\n\013GetFeatures\022\013.Annotation\032\t.F",
-      "eatures\022&\n\nGetNextPDF\022\013.Annotation\032\013.Ann" +
-      "otationB\031B\022ObjRecServiceProtoH\001\210\001\001"
+      "\n\006req_id\030\002 \002(\0132\n.RequestID\"\202\001\n\nAnnotatio" +
+      "n\022\022\n\nannotation\030\001 \002(\t\022\033\n\tlatencies\030\002 \003(\013" +
+      "2\010.Latency\022\032\n\006req_id\030\003 \001(\0132\n.RequestID\022\021" +
+      "\n\003pdf\030\004 \001(\0132\004.PDF\022\024\n\014num_features\030\005 \001(\005\"" +
+      "z\n\010Features\022\027\n\005descs\030\001 \001(\0132\010.DescMat\022\034\n\t" +
+      "keypoints\030\002 \003(\0132\t.KeyPoint\022\033\n\tlatencies\030" +
+      "\003 \003(\0132\010.Latency\022\032\n\006req_id\030\004 \002(\0132\n.Reques" +
+      "tID\"A\n\007DescMat\022\014\n\004rows\030\001 \002(\005\022\014\n\004cols\030\002 \002" +
+      "(\005\022\014\n\004type\030\003 \002(\005\022\014\n\004data\030\004 \002(\014\" \n\010KeyPoi",
+      "nt\022\t\n\001x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001\"`\n\007Latency\022\014\n\004n" +
+      "ame\030\001 \002(\t\022\020\n\010in_queue\030\002 \001(\005\022\023\n\013computati" +
+      "on\030\003 \001(\005\022\022\n\nnext_level\030\004 \001(\005\022\014\n\004size\030\005 \001" +
+      "(\005\")\n\tRequestID\022\014\n\004name\030\001 \002(\t\022\016\n\006req_id\030" +
+      "\002 \002(\005\"6\n\021ObjectProbability\022\014\n\004name\030\001 \002(\t" +
+      "\022\023\n\013probability\030\002 \002(\001\"&\n\003PDF\022\037\n\003pdf\030\001 \003(" +
+      "\0132\022.ObjectProbability2\316\001\n\rObjRecService\022" +
+      " \n\tRecognize\022\006.Image\032\013.Annotation\022+\n\021Rec" +
+      "ognizeFeatures\022\t.Features\032\013.Annotation\022\037" +
+      "\n\010GetImage\022\013.Annotation\032\006.Image\022%\n\013GetFe",
+      "atures\022\013.Annotation\032\t.Features\022&\n\nGetNex" +
+      "tPDF\022\013.Annotation\032\013.AnnotationB\031B\022ObjRec" +
+      "ServiceProtoH\001\210\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -7696,7 +7775,7 @@ public final class ObjRecServiceProto {
     internal_static_Annotation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Annotation_descriptor,
-        new String[] { "Annotation", "Latencies", "ReqId", "Pdf", });
+        new String[] { "Annotation", "Latencies", "ReqId", "Pdf", "NumFeatures", });
     internal_static_Features_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_Features_fieldAccessorTable = new
