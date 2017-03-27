@@ -75,7 +75,7 @@ public class PredictionManager<T>
      * @param from_state Source state
      * @return PDF
      */
-    public Map<T, Double> getNextPDF(String id, T from_state)
+    public synchronized Map<T, Double> getNextPDF(String id, T from_state)
     {
         logger.debug("getNextPDF: " + id + " " + from_state);
         Map<T, Double> ret = predictor.getNextPDF(from_state);
