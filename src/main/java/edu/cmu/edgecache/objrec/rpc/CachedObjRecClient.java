@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Created by utsav on 6/16/16.
@@ -18,23 +21,32 @@ public class CachedObjRecClient extends ObjRecClient
 {
     // Cache
     private AbstractRecogCache<String, KeypointDescList> recogCache;
+    protected Integer num_cache_features;
     // Recognizer
-    private Recognizer recognizer;
+    private Recognizer recognizer = null;
     private String name;
     private boolean isCacheEnabled = false;
 
+    // Lookback queue
+    protected Set<String> feature_request_lookback;
     final static Logger logger = LoggerFactory.getLogger(CachedObjRecClient.class);
 
-
     /**
-     *
-     * @param extractor {@link FeatureExtractor} To use in the Recognizer
+     *  @param extractor {@link FeatureExtractor} To use in the Recognizer
      * @param matcher {@link Matcher} To use in the Recognizer
      * @param server {@link ObjRecServer} to connect to
+     * @param num_cache_features
      */
-    public CachedObjRecClient(FeatureExtractor extractor, Matcher matcher, String server, String name, Integer cache_size)
+    public CachedObjRecClient(FeatureExtractor extractor,
+                              Matcher matcher,
+                              String server,
+                              String name,
+                              Integer cache_size,
+                              Integer num_cache_features)
     {
         super(server);
+        this.num_cache_features = num_cache_features;
+        feature_request_lookback = Collections.synchronizedSet(new LinkedHashSet<String>());
         recognizer = new Recognizer(extractor, matcher);
         recogCache = new LFURecogCache<>(new ImageRecognizerInterface(recognizer), cache_size);
         this.name = name;
@@ -43,15 +55,21 @@ public class CachedObjRecClient extends ObjRecClient
         logger.debug("Cache enabled:" + isCacheEnabled);
     }
 
-    public CachedObjRecClient(Recognizer recognizer, AbstractRecogCache<String, KeypointDescList> recogCache, String serverAdd, String name, boolean enableCache)
+    public CachedObjRecClient(Recognizer recognizer,
+                              AbstractRecogCache<String, KeypointDescList> recogCache,
+                              String serverAdd,
+                              Integer num_cache_features,
+                              String name,
+                              boolean enableCache)
     {
         super(serverAdd);
         this.recognizer = recognizer;
         this.recogCache = recogCache;
+        this.num_cache_features = num_cache_features;
+        feature_request_lookback = Collections.synchronizedSet(new LinkedHashSet<String>());
         this.name = name;
         isCacheEnabled = enableCache;
         logger.debug("Cache enabled:" + isCacheEnabled);
-
     }
 
     /**
@@ -67,6 +85,7 @@ public class CachedObjRecClient extends ObjRecClient
         Long start = System.currentTimeMillis();
         // Extract Keypoints
         KeypointDescList kplist = recognizer.extractor.extract(imagePath);
+        logger.debug("Extracted KPs from Image path:" + kplist.points.size());
         // Recognize from local cache
         String res = recogCache.invalid();
         if(isCacheEnabled)
@@ -77,7 +96,7 @@ public class CachedObjRecClient extends ObjRecClient
                         .setName(this.client_name)
                         .setReqId(this.req_counter.incrementAndGet()))
                 .build();
-        postRecognition(dur, 0l, res, features, cb);
+        postRecognition(dur, 0l, res, features, cb, imagePath);
     }
 
     /**
@@ -89,7 +108,9 @@ public class CachedObjRecClient extends ObjRecClient
     {
         Long start = System.currentTimeMillis();
         // Extract Keypoints
-        KeypointDescList kplist = recognizer.extractor.extract(request.toByteArray());
+        KeypointDescList kplist = recognizer.extractor.extract(request.getImage().toByteArray());
+        logger.debug("Extracted KPs from Image request:" + kplist.points.size());
+
         String res = recogCache.invalid();
         if(isCacheEnabled)
             // Recognize from local cache
@@ -98,7 +119,7 @@ public class CachedObjRecClient extends ObjRecClient
         ObjRecServiceProto.Features features = Utils.serialize(kplist)
                 .setReqId(request.getReqId())
                 .build();
-        postRecognition(dur, start - req_recv_ts, res, features, cb);
+        postRecognition(dur, start - req_recv_ts, res, features, cb, null);
     }
 
     /**
@@ -114,7 +135,7 @@ public class CachedObjRecClient extends ObjRecClient
         if(isCacheEnabled)
             res = recogCache.get(kplist);
         long dur = System.currentTimeMillis() - start;
-        postRecognition(dur, start - req_recv_ts, res, features, client_cb);
+        postRecognition(dur, start - req_recv_ts, res, features, client_cb, null);
     }
 
     /**
@@ -123,8 +144,14 @@ public class CachedObjRecClient extends ObjRecClient
      * @param res
      * @param features
      * @param client_cb
+     * @param imagePath
      */
-    protected void postRecognition(long lookup_latency, long time_in_queue, String res, ObjRecServiceProto.Features features, ObjRecCallback client_cb)
+    protected void postRecognition(long lookup_latency,
+                                   long time_in_queue,
+                                   String res,
+                                   ObjRecServiceProto.Features features,
+                                   ObjRecCallback client_cb,
+                                   String imagePath)
     {
         // Calculate comp latency
         ObjRecServiceProto.Latency.Builder complatency = ObjRecServiceProto.Latency.newBuilder().
@@ -136,7 +163,7 @@ public class CachedObjRecClient extends ObjRecClient
         if (recogCache.isValid(res))
             onHit(features, res, complatency, client_cb);
         else
-            onMiss(features, complatency, client_cb);
+            onMiss(features, complatency, client_cb, imagePath);
     }
 
     /**
@@ -163,10 +190,14 @@ public class CachedObjRecClient extends ObjRecClient
     /**
      * Calls server with features for recognition
      * @param features
-     * @param client_cb
      * @param complatency
+     * @param client_cb
+     * @param imagePath
      */
-    protected void onMiss(ObjRecServiceProto.Features features, ObjRecServiceProto.Latency.Builder complatency, ObjRecCallback client_cb)
+    protected void onMiss(ObjRecServiceProto.Features features,
+                          ObjRecServiceProto.Latency.Builder complatency,
+                          ObjRecCallback client_cb,
+                          String imagePath)
     {
         logger.debug("Miss");
         ObjRecServiceStub.recognizeFeatures(rpc, features, new CachedObjRecCallback(client_cb, complatency));
@@ -228,15 +259,34 @@ public class CachedObjRecClient extends ObjRecClient
                 if (recogCache.isValid(annotationstring))
                     if (!recogCache.contains(annotationstring))
                     {
-                        logger.debug("Requesting for missed item features:" + annotationstring);
-                        // If not, fetch from server
-                        ObjRecServiceStub.getFeatures(rpc,
-                                                      annotation,
-                                                      new FeaturesRecvCallback(annotationstring));
+                        // Check if lookback queue contains these features
+                        if(!feature_request_lookback.contains(annotationstring))
+                        {
+                            feature_request_lookback.add(annotationstring);
+                            logger.debug("Added to lookback:" + annotationstring);
+                            logger.debug("Requesting for missed item features:" + annotationstring);
+                            // If not, fetch from server
+                            ObjRecServiceProto.Annotation.Builder features_req = ObjRecServiceProto.Annotation.newBuilder(
+                                    annotation)
+                                    .setReqId(ObjRecServiceProto.RequestID.newBuilder()
+                                                      .setName(client_name)
+                                                      .setReqId(req_counter.incrementAndGet()));
+                            if (num_cache_features != null)
+                                features_req.setNumFeatures(num_cache_features);
+
+                            ObjRecServiceStub.getFeatures(rpc,
+                                                          features_req.build(),
+                                                          new FeaturesRecvCallback(annotationstring));
+                        }
+                        else
+                        {
+                            // Already requested this and have not gotten a reply yet, so drop this request
+                            logger.debug("Already requested - present in lookback queue: " + annotationstring);
+                        }
                     } else
                     {
                         recogCache.put(annotationstring, null);
-                        logger.debug(name + " : Present in Cache but not matched");
+                        logger.debug("Present in Cache but not matched");
                     }
             }
         }
@@ -260,12 +310,15 @@ public class CachedObjRecClient extends ObjRecClient
         public void run(ObjRecServiceProto.Features features)
         {
             long compstart = System.currentTimeMillis();
-            logger.debug("Received **Features** from Server");
+            logger.debug("Received **Features** from Server:" + annotation);
+            logger.debug("Removed from lookback:" + annotation);
+            feature_request_lookback.remove(annotation);
             if(!features.hasDescs())
             {
                 logger.debug("Features empty");
                 return;
             }
+
             KeypointDescList kdlist = Utils.deserialize(features);
             recogCache.put(annotation, kdlist);
             long compdur = System.currentTimeMillis() - compstart;
