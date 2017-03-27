@@ -28,6 +28,7 @@ message Annotation
     repeated Latency latencies = 2;
     optional RequestID req_id = 3;
     optional PDF pdf = 4;
+    optional int32 num_features = 5;
 }
 
 message Features
