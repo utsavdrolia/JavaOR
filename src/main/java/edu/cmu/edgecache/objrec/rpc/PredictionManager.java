@@ -7,10 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Tracks previous {@link PredictionManager#getNextPDF(String, T)} requests made by entities (differentiated by their unique string ID). Uses this history to train a
@@ -21,6 +18,7 @@ public class PredictionManager<T>
 {
     private HashMap<String, T> previous_tracker;
     private MarkovPredictor<T> predictor;
+    private Boolean initialized_predictor=false;
     private final static Logger logger = LoggerFactory.getLogger(PredictionManager.class);
 
     /**
@@ -66,6 +64,14 @@ public class PredictionManager<T>
                 logger.debug("Adding " + fromState + ":" + toState + ":" + toStates.get(toState));
             }
         }
+        initialized_predictor = true;
+    }
+
+    public Collection<T> warmedItems()
+    {
+        if(initialized_predictor)
+            return predictor.getStates();
+        return null;
     }
 
 
@@ -95,5 +101,10 @@ public class PredictionManager<T>
             logger.debug("Updated previous tracker for: " + id);
         }
         return ret;
+    }
+
+    public Boolean isInitialized_predictor()
+    {
+        return initialized_predictor;
     }
 }
