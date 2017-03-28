@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -52,7 +51,6 @@ public class PrefetchedObjRecClient extends CachedObjRecClient
     {
         // Calls the client callback with successful recognition result
         super.onHit(features, res, complatency, client_cb);
-
         logger.debug("HIT: Calling NextPDF");
         // Calls server for next PDF. There is no client call_back for this. The callback processes the PDF and issues prefetch requests accordingly.
         ObjRecServiceStub.getNextPDF(super.rpc, ObjRecServiceProto.Annotation.newBuilder().setAnnotation(res).build(), new PrefetcherObjRecCallback(null, null) );
@@ -107,7 +105,7 @@ public class PrefetchedObjRecClient extends CachedObjRecClient
         {
             if(this.app_cb != null)
             {
-                // Run app's cb, fetch this objects features if cache does not have it
+                // Run app's cb, call handle_missed_features to set the current missed item
                 logger.debug("Received #Result# from Edge");
                 super.run(annotation);
             }
@@ -117,9 +115,9 @@ public class PrefetchedObjRecClient extends CachedObjRecClient
                 logger.debug("Received *PDF* from Edge");
                 Map<String, Double> pdf = Utils.deserialize(annotation.getPdf().getPdfList());
                 // Update pdf and get which items to prefetch
-                Collection<String> toPrefetch = prefetchedCache.updatePDF(pdf);
+                Map<String, Double> toPrefetch = prefetchedCache.updatePDF(annotation.getAnnotation(), pdf);
                 // Send requests to prefetch these items
-                for (String item: toPrefetch)
+                for (String item: toPrefetch.keySet())
                 {
                     // Check lookback
                     if(!feature_request_lookback.contains(item))
@@ -135,7 +133,7 @@ public class PrefetchedObjRecClient extends CachedObjRecClient
                                                               .setPdf(ObjRecServiceProto.PDF.newBuilder()
                                                                               .addPdf(ObjRecServiceProto.ObjectProbability.newBuilder()
                                                                                               .setName(item) // Name of item to prefetch
-                                                                                              .setProbability(pdf.get(item)))).build(),// P(item) - will use for scheduling
+                                                                                              .setProbability(toPrefetch.get(item)))).build(),// P(item) - will use for scheduling
                                                       new FeaturesRecvCallback(item));
                     }
                     else
@@ -144,6 +142,12 @@ public class PrefetchedObjRecClient extends CachedObjRecClient
                     }
                 }
             }
+        }
+
+        @Override
+        protected void handle_missed_features(ObjRecServiceProto.Annotation annotation)
+        {
+            // Drop. Not fetching missed items by default
         }
     }
 
