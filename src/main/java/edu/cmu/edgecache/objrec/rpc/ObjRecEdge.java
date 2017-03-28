@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -56,6 +57,15 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
         predictionManager = prefetchService;
         listeningrpc = new RPCServer(myaddress, this);
         objRecClient = cache;
+        // If this is a warmed predictor, fetch corresponding items
+        if(predictionManager.isInitialized_predictor())
+        {
+            Collection<String> prepopulate_items = predictionManager.warmedItems();
+            if(prepopulate_items != null)
+            {
+                objRecClient.initializeCache(prepopulate_items);
+            }
+        }
     }
 
 
@@ -102,7 +112,8 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
             // Choose requested number of features
             KeypointDescList sub_kp = new KeypointDescList(kp.points.subList(0, num_features), kp.descriptions.rowRange(0, num_features));
             logger.debug("Requested #featuers:" + num_features + "--> Shortened KPList to:" + sub_kp.points.size());
-            ObjRecServiceProto.Features.Builder features = Utils.serialize(sub_kp);
+            ObjRecServiceProto.Features.Builder kplist_ser = Utils.serialize(kp);
+            ObjRecServiceProto.Features.Builder features = ObjRecServiceProto.Features.newBuilder();
             // Return
             done.run(features
                              .addLatencies(ObjRecServiceProto.Latency.newBuilder()
@@ -110,6 +121,8 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
                                                    .setComputation((int) (System.currentTimeMillis() - start))
                                                    .setInQueue((int) (start - req_rx)))
                              .setReqId(request.getReqId())
+                             .setDescs(kplist_ser.getDescs())
+                             .addAllKeypoints(kplist_ser.getKeypointsList())
                              .build());
         }
         else
@@ -129,7 +142,7 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
         {
             Map<String, Double> pdf = predictionManager.getNextPDF(annotation.getReqId().getName(),
                                                                    annotation.getAnnotation());
-            pdf.keySet().retainAll(objRecClient.getCachedItems());
+            pdf.keySet().retainAll(objRecClient.getKnownItems());
             done.run(ObjRecServiceProto.Annotation.newBuilder(annotation).setPdf(ObjRecServiceProto.PDF.newBuilder().addAllPdf(
                     Utils.serialize(pdf))).build());
         }
@@ -161,7 +174,7 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
 
                     Map<String, Double> pdf = predictionManager.getNextPDF(annotation.getReqId().getName(),
                                                                            annotation.getAnnotation());
-                    pdf.keySet().retainAll(objRecClient.getCachedItems());
+                    pdf.keySet().retainAll(objRecClient.getKnownItems());
                     logger.debug("Added PDF to Callback");
                     builder.setPdf(ObjRecServiceProto.PDF.newBuilder().addAllPdf(Utils.serialize(pdf)));
                 }
