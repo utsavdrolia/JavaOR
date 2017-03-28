@@ -207,12 +207,16 @@ public class CachedObjRecClient extends ObjRecClient
     }
 
 
+    /**
+     * Add items to cache
+     * @param items
+     */
     public void initializeCache(Collection<String> items)
     {
         for (String annotationstring :
                 items)
         {
-            logger.debug("Requesting for missed item features:" + annotationstring);
+            logger.debug("Requesting for init item features:" + annotationstring);
             // If not, fetch from server
             ObjRecServiceProto.Annotation.Builder features_req = ObjRecServiceProto.Annotation.newBuilder()
                     .setAnnotation(annotationstring)
