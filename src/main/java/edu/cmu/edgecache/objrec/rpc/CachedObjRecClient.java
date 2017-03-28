@@ -23,8 +23,8 @@ public class CachedObjRecClient extends ObjRecClient
     private AbstractRecogCache<String, KeypointDescList> recogCache;
     protected Integer num_cache_features;
     // Recognizer
-    private Recognizer recognizer = null;
-    private String name;
+    protected Recognizer recognizer = null;
+    protected String name;
     private boolean isCacheEnabled = false;
 
     // Lookback queue
@@ -83,20 +83,23 @@ public class CachedObjRecClient extends ObjRecClient
     {
         logger.debug("Received image path");
         Long start = System.currentTimeMillis();
-        // Extract Keypoints
-        KeypointDescList kplist = recognizer.extractor.extract(imagePath);
-        logger.debug("Extracted KPs from Image path:" + kplist.points.size());
+        ObjRecServiceProto.Features.Builder features = ObjRecServiceProto.Features.newBuilder()
+                .setReqId(ObjRecServiceProto.RequestID.newBuilder()
+                                  .setName(this.client_name)
+                                  .setReqId(this.req_counter.incrementAndGet()));
         // Recognize from local cache
         String res = recogCache.invalid();
-        if(isCacheEnabled)
+        if (isCacheEnabled && !recogCache.isEmpty())
+        {       // Extract Keypoints
+            KeypointDescList kplist = recognizer.extractor.extract(imagePath);
+            logger.debug("Extracted KPs from Image path:" + kplist.points.size());
             res = recogCache.get(kplist);
+            ObjRecServiceProto.Features.Builder kplist_ser = Utils.serialize(kplist);
+            features.setDescs(kplist_ser.getDescs())
+                    .addAllKeypoints(kplist_ser.getKeypointsList());
+        }
         long dur = System.currentTimeMillis() - start;
-        ObjRecServiceProto.Features features = Utils.serialize(kplist)
-                .setReqId(ObjRecServiceProto.RequestID.newBuilder()
-                        .setName(this.client_name)
-                        .setReqId(this.req_counter.incrementAndGet()))
-                .build();
-        postRecognition(dur, 0l, res, features, cb, imagePath);
+        postRecognition(dur, 0l, res, features.build(), cb, imagePath);
     }
 
     /**
@@ -203,6 +206,28 @@ public class CachedObjRecClient extends ObjRecClient
         ObjRecServiceStub.recognizeFeatures(rpc, features, new CachedObjRecCallback(client_cb, complatency));
     }
 
+
+    public void initializeCache(Collection<String> items)
+    {
+        for (String annotationstring :
+                items)
+        {
+            logger.debug("Requesting for missed item features:" + annotationstring);
+            // If not, fetch from server
+            ObjRecServiceProto.Annotation.Builder features_req = ObjRecServiceProto.Annotation.newBuilder()
+                    .setAnnotation(annotationstring)
+                    .setReqId(ObjRecServiceProto.RequestID.newBuilder()
+                                      .setName(client_name)
+                                      .setReqId(req_counter.incrementAndGet()));
+            if (num_cache_features != null)
+                features_req.setNumFeatures(num_cache_features);
+
+            ObjRecServiceStub.getFeatures(rpc,
+                                          features_req.build(),
+                                          new FeaturesRecvCallback(annotationstring));
+        }
+    }
+
     /**
      * Get features for given ID/key
      * @param annotation
@@ -213,7 +238,7 @@ public class CachedObjRecClient extends ObjRecClient
         return recogCache.getValue(annotation);
     }
 
-    public Collection<String> getCachedItems()
+    public Collection<String> getKnownItems()
     {
         return recogCache.getAllKeys();
     }
@@ -250,45 +275,49 @@ public class CachedObjRecClient extends ObjRecClient
 
             if (isCacheEnabled)
             {
-                String annotationstring = annotation.getAnnotation();
-
                 // Update cache about latency
                 recogCache.updateMissLatency(latency);
-
+                String annotationstring = annotation.getAnnotation();
                 // Check if you have this image in your knownItems
                 if (recogCache.isValid(annotationstring))
-                    if (!recogCache.contains(annotationstring))
-                    {
-                        // Check if lookback queue contains these features
-                        if(!feature_request_lookback.contains(annotationstring))
-                        {
-                            feature_request_lookback.add(annotationstring);
-                            logger.debug("Added to lookback:" + annotationstring);
-                            logger.debug("Requesting for missed item features:" + annotationstring);
-                            // If not, fetch from server
-                            ObjRecServiceProto.Annotation.Builder features_req = ObjRecServiceProto.Annotation.newBuilder(
-                                    annotation)
-                                    .setReqId(ObjRecServiceProto.RequestID.newBuilder()
-                                                      .setName(client_name)
-                                                      .setReqId(req_counter.incrementAndGet()));
-                            if (num_cache_features != null)
-                                features_req.setNumFeatures(num_cache_features);
-
-                            ObjRecServiceStub.getFeatures(rpc,
-                                                          features_req.build(),
-                                                          new FeaturesRecvCallback(annotationstring));
-                        }
-                        else
-                        {
-                            // Already requested this and have not gotten a reply yet, so drop this request
-                            logger.debug("Already requested - present in lookback queue: " + annotationstring);
-                        }
-                    } else
-                    {
-                        recogCache.put(annotationstring, null);
-                        logger.debug("Present in Cache but not matched");
-                    }
+                    handle_missed_features(annotation);
             }
+        }
+
+        protected void handle_missed_features(ObjRecServiceProto.Annotation annotation)
+        {
+            String annotationstring = annotation.getAnnotation();
+            if (!recogCache.contains(annotationstring))
+                {
+                    // Check if lookback queue contains these features
+                    if(!feature_request_lookback.contains(annotationstring))
+                    {
+                        feature_request_lookback.add(annotationstring);
+                        logger.debug("Added to lookback:" + annotationstring);
+                        logger.debug("Requesting for missed item features:" + annotationstring);
+                        // If not, fetch from server
+                        ObjRecServiceProto.Annotation.Builder features_req = ObjRecServiceProto.Annotation.newBuilder(
+                                annotation)
+                                .setReqId(ObjRecServiceProto.RequestID.newBuilder()
+                                                  .setName(client_name)
+                                                  .setReqId(req_counter.incrementAndGet()));
+                        if (num_cache_features != null)
+                            features_req.setNumFeatures(num_cache_features);
+
+                        ObjRecServiceStub.getFeatures(rpc,
+                                                      features_req.build(),
+                                                      new FeaturesRecvCallback(annotationstring));
+                    }
+                    else
+                    {
+                        // Already requested this and have not gotten a reply yet, so drop this request
+                        logger.debug("Already requested - present in lookback queue: " + annotationstring);
+                    }
+                } else
+                {
+                    recogCache.put(annotationstring, null);
+                    logger.debug("Present in Cache but not matched");
+                }
         }
     }
 
