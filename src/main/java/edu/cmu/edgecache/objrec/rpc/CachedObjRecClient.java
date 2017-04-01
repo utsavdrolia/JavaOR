@@ -4,6 +4,8 @@ import com.google.protobuf.RpcCallback;
 import edu.cmu.edgecache.objrec.opencv.*;
 import edu.cmu.edgecache.recog.AbstractRecogCache;
 import edu.cmu.edgecache.recog.LFURecogCache;
+import org.opencv.core.Mat;
+import org.opencv.highgui.Highgui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,17 +84,22 @@ public class CachedObjRecClient extends ObjRecClient
     public void recognize(String imagePath, ObjRecCallback cb) throws IOException
     {
         logger.debug("Received image path");
+        // Load image into memory
+        Mat image = Highgui.imread(imagePath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+
         Long start = System.currentTimeMillis();
+
         ObjRecServiceProto.Features.Builder features = ObjRecServiceProto.Features.newBuilder()
                 .setReqId(ObjRecServiceProto.RequestID.newBuilder()
                                   .setName(this.client_name)
                                   .setReqId(this.req_counter.incrementAndGet()));
+
         // Recognize from local cache
         String res = recogCache.invalid();
         if (isCacheEnabled && !recogCache.isEmpty())
         {       // Extract Keypoints
-            KeypointDescList kplist = recognizer.extractor.extract(imagePath);
-            logger.debug("Extracted KPs from Image path:" + kplist.points.size());
+            KeypointDescList kplist = recognizer.extractor.extract(image);
+            logger.debug("Extracted KPs from Image:" + kplist.points.size());
             res = recogCache.get(kplist);
             ObjRecServiceProto.Features.Builder kplist_ser = Utils.serialize(kplist);
             features.setDescs(kplist_ser.getDescs())
@@ -216,19 +223,34 @@ public class CachedObjRecClient extends ObjRecClient
         for (String annotationstring :
                 items)
         {
-            logger.debug("Requesting for init item features:" + annotationstring);
-            // If not, fetch from server
-            ObjRecServiceProto.Annotation.Builder features_req = ObjRecServiceProto.Annotation.newBuilder()
-                    .setAnnotation(annotationstring)
-                    .setReqId(ObjRecServiceProto.RequestID.newBuilder()
-                                      .setName(client_name)
-                                      .setReqId(req_counter.incrementAndGet()));
-            if (num_cache_features != null)
-                features_req.setNumFeatures(num_cache_features);
+            if(!recogCache.contains(annotationstring))
+            {
+                if(!feature_request_lookback.contains(annotationstring))
+                {
+                    feature_request_lookback.add(annotationstring);
+                    logger.debug("Added to lookback:" + annotationstring);
+                    logger.debug("Requesting for init item features:" + annotationstring);
+                    // If not, fetch from server
+                    ObjRecServiceProto.Annotation.Builder features_req = ObjRecServiceProto.Annotation.newBuilder()
+                            .setAnnotation(annotationstring)
+                            .setReqId(ObjRecServiceProto.RequestID.newBuilder()
+                                              .setName(client_name)
+                                              .setReqId(req_counter.incrementAndGet()));
+                    if (num_cache_features != null)
+                        features_req.setNumFeatures(num_cache_features);
 
-            ObjRecServiceStub.getFeatures(rpc,
-                                          features_req.build(),
-                                          new FeaturesRecvCallback(annotationstring));
+                    ObjRecServiceStub.getFeatures(rpc,
+                                                  features_req.build(),
+                                                  new FeaturesRecvCallback(annotationstring));
+                    try
+                    {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
 

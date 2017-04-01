@@ -3,6 +3,8 @@ package edu.cmu.edgecache.objrec.rpc;
 import edu.cmu.edgecache.objrec.opencv.FeatureExtractor;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
 import edu.cmu.edgecache.objrec.opencv.Recognizer;
+import org.opencv.core.Mat;
+import org.opencv.highgui.Highgui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,24 +37,10 @@ public class LocalObjRecClient extends ObjRecClient
     @Override
     public void recognize(String imagePath, ObjRecCallback cb) throws IOException
     {
+        Mat image = Highgui.imread(imagePath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
         Long start = System.currentTimeMillis();
         // Recognize from local db
-        String ret = recognizer.recognize(imagePath);
-        long dur = System.currentTimeMillis() - start;
-        checkAndSend(dur, ret, cb);
-    }
-
-    /**
-     * Check in local knownItems if we have image and if not send request to cloud
-     * @param imagedata
-     * @param cb
-     * @throws IOException
-     */
-    public void recognize(byte[] imagedata, ObjRecCallback cb)
-    {
-        Long start = System.currentTimeMillis();
-        // Recognize from local db
-        String ret = recognizer.recognize(imagedata);
+        String ret = recognizer.recognize(image);
         long dur = System.currentTimeMillis() - start;
         checkAndSend(dur, ret, cb);
     }
