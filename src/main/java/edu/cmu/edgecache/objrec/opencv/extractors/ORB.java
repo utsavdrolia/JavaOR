@@ -27,10 +27,11 @@ public class ORB extends FeatureExtractor
     public ORB(String pars)
     {
         //Init detector
-        detector = FeatureDetector.create(FeatureDetector.ORB);
-        // Read the settings file for detector
-        detector.read(pars);
+//        detector = FeatureDetector.create(FeatureDetector.ORB);
+//        // Read the settings file for detector
+//        detector.read(pars);
         extractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
+        extractor.read(pars);
     }
 
     public static void main(String args[])

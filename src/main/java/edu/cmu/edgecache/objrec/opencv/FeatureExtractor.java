@@ -6,6 +6,8 @@ import org.opencv.core.MatOfKeyPoint;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.highgui.Highgui;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Interface for Extracting features from given image and returning a datastructure that is used by the Associator
@@ -15,6 +17,8 @@ public abstract class FeatureExtractor
 {
     protected FeatureDetector detector;
     protected DescriptorExtractor extractor;
+    private final static Logger logger = LoggerFactory.getLogger(FeatureExtractor.class);
+
     /**
      * Extract features from an image
      * @param image A {@link Mat} representing the image
@@ -25,10 +29,14 @@ public abstract class FeatureExtractor
         //Keypoints
         MatOfKeyPoint keypoints = new MatOfKeyPoint();
         Mat descriptors = new Mat();
-        detector.detect(image, keypoints);
-
+        Long start = System.currentTimeMillis();
+        if(detector != null)
+            detector.detect(image, keypoints);
+        Long detect = System.currentTimeMillis();
         extractor.compute(image, keypoints, descriptors);
-
+        Long extract = System.currentTimeMillis();
+        logger.debug("Detection:"+(detect-start));
+        logger.debug("Extraction:"+(extract-detect));
         return new KeypointDescList(keypoints, descriptors);
     }
 
@@ -39,7 +47,11 @@ public abstract class FeatureExtractor
      */
     public KeypointDescList extract(String inputFile)
     {
+        Long start = System.currentTimeMillis();
         Mat m = Highgui.imread(inputFile, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+        Long stop = System.currentTimeMillis();
+        logger.debug("ImageFileLoad:"+(stop-start));
+
         KeypointDescList kd = extract(m);
         m.release();
         return kd;
@@ -52,7 +64,11 @@ public abstract class FeatureExtractor
      */
     public KeypointDescList extract(byte[] data)
     {
+        Long start = System.currentTimeMillis();
         Mat m = Highgui.imdecode(new MatOfByte(data), Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+        Long stop = System.currentTimeMillis();
+        logger.debug("ImageByteLoad:"+(stop-start));
+
         KeypointDescList kd = extract(m);
         m.release();
         return kd;
