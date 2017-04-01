@@ -76,7 +76,11 @@ public class Recognizer
      */
     public String recognize(byte[] data)
     {
+        Long start = System.currentTimeMillis();
         Mat image = Highgui.imdecode(new MatOfByte(data), Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+        Long stop = System.currentTimeMillis();
+        logger.debug("ImageByteLoad:"+(stop-start));
+
         String ret = recognize(image);
         image.release();
         return ret;
@@ -88,9 +92,11 @@ public class Recognizer
      */
     public String recognize(String imagePath)
     {
-        logger.debug("Started with image path");
+        Long start = System.currentTimeMillis();
         Mat image = Highgui.imread(imagePath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-        logger.debug("Loaded image");
+        Long stop = System.currentTimeMillis();
+        logger.debug("ImageFileLoad:"+(stop-start));
+
         String ret = recognize(image);
         image.release();
         return ret;
@@ -105,7 +111,10 @@ public class Recognizer
     public String recognize(KeypointDescList inputKDlist)
     {
         logger.debug("Recognizer: Received Request Number:" + recv_counter.incrementAndGet());
+        Long start = System.currentTimeMillis();
         String ret = matcher.matchAll(inputKDlist);
+        Long stop = System.currentTimeMillis();
+        logger.debug("Recognition:"+(stop-start));
         logger.debug("Recognizer: Sending Request Number:" + send_counter.incrementAndGet());
         return ret;
     }
