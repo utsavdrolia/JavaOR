@@ -193,6 +193,12 @@ public class Util
         return new CachedObjRecClient(recognizer, recogCache, nextLevelAddress, null, name, true);
     }
 
+    /**
+     * Read all the objects in the file and return a list
+     * @param path
+     * @return
+     * @throws IOException
+     */
     public static List<String> get_all_objects(String path) throws IOException
     {
         BufferedReader all_objects_file = new BufferedReader(new FileReader(path));
@@ -202,6 +208,27 @@ public class Util
         do
         {
             all_objects.add(line.split(",")[1]);
+            line = all_objects_file.readLine();
+        } while ((line != null));
+        return all_objects;
+    }
+
+
+    /**
+     * Read all the objects in the file and return a list
+     * @param path
+     * @return
+     * @throws IOException
+     */
+    public static List<String> get_cache_init_items(String path) throws IOException
+    {
+        BufferedReader all_objects_file = new BufferedReader(new FileReader(path));
+
+        String line = all_objects_file.readLine();
+        ArrayList<String> all_objects = new ArrayList<>();
+        do
+        {
+            all_objects.add(line);
             line = all_objects_file.readLine();
         } while ((line != null));
         return all_objects;
