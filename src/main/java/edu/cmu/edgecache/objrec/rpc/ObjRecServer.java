@@ -35,11 +35,11 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
     @Override
     public void recognize(RpcController controller, ObjRecServiceProto.Image request, RpcCallback<ObjRecServiceProto.Annotation> done)
     {
-        logger.debug("ObjRecServer: Received Request: Client="  + request.getReqId().getName()
+        logger.debug("Received Request: Client="  + request.getReqId().getName()
                                                                 + " ReqID=" + request.getReqId().getReqId()
                                                                 + " RecvCounter=" + recv_counter.incrementAndGet());
         int hash = request.hashCode();
-        logger.debug("ObjRecServer: Received Hash:" + hash);
+        logger.debug("Received Hash:" + hash);
         Long req_rx = rpc.getRequestRxTime(hash);
         byte[] img = request.getImage().toByteArray();
         Long start = System.currentTimeMillis();

@@ -52,6 +52,12 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
         objRecClient = cache;
     }
 
+    /**
+     * Create ObjRecEdge with a prediction Manager that helps in prefetching
+     * @param cache
+     * @param myaddress
+     * @param prefetchService
+     */
     public ObjRecEdge(CachedObjRecClient cache, String myaddress, PredictionManager<String> prefetchService)
     {
         predictionManager = prefetchService;
