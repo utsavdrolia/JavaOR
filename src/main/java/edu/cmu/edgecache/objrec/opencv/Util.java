@@ -193,6 +193,27 @@ public class Util
         return new CachedObjRecClient(recognizer, recogCache, nextLevelAddress, null, name, true);
     }
 
+
+    public static CachedObjRecClient createForwardingCacheObjRecClient(int featureType,
+                                                                String featurePars,
+                                                                int matcherType,
+                                                                String matcherPars,
+                                                                int match_thresh,
+                                                                double score_thresh,
+                                                                String nextLevelAddress,
+                                                                String name,
+                                                                Integer cache_size) throws IOException
+    {
+
+        FeatureExtractor extractor = Util.createExtractor(featureType, featurePars);
+        Matcher clientmatcher = Util.createMatcher(matcherType, matcherPars, match_thresh, score_thresh);
+        Recognizer recognizer = new Recognizer(extractor, clientmatcher);
+
+        AbstractRecogCache<String, KeypointDescList> recogCache = new LFURecogCache<>(new ImageRecognizerInterface(recognizer), cache_size);
+        return new RequestForwardingCache(recognizer, recogCache, nextLevelAddress, null, name, true);
+    }
+
+
     /**
      * Read all the objects in the file and return a list
      * @param path
