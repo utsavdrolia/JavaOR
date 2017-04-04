@@ -2,6 +2,8 @@ package edu.cmu.edgecache.objrec.rpc;
 
 import com.google.protobuf.ByteString;
 import org.crowd.rpc.RPCClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,6 +22,8 @@ public class ObjRecClient
     protected RPCClient rpc;
     protected String client_name = "ObjRecClient_" + Long.toString(new Random().nextLong());
     protected final AtomicInteger req_counter = new AtomicInteger();
+
+    private final static Logger logger = LoggerFactory.getLogger(ObjRecClient.class);
 
     public ObjRecClient(String server)
     {
@@ -43,6 +47,7 @@ public class ObjRecClient
 
     public final void recognize(ByteBuffer image, ObjRecCallback cb) throws IOException
     {
+        logger.debug("ImageRequestSize:" + image.position());
         ObjRecServiceProto.Image.Builder request_builder = ObjRecServiceProto.Image.newBuilder()
                 .setImage(ByteString.copyFrom(image))
                 .setReqId(ObjRecServiceProto.RequestID.newBuilder()

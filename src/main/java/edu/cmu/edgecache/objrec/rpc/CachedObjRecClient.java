@@ -4,6 +4,7 @@ import com.google.protobuf.RpcCallback;
 import edu.cmu.edgecache.objrec.opencv.*;
 import edu.cmu.edgecache.recog.AbstractRecogCache;
 import edu.cmu.edgecache.recog.LFURecogCache;
+import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics;
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import java.util.Set;
 public class CachedObjRecClient extends ObjRecClient
 {
     // Cache
-    private AbstractRecogCache<String, KeypointDescList> recogCache;
+    protected AbstractRecogCache<String, KeypointDescList> recogCache;
     protected Integer num_cache_features;
     // Recognizer
     protected Recognizer recognizer = null;
@@ -31,6 +32,10 @@ public class CachedObjRecClient extends ObjRecClient
 
     // Lookback queue
     protected Set<String> feature_request_lookback;
+
+    // Compute time tracker
+    protected SynchronizedDescriptiveStatistics computeTime = new SynchronizedDescriptiveStatistics(100);
+
     final static Logger logger = LoggerFactory.getLogger(CachedObjRecClient.class);
 
     /**
@@ -106,6 +111,7 @@ public class CachedObjRecClient extends ObjRecClient
                     .addAllKeypoints(kplist_ser.getKeypointsList());
         }
         long dur = System.currentTimeMillis() - start;
+        computeTime.addValue(dur);
         postRecognition(dur, 0l, res, features.build(), cb, imagePath);
     }
 
@@ -129,6 +135,7 @@ public class CachedObjRecClient extends ObjRecClient
         ObjRecServiceProto.Features features = Utils.serialize(kplist)
                 .setReqId(request.getReqId())
                 .build();
+        computeTime.addValue(dur);
         postRecognition(dur, start - req_recv_ts, res, features, cb, null);
     }
 
@@ -145,6 +152,7 @@ public class CachedObjRecClient extends ObjRecClient
         if(isCacheEnabled)
             res = recogCache.get(kplist);
         long dur = System.currentTimeMillis() - start;
+        computeTime.addValue(dur);
         postRecognition(dur, start - req_recv_ts, res, features, client_cb, null);
     }
 
@@ -211,6 +219,22 @@ public class CachedObjRecClient extends ObjRecClient
     {
         logger.debug("Miss");
         ObjRecServiceStub.recognizeFeatures(rpc, features, new CachedObjRecCallback(client_cb, complatency));
+    }
+
+    /**
+     * Calls server with image for recognition
+     * @param imageRequest
+     * @param complatency
+     * @param client_cb
+     * @param imagePath
+     */
+    protected void onMiss(ObjRecServiceProto.Image imageRequest,
+                          ObjRecServiceProto.Latency.Builder complatency,
+                          ObjRecCallback client_cb,
+                          String imagePath)
+    {
+        logger.debug("Miss");
+        ObjRecServiceStub.recognize(rpc, imageRequest, new CachedObjRecCallback(client_cb, complatency));
     }
 
 
