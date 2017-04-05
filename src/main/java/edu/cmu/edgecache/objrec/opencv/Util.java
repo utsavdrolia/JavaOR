@@ -193,6 +193,27 @@ public class Util
         return new CachedObjRecClient(recognizer, recogCache, nextLevelAddress, null, name, true);
     }
 
+
+    public static CachedObjRecClient createForwardingCacheObjRecClient(int featureType,
+                                                                String featurePars,
+                                                                int matcherType,
+                                                                String matcherPars,
+                                                                int match_thresh,
+                                                                double score_thresh,
+                                                                String nextLevelAddress,
+                                                                String name,
+                                                                Integer cache_size) throws IOException
+    {
+
+        FeatureExtractor extractor = Util.createExtractor(featureType, featurePars);
+        Matcher clientmatcher = Util.createMatcher(matcherType, matcherPars, match_thresh, score_thresh);
+        Recognizer recognizer = new Recognizer(extractor, clientmatcher);
+
+        AbstractRecogCache<String, KeypointDescList> recogCache = new LFURecogCache<>(new ImageRecognizerInterface(recognizer), cache_size);
+        return new RequestForwardingCache(recognizer, recogCache, nextLevelAddress, null, name, true);
+    }
+
+
     /**
      * Read all the objects in the file and return a list
      * @param path
@@ -345,7 +366,7 @@ public class Util
                 json.put(REQUEST, callback.getQuery());
                 json.put(STARTTIME, callback.getStartime());
                 // Ensure callback is processed
-                if (callback.isDone(60000))
+                if (callback.isDone(10000))
                 {
                     Util.Result result = callback.getResult();
                     Map<String, Map<String, Integer>> map = result.getLatencies();
@@ -428,11 +449,10 @@ public class Util
          */
         public boolean isDone(long timeout) throws InterruptedException
         {
-            Long start = System.currentTimeMillis();
             while(!isDone)
             {
                 sleep(100);
-                if((System.currentTimeMillis() - start) > timeout)
+                if((System.currentTimeMillis() - startime) > timeout)
                     break;
             }
             return isDone;

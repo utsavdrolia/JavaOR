@@ -1,5 +1,6 @@
 package edu.cmu.edgecache.objrec.opencv.matchers;
 
+import ch.qos.logback.classic.Logger;
 import edu.cmu.edgecache.objrec.opencv.KeypointDescList;
 import edu.cmu.edgecache.objrec.opencv.Matcher;
 import org.opencv.core.Core;
@@ -7,6 +8,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfDMatch;
 import org.opencv.features2d.DMatch;
 import org.opencv.features2d.DescriptorMatcher;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +26,7 @@ public abstract class AbstractNBMatcher extends Matcher
     protected int NUM_MATCHES_THRESH = 3;
     protected List<String> objects;
     protected Double SCORE_THRESH = 0.6;
+    private final static Logger logger = (Logger) LoggerFactory.getLogger(AbstractNBMatcher.class);
 
     ExecutorService executorService = Executors.newFixedThreadPool(Core.getNumThreads());
     protected AbstractNBMatcher()
@@ -86,13 +89,14 @@ public abstract class AbstractNBMatcher extends Matcher
         Map<Integer, List<DMatch>> image2match = invertGoodMatches(good_matches);
 
         //printInvertedMatches(image2match);
-
+        logger.debug("Good Matches:" + good_matches.size());
+        logger.debug("Num Ratio Test Objects:" + image2match.size());
         ArrayList<Future<HomographyResult>> results = new ArrayList<>();
         // Minimum number of good matches and homography verification
         for (final Integer img : image2match.keySet())
         {
             final List<DMatch> dmatches = image2match.get(img);
-            if (dmatches.size() > NUM_MATCHES_THRESH)
+            if ( dmatches.size() >= Math.max((((double) good_matches.size())/image2match.size()), 4))
             {
                 results.add(executorService.submit(new Callable<HomographyResult>()
                 {

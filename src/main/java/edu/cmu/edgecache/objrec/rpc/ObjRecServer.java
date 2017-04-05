@@ -26,10 +26,11 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
     private final AtomicLong proc_counter = new AtomicLong(0L);
     private final static Logger logger = LoggerFactory.getLogger(ObjRecServer.class);
 
+    private final static long THRESHOLD = 2000;
     public ObjRecServer(FeatureExtractor dbextractor, FeatureExtractor extractor, Matcher matcher, String dblistpath, String myaddress) throws IOException
     {
         recognizer = new Recognizer(dbextractor, extractor, matcher, dblistpath);
-        rpc = new RPCServer(myaddress, this, 8);
+        rpc = new RPCServer(myaddress, this);
     }
 
     @Override
@@ -41,8 +42,22 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
         int hash = request.hashCode();
         logger.debug("Received Hash:" + hash);
         Long req_rx = rpc.getRequestRxTime(hash);
-        byte[] img = request.getImage().toByteArray();
         Long start = System.currentTimeMillis();
+
+        if(start - req_rx > THRESHOLD)
+        {
+            logger.debug("Too many messages in queue, draining");
+            done.run(ObjRecServiceProto.Annotation.newBuilder()
+                             .setAnnotation(Recognizer.INVALID)
+                             .setReqId(request.getReqId())
+                             .addLatencies(ObjRecServiceProto.Latency.newBuilder()
+                                                   .setName(NAME)
+                                                   .setInQueue((int) (start - req_rx)))
+                             .build());
+            return;
+        }
+
+        byte[] img = request.getImage().toByteArray();
         String ret = recognizer.recognize(img);
         long stop = System.currentTimeMillis() - start;
         logger.debug("In Queue " + Long.toString(start - req_rx));
@@ -75,6 +90,18 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
         logger.debug("Received Hash:" + hash);
         Long req_rx = rpc.getRequestRxTime(hash);
         Long start = System.currentTimeMillis();
+        if(start - req_rx > THRESHOLD)
+        {
+            logger.debug("Too many messages in queue, draining");
+            done.run(ObjRecServiceProto.Annotation.newBuilder()
+                             .setAnnotation(Recognizer.INVALID)
+                             .setReqId(request.getReqId())
+                             .addLatencies(ObjRecServiceProto.Latency.newBuilder()
+                                                   .setName(NAME)
+                                                   .setInQueue((int) (start - req_rx)))
+                             .build());
+            return;
+        }
 //        try
 //        {
 //            sleep(200);
