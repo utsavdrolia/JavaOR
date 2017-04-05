@@ -68,7 +68,7 @@ public class RequestForwardingCache extends CachedObjRecClient
         logger.debug("ProcessRate:" + processRate);
 
 //        if(interArrivalTime.getMean() >= computeTime.getMean())
-        if(choose.nextDouble() <= processRate)
+        if(choose.nextDouble() <= 0.9*processRate) // Slightly bias towards offloading to cloud
         {
             // Enough time to compute
             logger.debug("Computing on Edge");
@@ -84,7 +84,6 @@ public class RequestForwardingCache extends CachedObjRecClient
             // Insert comp latency
 //            computeTime.addValue(0);
             ObjRecServiceProto.Latency.Builder complatency = ObjRecServiceProto.Latency.newBuilder().
-                    setComputation(0).
                     setInQueue((int) time_in_queue).
                     setName(name).
                     setSize(recogCache.getSize());
@@ -118,7 +117,7 @@ public class RequestForwardingCache extends CachedObjRecClient
         logger.debug("ProcessRate:" + processRate);
 
 //        if(interArrivalTime.getMean() >= computeTime.getMean())
-        if(choose.nextDouble() <= processRate)
+        if(choose.nextDouble() <= 0.9*processRate) // Slightly bias towards offloading to cloud
         {
             // Enough time to compute
             logger.debug("Computing on Edge");
@@ -134,7 +133,6 @@ public class RequestForwardingCache extends CachedObjRecClient
             // Insert comp latency
 //            computeTime.addValue(0);
             ObjRecServiceProto.Latency.Builder complatency = ObjRecServiceProto.Latency.newBuilder().
-                    setComputation(0).
                     setInQueue((int) time_in_queue).
                     setName(name).
                     setSize(recogCache.getSize());

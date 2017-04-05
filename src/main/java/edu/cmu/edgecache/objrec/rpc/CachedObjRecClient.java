@@ -101,6 +101,7 @@ public class CachedObjRecClient extends ObjRecClient
 
         // Recognize from local cache
         String res = recogCache.invalid();
+        long dur = 0;
         if (isCacheEnabled && !recogCache.isEmpty())
         {       // Extract Keypoints
             KeypointDescList kplist = recognizer.extractor.extract(image);
@@ -109,8 +110,8 @@ public class CachedObjRecClient extends ObjRecClient
             ObjRecServiceProto.Features.Builder kplist_ser = Utils.serialize(kplist);
             features.setDescs(kplist_ser.getDescs())
                     .addAllKeypoints(kplist_ser.getKeypointsList());
+            dur = System.currentTimeMillis() - start;
         }
-        long dur = System.currentTimeMillis() - start;
         computeTime.addValue(dur);
         postRecognition(dur, 0l, res, features.build(), cb, imagePath);
     }
@@ -173,10 +174,11 @@ public class CachedObjRecClient extends ObjRecClient
     {
         // Calculate comp latency
         ObjRecServiceProto.Latency.Builder complatency = ObjRecServiceProto.Latency.newBuilder().
-                setComputation((int) lookup_latency).
                 setInQueue((int) time_in_queue).
                 setName(name).
                 setSize(recogCache.getSize());
+        if(lookup_latency > 0)
+            complatency.setComputation((int) lookup_latency);
         // Check if Hit
         if (recogCache.isValid(res))
             onHit(features, res, complatency, client_cb);

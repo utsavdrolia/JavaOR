@@ -52,7 +52,6 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
                              .setReqId(request.getReqId())
                              .addLatencies(ObjRecServiceProto.Latency.newBuilder()
                                                    .setName(NAME)
-                                                   .setComputation(0)
                                                    .setInQueue((int) (start - req_rx)))
                              .build());
             return;
@@ -99,7 +98,6 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
                              .setReqId(request.getReqId())
                              .addLatencies(ObjRecServiceProto.Latency.newBuilder()
                                                    .setName(NAME)
-                                                   .setComputation(0)
                                                    .setInQueue((int) (start - req_rx)))
                              .build());
             return;
