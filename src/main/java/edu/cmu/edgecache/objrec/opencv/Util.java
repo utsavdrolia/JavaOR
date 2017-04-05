@@ -366,7 +366,7 @@ public class Util
                 json.put(REQUEST, callback.getQuery());
                 json.put(STARTTIME, callback.getStartime());
                 // Ensure callback is processed
-                if (callback.isDone(60000))
+                if (callback.isDone(10000))
                 {
                     Util.Result result = callback.getResult();
                     Map<String, Map<String, Integer>> map = result.getLatencies();
@@ -449,11 +449,10 @@ public class Util
          */
         public boolean isDone(long timeout) throws InterruptedException
         {
-            Long start = System.currentTimeMillis();
             while(!isDone)
             {
                 sleep(100);
-                if((System.currentTimeMillis() - start) > timeout)
+                if((System.currentTimeMillis() - startime) > timeout)
                     break;
             }
             return isDone;
