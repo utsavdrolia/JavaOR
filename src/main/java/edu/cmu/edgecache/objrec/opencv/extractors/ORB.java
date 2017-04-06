@@ -8,11 +8,18 @@ import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.highgui.Highgui;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by utsav on 2/8/16.
  */
 public class ORB extends FeatureExtractor
 {
+    String pathToPars;
+    Integer numDescsToExtract = 0;
+
     public ORB()
     {
         //Init detector
@@ -24,27 +31,62 @@ public class ORB extends FeatureExtractor
      *
      * @param pars Path to parameters for ORB
      */
-    public ORB(String pars)
+    public ORB(String pars) throws IOException
     {
-        //Init detector
-//        detector = FeatureDetector.create(FeatureDetector.ORB);
-//        // Read the settings file for detector
-//        detector.read(pars);
+        pathToPars = pars;
         extractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
         extractor.read(pars);
     }
 
-    public static void main(String args[])
+    @Override
+    public void updateNumDescriptorsExtracted(int num_descriptors) throws IOException
+    {
+        if(num_descriptors != this.numDescsToExtract)
+        {
+            BufferedReader reader = new BufferedReader(new FileReader(pathToPars));
+
+            String line = reader.readLine();
+            List<String> lines = new ArrayList<>();
+            do
+            {
+                if(line.startsWith(NUM_FEATURES_KEY))
+                    line = NUM_FEATURES_KEY + ": " + String.valueOf(num_descriptors);
+                lines.add(line);
+                line = reader.readLine();
+            }
+            while ((line != null));
+            reader.close();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(pathToPars));
+            for (String lin : lines)
+            {
+                writer.write(lin);
+                writer.newLine();
+            }
+
+            writer.close();
+
+            numDescsToExtract = num_descriptors;
+
+            extractor.read(pathToPars);
+        }
+    }
+
+    public static void main(String args[]) throws IOException
     {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         if (args.length > 0)
         {
             String inputFile = args[0];
+            String pars = args[1];
             Mat image = Highgui.imread(inputFile, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
             // run each example
             Long start = System.currentTimeMillis();
-            KeypointDescList points = new ORB().extract(image);
+            ORB orb = new ORB(pars);
+            KeypointDescList points = orb.extract(image);
             System.out.println("Time:" + (System.currentTimeMillis() - start) + " Found:" + points.points.size());
+            orb.updateNumDescriptorsExtracted(5000);
+            System.out.println("Updated pars");
         }
     }
 }
