@@ -36,4 +36,8 @@ public class BRISK extends FeatureExtractor
             System.out.println("Time:" + (System.currentTimeMillis() - start) + " Found:" + points.points.size());
         }
     }
+
+    @Override
+    public void updateNumDescriptorsExtracted(int num_descriptors)
+    {}
 }

@@ -8,6 +8,8 @@ import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.highgui.Highgui;
 
+import java.io.IOException;
+
 /**
  * Created by utsav on 2/6/16.
  */
@@ -47,4 +49,8 @@ public class SIFTFeatureExtractor extends FeatureExtractor
         }
 
     }
+
+    @Override
+    public void updateNumDescriptorsExtracted(int num_descriptors) throws IOException
+    {}
 }

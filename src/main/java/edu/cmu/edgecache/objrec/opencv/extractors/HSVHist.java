@@ -41,4 +41,8 @@ public class HSVHist extends FeatureExtractor
         System.out.println("Hist time:" + (System.currentTimeMillis() - start));
         return new KeypointDescList(new MatOfKeyPoint(), histbyte);
     }
+
+    @Override
+    public void updateNumDescriptorsExtracted(int num_descriptors)
+    {}
 }
