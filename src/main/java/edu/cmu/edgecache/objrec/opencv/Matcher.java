@@ -2,6 +2,8 @@ package edu.cmu.edgecache.objrec.opencv;
 
 import org.opencv.core.MatOfDMatch;
 import org.opencv.features2d.DMatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +20,8 @@ public abstract class Matcher
     private int max_size = Integer.MAX_VALUE;
     private boolean isFixed = false;
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private Matcher readable_copy = null;
+    final static Logger logger = LoggerFactory.getLogger(Matcher.class);
 
     /**
      * Matcher constructor
@@ -45,11 +49,18 @@ public abstract class Matcher
     public String matchAll(KeypointDescList sceneImage)
     {
         String ret;
-        readWriteLock.readLock().lock();
+        try
         {
-            ret = _matchAll(sceneImage);
+            readWriteLock.readLock().lock();
+            if(this.readable_copy == null)
+                return INVALID;
+            ret = readable_copy._matchAll(sceneImage);
         }
-        readWriteLock.readLock().unlock();
+        finally
+        {
+            readWriteLock.readLock().unlock();
+        }
+
         return ret;
     }
 
@@ -60,40 +71,61 @@ public abstract class Matcher
      * Store the Image -> Features association
      * @param dataset Image -> Features association
      */
-    public final void train(Map<String, KeypointDescList> dataset) throws IllegalArgumentException
+    public final synchronized void train(Map<String, KeypointDescList> dataset) throws IllegalArgumentException
     {
+        logger.debug("In Training");
+        boolean flag = false;
+
         if(dataset.size() <= max_size)
         {
-            readWriteLock.writeLock().lock();
+            // Check if DB is a subset of dataset
+            Set<String> dataset_keys = new HashSet<>(dataset.keySet());
+            Set<String> DB_keys = DB.keySet();
+            if(dataset_keys.containsAll(DB_keys))
             {
-                // Check if DB is a subset of dataset
-                Set<String> dataset_keys = new HashSet<>(dataset.keySet());
-                Set<String> DB_keys = DB.keySet();
-                if(dataset_keys.containsAll(DB_keys))
+                // Is a subset
+                // Subtract common elements from the two key sets
+                dataset_keys.removeAll(DB_keys);
+                // Insert the uncommon elements
+                for (String key:dataset_keys)
                 {
-                    // Is a subset
-                    // Subtract common elements from the two key sets
-                    dataset_keys.removeAll(DB_keys);
-                    // Insert the uncommon elements
-                    for (String key:dataset_keys)
-                    {
-                        DB.put(key, dataset.get(key));
-                        _insert(key, dataset.get(key));
-                    }
-                }
-                else
-                {
-                    // Is not a subset
-                    // Re-train the entire thing
-                    this.DB.clear();
-                    this.DB.putAll(dataset);
-                    _train();
+                    DB.put(key, dataset.get(key));
+//                    _insert(key, dataset.get(key));
+                    flag = true;
                 }
             }
-            readWriteLock.writeLock().unlock();
+            else
+            {
+                // Is not a subset
+                // Re-train the entire thing
+                this.DB.clear();
+                this.DB.putAll(dataset);
+//                _train();
+                flag = true;
+            }
+
+            if(flag)
+            {
+                // If new items were added, switch the readable copy so that it points to the new matcher
+                Matcher write_copy = newMatcher();
+                write_copy._trainAll(this.DB);
+                readWriteLock.writeLock().lock();
+                {
+                    readable_copy = write_copy;
+                }
+                readWriteLock.writeLock().unlock();
+            }
         }
         else
             throw new IllegalArgumentException("Size of dataset bigger than set size");
+        logger.debug("Done Training");
+    }
+
+
+    private void _trainAll(Map<String, KeypointDescList> db)
+    {
+        this.DB = db;
+        _train();
     }
 
     /**
@@ -101,7 +133,7 @@ public abstract class Matcher
      * @param name
      * @param kplist
      */
-    public final void insert(String name, KeypointDescList kplist)
+    private void insert(String name, KeypointDescList kplist)
     {
         readWriteLock.writeLock().lock();
         {
@@ -118,7 +150,7 @@ public abstract class Matcher
      * Remove a specific image from matcher
      * @param name
      */
-    public final synchronized void remove(String name)
+    private synchronized void remove(String name)
     {
         readWriteLock.writeLock().lock();
         {
