@@ -7,17 +7,23 @@ import edu.cmu.edgecache.objrec.opencv.matchers.BFMatcher_HAM_NB;
 import edu.cmu.edgecache.objrec.opencv.matchers.BFMatcher_L2_NB;
 import edu.cmu.edgecache.objrec.opencv.matchers.LSHMatcher_HAM;
 import edu.cmu.edgecache.objrec.rpc.*;
+import edu.cmu.edgecache.predictors.LatencyEstimator;
+import edu.cmu.edgecache.predictors.Utils.BoundedFunction;
 import edu.cmu.edgecache.recog.AbstractRecogCache;
 import edu.cmu.edgecache.recog.LFURecogCache;
 import edu.cmu.edgecache.recog.OptRecogCache;
 import edu.cmu.edgecache.recog.PrefetchedCache;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import static edu.cmu.edgecache.predictors.Utils.BoundedFunctionUtils.*;
 import static java.lang.Thread.sleep;
 
 /**
@@ -42,9 +48,11 @@ public class Util
     public static final String LFU_cache = "LFU";
     public static final String Opt_cache = "OPT";
     final static Logger logger = LoggerFactory.getLogger(Util.class);
+    private static final String F_K = "f_k";
+    private static final String RECALL_K = "recall_k";
 
 
-    public static FeatureExtractor createExtractor(int featuretype, String pars)
+    public static FeatureExtractor createExtractor(int featuretype, String pars) throws IOException
     {
 
         FeatureExtractor extractor;
@@ -168,8 +176,77 @@ public class Util
         Recognizer recognizer = new Recognizer(extractor, clientmatcher);
 
         PrefetchedCache<String, KeypointDescList> recogCache = new PrefetchedCache<>(new ImageRecognizerInterface(recognizer),
-                                                                                      getCoefs(F_K_PARS),
-                                                                                      getCoefs(RECALL_PARS));
+                                                                                                             getCoefs(F_K_PARS),
+                                                                                                             getCoefs(RECALL_PARS),
+                                                                                                             num_prefetch_features);
+
+        return new PrefetchedObjRecClient(recognizer, recogCache, nextLevelAddress, name, num_prefetch_features);
+    }
+
+
+    /**
+     * @param featureType
+     * @param featurePars
+     * @param matcherType
+     * @param matcherPars
+     * @param match_thresh
+     * @param score_thresh
+     * @param nextLevelAddress
+     * @param name
+     * @param json_path
+     * @param num_prefetch_features
+     * @return
+     * @throws IOException
+     */
+    public static PrefetchedObjRecClient createMultiExtractorPrefetchedObjRecClient(int featureType,
+                                                                      String featurePars,
+                                                                      int matcherType,
+                                                                      String matcherPars,
+                                                                      int match_thresh,
+                                                                      double score_thresh,
+                                                                      String nextLevelAddress,
+                                                                      String name,
+                                                                      String json_path,
+                                                                      int num_prefetch_features) throws IOException
+    {
+
+        FeatureExtractor extractor = Util.createExtractor(featureType, featurePars);
+        Matcher clientmatcher = Util.createMatcher(matcherType, matcherPars, match_thresh, score_thresh);
+        Recognizer recognizer = new Recognizer(extractor, clientmatcher);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        Map<String, Object> objectMap = new HashMap<>();
+        Map<Integer, LatencyEstimator> estimatorMap = new HashMap<>();
+        objectMap = mapper.readValue(new File(json_path), objectMap.getClass());
+        /*
+         * JSON Structure
+         * "400":{"f_k":{COEFFS:[], UPPER: , LOWER}, "recall_k":{COEFFS:[], UPPER: , LOWER}}, "600":{}...
+         */
+
+        for (String num_desc : objectMap.keySet())
+        {
+            Map<String, Object> innerMap = (Map<String, Object>) objectMap.get(num_desc);
+
+            Map<String, Object> f_k = (Map<String, Object>) innerMap.get(F_K);
+
+            double[] coeffs = ArrayUtils.toPrimitive(((ArrayList<Double>) f_k.get(COEFFS)).toArray(new Double[1]));
+            double upper = (double) f_k.get(UPPER);
+            double lower = (double) f_k.get(LOWER);
+            BoundedFunction fk = new BoundedFunction(coeffs, lower, upper);
+
+            Map<String, Object> recall_k = (Map<String, Object>) innerMap.get(RECALL_K);
+
+            coeffs = ArrayUtils.toPrimitive(((ArrayList<Double>) recall_k.get(COEFFS)).toArray(new Double[1]));
+            upper = (double) recall_k.get(UPPER);
+            lower = (double) recall_k.get(LOWER);
+            BoundedFunction recall = new BoundedFunction(coeffs, lower, upper);
+
+            estimatorMap.put(Integer.valueOf(num_desc), new LatencyEstimator(fk, recall));
+        }
+
+        PrefetchedCache<String, KeypointDescList> recogCache = new PrefetchedCache<>(new ImageRecognizerInterface(recognizer), estimatorMap);
+
         return new PrefetchedObjRecClient(recognizer, recogCache, nextLevelAddress, name, num_prefetch_features);
     }
 
@@ -274,7 +351,7 @@ public class Util
             String imgpath = chunks[1];
             EvaluateCallback cb = new EvaluateCallback(System.currentTimeMillis(), img, count, appCallBack);
             logger.debug("Issuing request:" + img + " @ " + imgpath);
-            objRecClient.recognize(imgpath, cb);
+            objRecClient.recognize(imgpath, cb, System.currentTimeMillis());
             evaluateCallbacks.add(cb);
             while(!cb.isDone(60000))
             {
@@ -293,11 +370,11 @@ public class Util
         logger.debug("Time:" + procend + " Count:" + count);
     }
 
-    public static void evaluateAsync(ObjRecClient objRecClient, String queryList, String resultspath, AppCallBack app_cb) throws IOException, InterruptedException
+    public static void evaluateAsync(final ObjRecClient objRecClient, String queryList, String resultspath, AppCallBack app_cb) throws IOException, InterruptedException
     {
         ConcurrentLinkedQueue<Util.EvaluateCallback> evaluateCallbacks = new ConcurrentLinkedQueue<>();
         BufferedReader trace = new BufferedReader(new FileReader(queryList));
-
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         Integer count = 0;
         String line = trace.readLine();
         Long procstart = System.currentTimeMillis();
@@ -307,7 +384,7 @@ public class Util
             // Parse
             String[] chunks = line.split(",");
             String img = chunks[0];
-            String imgpath = chunks[1];
+            final String imgpath = chunks[1];
             Long req_time = Long.valueOf(chunks[2]);
             try
             {
@@ -317,13 +394,29 @@ public class Util
             catch (IllegalArgumentException e)
             {
                 // Thrown if argument is negative. If negative, don't sleep. Drop exception like its hot.
+                logger.warn("Lagging");
             }
             // Create callback
-            Util.EvaluateCallback cb = new Util.EvaluateCallback(System.currentTimeMillis(), img, count, app_cb);
+            final Long start = System.currentTimeMillis();
+            final Util.EvaluateCallback cb = new Util.EvaluateCallback(start, img, count, app_cb);
 
             logger.debug("Issuing request:" + img);
             // Issue request
-            objRecClient.recognize(imgpath, cb);
+            executor.execute(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    try
+                    {
+                        objRecClient.recognize(imgpath, cb, start);
+                    } catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             evaluateCallbacks.add(cb);
 
 //            resultsfile.write(img.split("_")[0] + "," + resultMap.get(img).annotation + "," + (1 - (resultMap.get(img).time.size() - 1)) + "," + "\n");
