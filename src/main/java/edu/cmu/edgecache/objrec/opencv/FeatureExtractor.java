@@ -9,6 +9,8 @@ import org.opencv.highgui.Highgui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 /**
  * Interface for Extracting features from given image and returning a datastructure that is used by the Associator
  * Created by utsav on 2/5/16.
@@ -17,6 +19,9 @@ public abstract class FeatureExtractor
 {
     protected FeatureDetector detector;
     protected DescriptorExtractor extractor;
+
+    public static final String NUM_FEATURES_KEY= "nFeatures";
+
     private final static Logger logger = LoggerFactory.getLogger(FeatureExtractor.class);
 
     /**
@@ -73,4 +78,6 @@ public abstract class FeatureExtractor
         m.release();
         return kd;
     }
+
+    public abstract void updateNumDescriptorsExtracted(int num_descriptors) throws IOException;
 }

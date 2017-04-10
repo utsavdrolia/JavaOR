@@ -2,6 +2,7 @@ package edu.cmu.edgecache.objrec.opencv;
 
 import edu.cmu.edgecache.recog.RecognizeInterface;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -50,5 +51,17 @@ public class ImageRecognizerInterface implements RecognizeInterface<String, Keyp
     public String invalid()
     {
         return Recognizer.INVALID;
+    }
+
+    @Override
+    public void updateNumDescriptorsExtracted(int num_descriptors) throws IOException
+    {
+        recognizer.extractor.updateNumDescriptorsExtracted(num_descriptors);
+    }
+
+    @Override
+    public RecognizeInterface<String, KeypointDescList> newRecognizer()
+    {
+        return new ImageRecognizerInterface(recognizer.copy());
     }
 }
