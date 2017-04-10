@@ -1,8 +1,10 @@
 package edu.cmu.edgecache.objrec.opencv.matchers;
 
 import edu.cmu.edgecache.objrec.opencv.KeypointDescList;
+import edu.cmu.edgecache.objrec.opencv.Matcher;
 import edu.cmu.edgecache.objrec.opencv.extractors.ORB;
-import org.opencv.core.*;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
 import org.opencv.features2d.DescriptorMatcher;
 import org.opencv.highgui.Highgui;
 
@@ -45,6 +47,18 @@ public class LSHMatcher_HAM extends AbstractNBMatcher
         matcher = DescriptorMatcher.create(DescriptorMatcher.FLANNBASED);
         NUM_MATCHES_THRESH = 5;
         SCORE_THRESH = 0.6;
+    }
+
+    private LSHMatcher_HAM(DescriptorMatcher matcher, int match_thresh, Double score_thresh)
+    {
+        this.matcher = matcher;
+        NUM_MATCHES_THRESH = match_thresh;
+        SCORE_THRESH = score_thresh;
+    }
+
+    public Matcher newMatcher()
+    {
+        return new LSHMatcher_HAM(this.matcher.clone(true), NUM_MATCHES_THRESH, SCORE_THRESH);
     }
 
 
