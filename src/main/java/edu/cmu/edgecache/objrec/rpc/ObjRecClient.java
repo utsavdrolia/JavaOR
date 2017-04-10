@@ -34,7 +34,7 @@ public class ObjRecClient
         }
     }
 
-    public void recognize(String imagePath, ObjRecCallback cb) throws IOException
+    public void recognize(String imagePath, ObjRecCallback cb, long startTime) throws IOException
     {
         buffer.clear();
         FileInputStream fis = new FileInputStream(imagePath);
@@ -42,7 +42,7 @@ public class ObjRecClient
         fc.read(buffer);
         buffer.flip();
         fc.close();
-        recognize(buffer, new ObjRecClientCallback(cb));
+        recognize(buffer, new ObjRecClientCallback(cb, startTime));
     }
 
     public final void recognize(ByteBuffer image, ObjRecCallback cb) throws IOException
@@ -63,10 +63,10 @@ public class ObjRecClient
         private ObjRecCallback cb;
         private long start;
 
-        ObjRecClientCallback(ObjRecCallback cb)
+        ObjRecClientCallback(ObjRecCallback cb, long startTime)
         {
             this.cb = cb;
-            this.start = System.currentTimeMillis();
+            this.start = startTime;
         }
 
         @Override

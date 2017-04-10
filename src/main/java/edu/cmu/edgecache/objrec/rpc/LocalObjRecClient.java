@@ -35,7 +35,7 @@ public class LocalObjRecClient extends ObjRecClient
     }
 
     @Override
-    public void recognize(String imagePath, ObjRecCallback cb) throws IOException
+    public void recognize(String imagePath, ObjRecCallback cb, long l) throws IOException
     {
         Mat image = Highgui.imread(imagePath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
         Long start = System.currentTimeMillis();

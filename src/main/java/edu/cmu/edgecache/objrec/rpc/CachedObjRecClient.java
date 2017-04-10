@@ -83,16 +83,17 @@ public class CachedObjRecClient extends ObjRecClient
      * Check in local knownItems if we have image and if not send request to cloud. Only called when in device
      * @param imagePath
      * @param cb
+     * @param l
      * @throws IOException
      */
     @Override
-    public void recognize(String imagePath, ObjRecCallback cb) throws IOException
+    public void recognize(String imagePath, ObjRecCallback cb, long startTime) throws IOException
     {
         logger.debug("Received image path");
         // Load image into memory
         Mat image = Highgui.imread(imagePath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-
-        Long start = System.currentTimeMillis();
+        logger.debug("Loaded Image");
+        Long start = startTime;
 
         ObjRecServiceProto.Features.Builder features = ObjRecServiceProto.Features.newBuilder()
                 .setReqId(ObjRecServiceProto.RequestID.newBuilder()
