@@ -129,6 +129,11 @@ public class Recognizer
         return !result.equals(Recognizer.INVALID);
     }
 
+    public Recognizer copy()
+    {
+        return new Recognizer(this.extractor, matcher.newMatcher());
+    }
+
     public static void main(String args[]) throws IOException
     {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
