@@ -5,6 +5,7 @@ import edu.cmu.edgecache.objrec.rpc.ObjRecEdge;
 import org.opencv.core.Core;
 
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Created by utsav on 2/5/16.
@@ -14,7 +15,7 @@ public class RunLFUEdgeCache
     public static void main(String args[]) throws IOException, InterruptedException
     {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        if (args.length == 7)
+        if (args.length == 8)
         {
             // For all caches
             String feature_pars = args[0];
@@ -26,16 +27,21 @@ public class RunLFUEdgeCache
 
             // For LFU Cache
             Integer cache_size = Integer.valueOf(args[6]);
+            String initItemsPath = args[7];
 
-            CachedObjRecClient lfuCacheObjRecClient = Util.createLFUCacheObjRecClient(featuretype,
-                                                                                      feature_pars,
-                                                                                      matchertype_cache,
-                                                                                      matcherpars_cache,
-                                                                                      3,
-                                                                                      0.5,
-                                                                                      serverAdd,
-                                                                                      Names.Edge,
-                                                                                      cache_size);
+            Collection<String> initiItems = Util.get_cache_init_items(initItemsPath);
+
+            CachedObjRecClient lfuCacheObjRecClient = Util.createForwardingCacheObjRecClient(featuretype,
+                                                                                             feature_pars,
+                                                                                             matchertype_cache,
+                                                                                             matcherpars_cache,
+                                                                                             3,
+                                                                                             0.5,
+                                                                                             serverAdd,
+                                                                                             Names.Edge,
+                                                                                             cache_size);
+            lfuCacheObjRecClient.initializeCache(initiItems);
+
             new ObjRecEdge(lfuCacheObjRecClient, myaddress);
 
             while(System.in.available() == 0)
