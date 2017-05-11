@@ -14,6 +14,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by utsav on 4/2/17.
+ * A wrapper around CachedObjRecClient that load balances
+ *      - keeps track of request arrival rate and local processing rate
+ *      - If processing rate < arrival rate, forwards request to next level
  */
 public class RequestForwardingCache extends CachedObjRecClient
 {

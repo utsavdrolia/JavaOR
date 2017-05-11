@@ -150,6 +150,7 @@ public class ObjRecServer extends ObjRecServiceProto.ObjRecService
         ObjRecServiceProto.Features.Builder features = Utils.serialize(kp);
         // Return
         done.run(features
+                .setAnnotation(request.getAnnotation())
                 .addLatencies(ObjRecServiceProto.Latency.newBuilder()
                                       .setName(NAME)
                                       .setComputation((int) (System.currentTimeMillis() - start))

@@ -2019,6 +2019,20 @@ public final class ObjRecServiceProto {
      * <code>required .RequestID req_id = 4;</code>
      */
     RequestIDOrBuilder getReqIdOrBuilder();
+
+    /**
+     * <code>optional string annotation = 5;</code>
+     */
+    boolean hasAnnotation();
+    /**
+     * <code>optional string annotation = 5;</code>
+     */
+    String getAnnotation();
+    /**
+     * <code>optional string annotation = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getAnnotationBytes();
   }
   /**
    * Protobuf type {@code Features}
@@ -2034,6 +2048,7 @@ public final class ObjRecServiceProto {
     private Features() {
       keypoints_ = java.util.Collections.emptyList();
       latencies_ = java.util.Collections.emptyList();
+      annotation_ = "";
     }
 
     @Override
@@ -2104,6 +2119,12 @@ public final class ObjRecServiceProto {
                 reqId_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000002;
+              break;
+            }
+            case 42: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000004;
+              annotation_ = bs;
               break;
             }
           }
@@ -2249,6 +2270,48 @@ public final class ObjRecServiceProto {
       return reqId_ == null ? RequestID.getDefaultInstance() : reqId_;
     }
 
+    public static final int ANNOTATION_FIELD_NUMBER = 5;
+    private volatile Object annotation_;
+    /**
+     * <code>optional string annotation = 5;</code>
+     */
+    public boolean hasAnnotation() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional string annotation = 5;</code>
+     */
+    public String getAnnotation() {
+      Object ref = annotation_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          annotation_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string annotation = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getAnnotationBytes() {
+      Object ref = annotation_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        annotation_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -2299,6 +2362,9 @@ public final class ObjRecServiceProto {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeMessage(4, getReqId());
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, annotation_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -2322,6 +2388,9 @@ public final class ObjRecServiceProto {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, getReqId());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, annotation_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2469,6 +2538,8 @@ public final class ObjRecServiceProto {
           reqIdBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000008);
+        annotation_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -2527,6 +2598,10 @@ public final class ObjRecServiceProto {
         } else {
           result.reqId_ = reqIdBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.annotation_ = annotation_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2600,6 +2675,11 @@ public final class ObjRecServiceProto {
         }
         if (other.hasReqId()) {
           mergeReqId(other.getReqId());
+        }
+        if (other.hasAnnotation()) {
+          bitField0_ |= 0x00000010;
+          annotation_ = other.annotation_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -3364,6 +3444,82 @@ public final class ObjRecServiceProto {
           reqId_ = null;
         }
         return reqIdBuilder_;
+      }
+
+      private Object annotation_ = "";
+      /**
+       * <code>optional string annotation = 5;</code>
+       */
+      public boolean hasAnnotation() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional string annotation = 5;</code>
+       */
+      public String getAnnotation() {
+        Object ref = annotation_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            annotation_ = s;
+          }
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>optional string annotation = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getAnnotationBytes() {
+        Object ref = annotation_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          annotation_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string annotation = 5;</code>
+       */
+      public Builder setAnnotation(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        annotation_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string annotation = 5;</code>
+       */
+      public Builder clearAnnotation() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        annotation_ = getDefaultInstance().getAnnotation();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string annotation = 5;</code>
+       */
+      public Builder setAnnotationBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        annotation_ = value;
+        onChanged();
+        return this;
       }
 
       // @@protoc_insertion_point(builder_scope:Features)
@@ -7733,24 +7889,24 @@ public final class ObjRecServiceProto {
       "n\022\022\n\nannotation\030\001 \002(\t\022\033\n\tlatencies\030\002 \003(\013" +
       "2\010.Latency\022\032\n\006req_id\030\003 \001(\0132\n.RequestID\022\021" +
       "\n\003pdf\030\004 \001(\0132\004.PDF\022\024\n\014num_features\030\005 \001(\005\"" +
-      "z\n\010Features\022\027\n\005descs\030\001 \001(\0132\010.DescMat\022\034\n\t" +
-      "keypoints\030\002 \003(\0132\t.KeyPoint\022\033\n\tlatencies\030" +
-      "\003 \003(\0132\010.Latency\022\032\n\006req_id\030\004 \002(\0132\n.Reques" +
-      "tID\"A\n\007DescMat\022\014\n\004rows\030\001 \002(\005\022\014\n\004cols\030\002 \002" +
-      "(\005\022\014\n\004type\030\003 \002(\005\022\014\n\004data\030\004 \002(\014\" \n\010KeyPoi",
-      "nt\022\t\n\001x\030\001 \002(\001\022\t\n\001y\030\002 \002(\001\"`\n\007Latency\022\014\n\004n" +
-      "ame\030\001 \002(\t\022\020\n\010in_queue\030\002 \001(\005\022\023\n\013computati" +
-      "on\030\003 \001(\005\022\022\n\nnext_level\030\004 \001(\005\022\014\n\004size\030\005 \001" +
-      "(\005\")\n\tRequestID\022\014\n\004name\030\001 \002(\t\022\016\n\006req_id\030" +
-      "\002 \002(\005\"6\n\021ObjectProbability\022\014\n\004name\030\001 \002(\t" +
-      "\022\023\n\013probability\030\002 \002(\001\"&\n\003PDF\022\037\n\003pdf\030\001 \003(" +
-      "\0132\022.ObjectProbability2\316\001\n\rObjRecService\022" +
-      " \n\tRecognize\022\006.Image\032\013.Annotation\022+\n\021Rec" +
-      "ognizeFeatures\022\t.Features\032\013.Annotation\022\037" +
-      "\n\010GetImage\022\013.Annotation\032\006.Image\022%\n\013GetFe",
-      "atures\022\013.Annotation\032\t.Features\022&\n\nGetNex" +
-      "tPDF\022\013.Annotation\032\013.AnnotationB\031B\022ObjRec" +
-      "ServiceProtoH\001\210\001\001"
+      "\216\001\n\010Features\022\027\n\005descs\030\001 \001(\0132\010.DescMat\022\034\n" +
+      "\tkeypoints\030\002 \003(\0132\t.KeyPoint\022\033\n\tlatencies" +
+      "\030\003 \003(\0132\010.Latency\022\032\n\006req_id\030\004 \002(\0132\n.Reque" +
+      "stID\022\022\n\nannotation\030\005 \001(\t\"A\n\007DescMat\022\014\n\004r" +
+      "ows\030\001 \002(\005\022\014\n\004cols\030\002 \002(\005\022\014\n\004type\030\003 \002(\005\022\014\n",
+      "\004data\030\004 \002(\014\" \n\010KeyPoint\022\t\n\001x\030\001 \002(\001\022\t\n\001y\030" +
+      "\002 \002(\001\"`\n\007Latency\022\014\n\004name\030\001 \002(\t\022\020\n\010in_que" +
+      "ue\030\002 \001(\005\022\023\n\013computation\030\003 \001(\005\022\022\n\nnext_le" +
+      "vel\030\004 \001(\005\022\014\n\004size\030\005 \001(\005\")\n\tRequestID\022\014\n\004" +
+      "name\030\001 \002(\t\022\016\n\006req_id\030\002 \002(\005\"6\n\021ObjectProb" +
+      "ability\022\014\n\004name\030\001 \002(\t\022\023\n\013probability\030\002 \002" +
+      "(\001\"&\n\003PDF\022\037\n\003pdf\030\001 \003(\0132\022.ObjectProbabili" +
+      "ty2\316\001\n\rObjRecService\022 \n\tRecognize\022\006.Imag" +
+      "e\032\013.Annotation\022+\n\021RecognizeFeatures\022\t.Fe" +
+      "atures\032\013.Annotation\022\037\n\010GetImage\022\013.Annota",
+      "tion\032\006.Image\022%\n\013GetFeatures\022\013.Annotation" +
+      "\032\t.Features\022&\n\nGetNextPDF\022\013.Annotation\032\013" +
+      ".AnnotationB\031B\022ObjRecServiceProtoH\001\210\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -7781,7 +7937,7 @@ public final class ObjRecServiceProto {
     internal_static_Features_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Features_descriptor,
-        new String[] { "Descs", "Keypoints", "Latencies", "ReqId", });
+        new String[] { "Descs", "Keypoints", "Latencies", "ReqId", "Annotation", });
     internal_static_DescMat_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_DescMat_fieldAccessorTable = new

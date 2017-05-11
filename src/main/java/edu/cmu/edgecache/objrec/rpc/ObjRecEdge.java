@@ -122,6 +122,7 @@ public class ObjRecEdge extends ObjRecServiceProto.ObjRecService
             ObjRecServiceProto.Features.Builder features = ObjRecServiceProto.Features.newBuilder();
             // Return
             done.run(features
+                             .setAnnotation(request.getAnnotation())
                              .addLatencies(ObjRecServiceProto.Latency.newBuilder()
                                                    .setName(EDGE)
                                                    .setComputation((int) (System.currentTimeMillis() - start))
