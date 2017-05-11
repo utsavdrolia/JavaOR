@@ -11,10 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by utsav on 6/16/16.
@@ -83,7 +81,7 @@ public class CachedObjRecClient extends ObjRecClient
      * Check in local knownItems if we have image and if not send request to cloud. Only called when in device
      * @param imagePath
      * @param cb
-     * @param l
+     * @param startTime
      * @throws IOException
      */
     @Override
@@ -247,6 +245,8 @@ public class CachedObjRecClient extends ObjRecClient
      */
     public void initializeCache(Collection<String> items)
     {
+        Map<String, KeypointDescList> allFeatures = new ConcurrentHashMap<>();
+        List<BatchFeaturesRecvCallback> callbacks = new ArrayList<>();
         for (String annotationstring :
                 items)
         {
@@ -254,6 +254,7 @@ public class CachedObjRecClient extends ObjRecClient
             {
                 if(!feature_request_lookback.contains(annotationstring))
                 {
+                    BatchFeaturesRecvCallback batchFeaturesCallback = new BatchFeaturesRecvCallback(allFeatures);
                     feature_request_lookback.add(annotationstring);
                     logger.debug("Added to lookback:" + annotationstring);
                     logger.debug("Requesting for init item features:" + annotationstring);
@@ -268,7 +269,8 @@ public class CachedObjRecClient extends ObjRecClient
 
                     ObjRecServiceStub.getFeatures(rpc,
                                                   features_req.build(),
-                                                  new FeaturesRecvCallback(annotationstring));
+                                                  batchFeaturesCallback);
+                    callbacks.add(batchFeaturesCallback);
                     try
                     {
                         Thread.sleep(10);
@@ -279,6 +281,17 @@ public class CachedObjRecClient extends ObjRecClient
                 }
             }
         }
+
+        // Wait for all callbacks to finish
+        for (BatchFeaturesRecvCallback cb :
+                callbacks)
+        {
+            cb.isDone(10000);
+        }
+        logger.debug("Received All Init Features");
+        // All features must be in Map now
+        recogCache.init(allFeatures);
+        logger.debug("Finished Initializing cache");
     }
 
     /**
@@ -405,6 +418,56 @@ public class CachedObjRecClient extends ObjRecClient
             recogCache.put(annotation, kdlist);
             long compdur = System.currentTimeMillis() - compstart;
             long netdur = compstart - start;
+        }
+    }
+
+    /**
+     * Callback that is called when features are received from server.
+     * Inserts the features into the cache
+     */
+    private class BatchFeaturesRecvCallback implements RpcCallback<ObjRecServiceProto.Features>
+    {
+        private Map<String , KeypointDescList> allFeatures;
+        private boolean isDone = false;
+
+        public BatchFeaturesRecvCallback(Map<String , KeypointDescList> allFeatures)
+        {
+            this.allFeatures = allFeatures;
+        }
+
+        @Override
+        public synchronized void run(ObjRecServiceProto.Features features)
+        {
+            String annotation = features.getAnnotation();
+            logger.debug("Received **Features** from Server:" + annotation);
+            logger.debug("Removed from lookback:" + annotation);
+            feature_request_lookback.remove(annotation);
+            if(!features.hasDescs())
+            {
+                logger.debug("Features empty");
+                return;
+            }
+
+            KeypointDescList kdlist = Utils.deserialize(features);
+            allFeatures.put(annotation, kdlist);
+
+            isDone = true;
+        }
+
+        public boolean isDone(long timeout)
+        {
+            long start = System.currentTimeMillis();
+            while((!isDone) && ((System.currentTimeMillis() - start) < timeout))
+            {
+                try
+                {
+                    Thread.sleep(100);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            return isDone;
         }
     }
 }
